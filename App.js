@@ -1,52 +1,37 @@
-import React,{Component} from "react";
-import {
-  SafeAreaView,
-  Text,
-  Image,
-} from "react-native";
-
 import { createAppContainer } from 'react-navigation';
-
-import {
-  createDrawerNavigator,
-  DrawerItems,
-} from "react-navigation-drawer";
-
-import {createStackNavigator} from 'react-navigation-stack';
-
-import styles from './styles';
-import MyButton from './components/MyButton';
-import MyDrawerButton from './components/MyDrawerButton';
-import MyNavStackButton from './components/MyNavStackButton';
+import { createDrawerNavigator } from "react-navigation-drawer";
+import { createStackNavigator } from 'react-navigation-stack';
 import InfoSchedule from './views/InfoSchedule';
 import HomeView from './views/HomeView';
 
-const eventTitle = "Event Title";
 
 const DrawerNavigator = createDrawerNavigator({
   Headliners: createStackNavigator({
-      A: {
+      Headliners: {
         screen: HomeView,
         navigationOptions:{
-          title:"Headliners"
+          title:"Headliners",
+          headerTitleAlign:'center',
         }
       },
-      InfoSchedule,
+      InfoSchedule,     
   }),
   Features: createStackNavigator({
-    A:{
+    Features:{
       screen: HomeView,
       navigationOptions:{
-        title:"Features"
+        title:"Features",
+        headerTitleAlign:'center',
       },
     },
     InfoSchedule
   }),
   Shorts: createStackNavigator({
-    A:{
+    Shorts:{
       screen: HomeView,
       navigationOptions:{
-        title:"Shorts"
+        title:"Shorts",
+        headerTitleAlign:'center',
       }
     },
     InfoSchedule

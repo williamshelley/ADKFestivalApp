@@ -4,8 +4,18 @@ const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 const styles = {
-    screenView:{
+    container:{
         flex:1,
+        justifyContent: "center",
+        alignItems:"center",
+    },
+    eventItems:{
+        width:screenWidth / 2,
+        height:screenWidth / 2 - 50,
+        backgroundColor:"gray",
+        borderRadius:10,
+        borderWidth:2,
+        borderColor:"black",
     },
     testScreenView:{
         flex:1,
@@ -21,11 +31,12 @@ const styles = {
     roundButton:{
         borderRadius:30,
         width:250,
+        height: 50,
         backgroundColor:"blue",
     },
     statBarWhiteText:{
         color:"white",
-        fontSize: StatusBar.currentHeight,
+        fontSize: 5,
     },
     medWhiteText:{
         color:"white",
@@ -42,6 +53,8 @@ const styles = {
     icon: {
         width: 24,
         height: 24,
+        justifyContent: 'center',
+        alignSelf: 'center',
     },
     infoAbout:{
         backgroundColor: "powderblue",
