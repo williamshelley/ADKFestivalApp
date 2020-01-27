@@ -1,0 +1,5 @@
+Festival App Design:
+
+	Complete the front page, (or at least its formatting) based on SHOW app.
+
+	Need to scrape images as well as text information.
