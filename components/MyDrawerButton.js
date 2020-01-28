@@ -7,7 +7,7 @@ const sidebarIcon = require('../images/white_list.png');
 
 export default class MyDrawerButton extends Component{
     render = props =>{
-        return(      
+        return(
         <SafeAreaView style={styles.navBar}>
             <MyButton
             style={[styles.roundDrawerBtn, {justifyContent:'center'}]}

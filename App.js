@@ -7,34 +7,17 @@ import HomeView from './views/HomeView';
 
 const DrawerNavigator = createDrawerNavigator({
   Headliners: createStackNavigator({
-      Headliners: {
-        screen: HomeView,
-        navigationOptions:{
-          title:"Headliners",
-          headerTitleAlign:'center',
-        }
-      },
-      InfoSchedule,     
+    Headliners: HomeView,
+    InfoSchedule,
   }),
+
   Features: createStackNavigator({
-    Features:{
-      screen: HomeView,
-      navigationOptions:{
-        title:"Features",
-        headerTitleAlign:'center',
-      },
-    },
-    InfoSchedule
+    Features: HomeView,
+    InfoSchedule,
   }),
   Shorts: createStackNavigator({
-    Shorts:{
-      screen: HomeView,
-      navigationOptions:{
-        title:"Shorts",
-        headerTitleAlign:'center',
-      }
-    },
-    InfoSchedule
+    Shorts: HomeView,
+    InfoSchedule,
   }),
 });
 

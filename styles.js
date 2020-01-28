@@ -19,7 +19,6 @@ const styles = {
     },
     testScreenView:{
         flex:1,
-        justifyContent:"center",
         alignItems:"center",
     },
     roundDrawerBtn:{
@@ -60,6 +59,13 @@ const styles = {
         backgroundColor: "powderblue",
         width: screenWidth,
         height: screenHeight / 3,
+    },
+    infoImage:{
+        width:screenWidth,
+        height:screenHeight/3,
+        borderColor:"black",
+        borderWidth:2,
+        borderRadius:5,
     }
 };
 
