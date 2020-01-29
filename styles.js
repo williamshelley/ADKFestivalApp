@@ -16,6 +16,7 @@ const styles = {
         borderRadius:10,
         borderWidth:2,
         borderColor:"black",
+        resizeMode:"contain",
     },
     testScreenView:{
         flex:1,
@@ -66,6 +67,7 @@ const styles = {
         borderColor:"black",
         borderWidth:2,
         borderRadius:5,
+        resizeMode:"contain",
     }
 };
 

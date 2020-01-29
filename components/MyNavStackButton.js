@@ -16,4 +16,3 @@ export default class MyNavStackButton extends Component{
         </SafeAreaView>);
     }
 }
-
