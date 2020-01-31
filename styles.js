@@ -11,7 +11,7 @@ const styles = {
     },
     eventItems:{
         width:screenWidth / 2,
-        height:screenWidth / 2 - 50,
+        height:screenWidth / 2-25,
         backgroundColor:"gray",
         borderRadius:10,
         borderWidth:2,
