@@ -2,6 +2,9 @@ import {StatusBar,Dimensions} from "react-native";
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
+const numInfoSections = 3;
+const thinBorder = 2;
+const imageFont = "Times New Roman";
 
 const styles = {
     container:{
@@ -9,12 +12,18 @@ const styles = {
         justifyContent: "center",
         alignItems:"center",
     },
+    descriptionText:{
+        fontFamily: "Times New Roman",
+        fontSize: 20,
+        padding: 10,
+        color: "black",
+    },
     eventItems:{
         width:screenWidth / 2,
         height:screenWidth / 2-25,
         backgroundColor:"gray",
         borderRadius:10,
-        borderWidth:2,
+        borderWidth: thinBorder,
         borderColor:"black",
         resizeMode:"contain",
     },
@@ -33,6 +42,8 @@ const styles = {
         width:250,
         height: 50,
         backgroundColor:"blue",
+        alignItems:"center",
+        justifyContent:"center",
     },
     statBarWhiteText:{
         color:"white",
@@ -56,18 +67,36 @@ const styles = {
         justifyContent: 'center',
         alignSelf: 'center',
     },
-    infoAbout:{
+    descriptionView:{
+        flex:0,
         backgroundColor: "powderblue",
         width: screenWidth,
-        height: screenHeight / 3,
+        height: screenHeight / numInfoSections,
+        borderWidth: thinBorder,
+        borderColor: "black",
     },
-    infoImage:{
+    infoImgView:{
         width:screenWidth,
-        height:screenHeight/3,
+        height:screenHeight / numInfoSections,
         borderColor:"black",
-        borderWidth:2,
+        borderWidth: thinBorder,
         borderRadius:5,
-        resizeMode:"contain",
+        resizeMode:"stretch",
+    },
+    imgText:{
+        backgroundColor:"rgba(255,255,255,0.3)",
+        color:"black",
+        fontSize: 15,
+        fontFamily: imageFont,
+        //borderRadius: 10,
+        borderWidth: thinBorder,
+        borderColor: "rgba(255,255,255,0.3)",
+    },
+    imgTextWrapper:{
+        //borderRadius:10,
+        backgroundColor:"rgba(255,255,255,0.3)",
+        borderWidth: thinBorder,
+        borderColor: "rgba(255,255,255,0.3)",
     }
 };
 

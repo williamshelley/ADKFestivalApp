@@ -10,7 +10,7 @@ export default class MyDrawerButton extends Component{
         return(
         <SafeAreaView style={styles.navBar}>
             <MyButton
-            style={[styles.roundDrawerBtn, {justifyContent:'center'}]}
+            style={[this.props.style, styles.roundDrawerBtn, {justifyContent:'center'}]}
             onPress={()=>{this.props.navigation.toggleDrawer();}}
             source={sidebarIcon}
             imageStyle={styles.icon}
