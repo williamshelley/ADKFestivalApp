@@ -4,10 +4,17 @@ import urllib
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 import re
+import threading
+import queue
+import time
+
+#at the moment, preloading takes 4:15 (min:sec)
+#might be better to load as needed
+#	if load as need, then we load one page at a time so that it only loads one screen-full at a time
+#	maybe load description as needed as well
+start_time = time.time()
 
 base_url = 'https://www.adkfilmfestival.org/festival/'
-#request = requests.get(base_url)
-#soup = BeautifulSoup(request.text, "html.parser")
 
 # strip category of non-alphabetic chars and capitalize (title-0 => Title)
 # if -1, change it to All
@@ -59,24 +66,12 @@ def find_sources(gallery):
 			sources.append(image.get("src"))
 	return sources
 
-#takes data from a single page and feeds it into a 6 tuple of arrays
-def parse_gallery_page(url):
+def scrape_page(url, categories, titles, id_list, links, sources, descriptions, category):
 	request = requests.get(url)
 	soup = BeautifulSoup(request.text,"html.parser")
 	gallery = soup.find(id="portfolio-gallery")
-	full_width = soup.find(id="full-width")
-	
-	current_category = full_width.find_all("a",{"class":"current"})[0].get("data-cat")
-	category = prepare_category(current_category)
-
-	categories = []
-	titles = []
-	id_list = []
-	links = []
-	sources = find_sources(gallery)
-	descriptions = []
-
-	#gallery_links = gallery.find_all("a")
+	gallery_links = gallery.find_all("a")
+	sources += find_sources(gallery)
 	for image in gallery_links:
 		title = image.get("title")
 		link = image.get("href")
@@ -94,6 +89,42 @@ def parse_gallery_page(url):
 			descriptions.append(description)
 		
 
+#takes data from a single page and feeds it into a 6 tuple of arrays
+def parse_gallery_page(url):
+	request = requests.get(url)
+	soup = BeautifulSoup(request.text,"html.parser")
+	gallery = soup.find(id="portfolio-gallery")
+	full_width = soup.find(id="full-width")
+	current_category = full_width.find_all("a",{"class":"current"})[0].get("data-cat")
+	category = prepare_category(current_category)
+
+	gallery_pages = gallery.find_all("a")
+	page_links = []
+	for i in range(len(gallery_pages)):
+		item = gallery_pages[i]
+		page = item.get("data-page")
+		if page is not None:
+			page_links.append(item.get("href"))
+
+	categories = []
+	titles = []
+	id_list = []
+	links = []
+	sources = []
+	descriptions = []
+
+	if len(page_links) == 0:
+		page_links = [url]
+
+	threads = []
+	for url in page_links:
+		thread = threading.Thread(target=scrape_page,args=(url, categories, titles, id_list, links, sources, descriptions, category))
+		thread.start()
+		threads.append(thread)
+
+	for thread in threads:
+		thread.join()
+
 	return (categories, titles, id_list, links, sources, descriptions)
 
 cat_request = requests.get(base_url)
@@ -107,17 +138,38 @@ id_list = []
 links = []
 sources = []
 descriptions = []
+pages = [None for x in range(500)]
 
-category_links = [base_url]
-for url in category_links:
-	page = parse_gallery_page(url)
-	categories += set_categories(page[0])
-	titles += page[1]
-	id_list += page[2]
-	links += page[3]
-	sources += page[4]
-	descriptions += page[5]
+def scrape_categories(i, url, pages):
+	pages[i] = parse_gallery_page(url)
 
+category_threads = []
+for i in range(len(category_links)):
+	url = category_links[i]
+	thread = threading.Thread(target=scrape_categories, args=(i, url, pages))
+	thread.start()
+	category_threads.append(thread)
+
+for thread in category_threads:
+	thread.join()
+
+num_pages = 0
+cats = set()
+for page in pages:
+	if page is not None:
+		num_pages+=1
+		categories += set_categories(page[0])
+		titles += page[1]
+		id_list += page[2]
+		links += page[3]
+		sources += page[4]
+		descriptions += page[5]
+
+for c in categories:
+	cats.add(c)
+
+elapsed_time = time.time() - start_time
+print("ELAPSED TIME: ", time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 
 web_scrape = Flask(__name__)
 
@@ -129,7 +181,7 @@ def ping():
 		"id_list": id_list,
 		"links": links,
 		"sources": sources,
-		"descriptions": descriptions,#should be eventually changed to desc_list
+		"descriptions": descriptions,
 	})
 
 web_scrape.run()

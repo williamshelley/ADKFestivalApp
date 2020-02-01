@@ -70,6 +70,7 @@ class CategorySidebar extends Component {
             category: responseJson.categories[i],
             title: responseJson.titles[i],
             id: responseJson.id_list[i],
+            //links: responseJson.links[i]
             source: responseJson.sources[i],
             description: responseJson.descriptions[i],
           })
