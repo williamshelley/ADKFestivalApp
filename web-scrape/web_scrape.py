@@ -8,10 +8,70 @@ import threading
 import queue
 import time
 
-#at the moment, preloading takes 4:15 (min:sec)
-#might be better to load as needed
-#	if load as need, then we load one page at a time so that it only loads one screen-full at a time
-#	maybe load description as needed as well
+#need to modify and make this the primary way of passing information
+class Event:
+	def __init__(self):
+		self.category = None
+		self.id = None
+		self.title = None
+		self.source = None
+		self.desc_link = None
+		self.description =  None
+
+	def is_valid_event(self):
+		if (self.category is not None and
+			self.id is not None and
+			self.title is not None and
+			self.source is not None and
+			self.desc_link is not None and
+			self.description is not None):
+			return True
+		return False
+
+	def __str__(self):
+		return (
+			"\ncategory: " + str(self.category)+
+			"\nid: " + str(self.id)+
+			"\ntitle: " + str(self.title)+
+			"\nsouurce: " + str(self.source)+
+			"\ndesc_link: " + str(self.desc_link)+
+			"\ndescription: " + str(self.description)
+		)
+
+def get_pg_items(gallery):
+	return gallery.find_all("div",{"class":"pg-item"})
+
+def get_page_links(gallery):
+	page_links = []
+	a_list = gallery.find_all("a")
+	for a in a_list:
+		href = a.get("href")
+		data_page = a.get("data-page")
+		if data_page is not None and href is not None:
+			page_links.append(href)
+
+	return page_links
+
+#sets -category, -title, -id, -source, -description, -desc_link
+def set_event(pg_item, category):
+	event = Event()
+
+	if category is not None:
+		event.category = category
+	
+	event.id = pg_item.get("data-itemid")
+	if event.id is not None:
+		event.title = pg_item.find("a").get("title")
+		event.desc_link = pg_item.find("a").get("href")
+		event.source = pg_item.find("img").get("src")
+		if event.desc_link is not None:
+			event.description = prepare_description(event.desc_link)
+	
+	if event.is_valid_event():
+		return event
+
+	return None
+	
 start_time = time.time()
 
 base_url = 'https://www.adkfilmfestival.org/festival/'
@@ -49,83 +109,48 @@ def prepare_description(description_url):
 	request = requests.get(description_url)
 	soup = BeautifulSoup(request.text,'html.parser')
 	desc_html = soup.find_all("p")
-
 	result = ""
 	for desc in desc_html:
 		part = desc.getText()
 		if part is not None:
 			result += " " + part
+
 	return result
 
-#returns a list of all image sources
-def find_sources(gallery):
-	sources = []
-	gallery_sources = gallery.find_all("img")
-	for image in gallery_sources:
-		if (image is not None):
-			sources.append(image.get("src"))
-	return sources
-
-def scrape_page(url, categories, titles, id_list, links, sources, descriptions, category):
-	request = requests.get(url)
-	soup = BeautifulSoup(request.text,"html.parser")
-	gallery = soup.find(id="portfolio-gallery")
-	gallery_links = gallery.find_all("a")
-	sources += find_sources(gallery)
-	for image in gallery_links:
-		title = image.get("title")
-		link = image.get("href")
-		if title is not None:
-			titles.append(title)
-			id_list.append(str(hash(title)))
-			categories.append(category)
-
-		if link is not None:
-			links.append(link)
-
-		description = prepare_description(link)
-
-		if description is not None:
-			descriptions.append(description)
-		
-
-#takes data from a single page and feeds it into a 6 tuple of arrays
-def parse_gallery_page(url):
-	request = requests.get(url)
+def scrape_page(page_url, events):
+	request = requests.get(page_url)
 	soup = BeautifulSoup(request.text,"html.parser")
 	gallery = soup.find(id="portfolio-gallery")
 	full_width = soup.find(id="full-width")
-	current_category = full_width.find_all("a",{"class":"current"})[0].get("data-cat")
-	category = prepare_category(current_category)
+	pg_items = get_pg_items(gallery)
+	raw_category = full_width.find_all("a",{"class":"current"})[0].get("data-cat")
+	parsed_category = prepare_category(raw_category)
+	for item in pg_items:
+		event = set_event(item, parsed_category)
+		if event is not None:
+			events.append(event)
+	return
 
-	gallery_pages = gallery.find_all("a")
-	page_links = []
-	for i in range(len(gallery_pages)):
-		item = gallery_pages[i]
-		page = item.get("data-page")
-		if page is not None:
-			page_links.append(item.get("href"))
-
-	categories = []
-	titles = []
-	id_list = []
-	links = []
-	sources = []
-	descriptions = []
+def scrape_category(category_url, events):
+	request = requests.get(category_url)
+	soup = BeautifulSoup(request.text,"html.parser")
+	gallery = soup.find(id="portfolio-gallery")
+	page_links = get_page_links(gallery)
+	page_threads = []
 
 	if len(page_links) == 0:
-		page_links = [url]
+		page_links = [category_url]
 
-	threads = []
 	for url in page_links:
-		thread = threading.Thread(target=scrape_page,args=(url, categories, titles, id_list, links, sources, descriptions, category))
+		#print(url)
+		thread = threading.Thread(target=scrape_page, args=(url,events))
 		thread.start()
-		threads.append(thread)
+		page_threads.append(thread)
 
-	for thread in threads:
+	for thread in page_threads:
 		thread.join()
 
-	return (categories, titles, id_list, links, sources, descriptions)
+	return
 
 cat_request = requests.get(base_url)
 cat_soup = BeautifulSoup(cat_request.text,"html.parser")
@@ -135,38 +160,39 @@ category_links = find_categories(cat_width_a)
 categories = []
 titles = []
 id_list = []
-links = []
+desc_links = []
 sources = []
 descriptions = []
-pages = [None for x in range(500)]
+pages = []
+events = []
 
-def scrape_categories(i, url, pages):
-	pages[i] = parse_gallery_page(url)
-
-category_threads = []
-for i in range(len(category_links)):
-	url = category_links[i]
-	thread = threading.Thread(target=scrape_categories, args=(i, url, pages))
+threads = []
+for url in category_links:
+	thread = threading.Thread(target=scrape_category, args=(url,events))
 	thread.start()
-	category_threads.append(thread)
+	threads.append(thread)
 
-for thread in category_threads:
+for thread in threads:
 	thread.join()
 
 num_pages = 0
-cats = set()
-for page in pages:
-	if page is not None:
-		num_pages+=1
-		categories += set_categories(page[0])
-		titles += page[1]
-		id_list += page[2]
-		links += page[3]
-		sources += page[4]
-		descriptions += page[5]
+category_set = set()
 
-for c in categories:
-	cats.add(c)
+for event in events:
+	categories.append(event.category)
+	titles.append(event.title)
+	id_list.append(event.id)
+	sources.append(event.source)
+	desc_links.append(event.desc_link)
+	descriptions.append(event.description)
+
+for category in categories:
+	category_set.add(category)
+
+category_arr_from_set = []
+for category in category_set:
+	category_arr_from_set.append(category)
+
 
 elapsed_time = time.time() - start_time
 print("ELAPSED TIME: ", time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
@@ -176,10 +202,11 @@ web_scrape = Flask(__name__)
 @web_scrape.route('/',methods=["GET"])
 def ping():
 	return jsonify({
+		"category_set": category_arr_from_set,
 		"categories": categories,
 		"titles": titles,
 		"id_list": id_list,
-		"links": links,
+		"links": desc_links,
 		"sources": sources,
 		"descriptions": descriptions,
 	})

@@ -117,16 +117,9 @@ class CategorySidebar extends Component {
 
 const DrawerNavigator = createDrawerNavigator({
   Stack: createStackNavigator({
-    HomeView: {
-      screen: HomeView,
-      navigationOptions: {
-        title: "Home",
-      },
-    },
-    Switch: createSwitchNavigator({
-      InfoSchedule,
-      Schedule,
-    }),
+    HomeView,
+    InfoSchedule,
+    Schedule,
   }),
 }, {
   contentComponent: CategorySidebar,

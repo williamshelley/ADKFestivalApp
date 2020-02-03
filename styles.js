@@ -97,6 +97,13 @@ const styles = {
         backgroundColor:"rgba(255,255,255,0.3)",
         borderWidth: thinBorder,
         borderColor: "rgba(255,255,255,0.3)",
+    },
+    scheduleScrollView:{
+        backgroundColor:"gray",
+        flex: 1,
+        scrollingDirection:"horizontal",
+        justifyContent: "center",
+        alignContent: "center",
     }
 };
 

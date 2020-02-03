@@ -2,6 +2,7 @@ import React,{Component} from 'react';
 import {SafeAreaView,View,Text,Image,YellowBox,TouchableOpacity} from 'react-native';
 import styles from '../styles';
 import MyDrawerButton from '../components/MyDrawerButton';
+import MyScheduleButton from '../components/MyScheduleButton';
 import { ScrollView } from 'react-native-gesture-handler';
 
 YellowBox.ignoreWarnings(["Warning: Failed prop type: Invalid prop `source` supplied to `Image`."]);
@@ -12,12 +13,8 @@ export default class InfoSchedule extends Component{
             drawerLabel:"InfoSchedule",
             headerTitle: navigation.state.routeName,
             headerRight: () => (
-                <TouchableOpacity 
-                    style={[styles.roundDrawerBtn, {justifyContent:"center",}]} 
-                    onPress={() => navigation.navigate("Schedule")}>
-                    <Text>Hello</Text>
-                </TouchableOpacity>
-              ),
+                <MyScheduleButton navigation={navigation} />
+            ),
         };
     };
 
