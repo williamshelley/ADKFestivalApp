@@ -11,6 +11,7 @@ const styles = {
         flex:1,
         justifyContent: "center",
         alignItems:"center",
+        backgroundColor:"black",
     },
     descriptionText:{
         fontFamily: "Times New Roman",
@@ -84,19 +85,23 @@ const styles = {
         resizeMode:"stretch",
     },
     imgText:{
-        backgroundColor:"rgba(255,255,255,0.3)",
-        color:"black",
+        backgroundColor:"rgba(0,0,0,0.5)",
+        color:"white",
         fontSize: 15,
         fontFamily: imageFont,
         //borderRadius: 10,
         borderWidth: thinBorder,
-        borderColor: "rgba(255,255,255,0.3)",
+        borderColor: "rgba(0,0,0,0.5)",
     },
     imgTextWrapper:{
         //borderRadius:10,
-        backgroundColor:"rgba(255,255,255,0.3)",
+        backgroundColor:"rgba(0,0,0,0.3)",
         borderWidth: thinBorder,
-        borderColor: "rgba(255,255,255,0.3)",
+        borderColor: "rgba(128,128,128,0.3)",
+        position: 'absolute', 
+        alignItems: 'flex-start',
+        justifyContent: 'flex-end', 
+        top: 0, left: 0, right: 0, bottom: 0, 
     },
     scheduleScrollView:{
         backgroundColor:"gray",
@@ -104,6 +109,40 @@ const styles = {
         scrollingDirection:"horizontal",
         justifyContent: "center",
         alignContent: "center",
+    },
+    menuSidebar:{
+        backgroundColor:"rgba(0,0,0,0.8)",
+        alignItems:"center",
+        justifyContent:"flex-start",
+    },
+    menuSidebarBtn:{
+        width:250,
+        height:45,
+        backgroundColor:"rgba(0,0,0,0.5)",
+        borderColor:"red",
+        alignItems:"center",
+        justifyContent:"center",
+        borderWidth:thinBorder,
+        paddingLeft:10,
+        paddingRight:10,
+        paddingBottom:10,
+        paddingTop:10,
+    },
+    headerText:{
+        color:"red",
+    },
+    headerBar:{
+        backgroundColor:"black",
+    },
+    headerBtn:{
+        width: StatusBar.currentHeight,
+        height: StatusBar.currentHeight,
+        paddingLeft:10,
+        paddingRight:10,
+        paddingTop:10,
+        paddingBottom:10,
+        alignItems:"center",
+        justifyContent:"center",
     }
 };
 

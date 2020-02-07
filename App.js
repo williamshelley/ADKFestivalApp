@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, SafeAreaView, Text, TouchableOpacity, FlatList } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createStackNavigator } from 'react-navigation-stack';
@@ -20,15 +20,15 @@ class CategorySidebar extends Component {
     }
   }
 
-  setHomeData = ( nextTitle ) =>{
+  setHomeData = (nextTitle) => {
     console.log("next screen title: ", nextTitle);
     let HOME_DATA = []
-    for (var i = 0; i < this.state.allData.length; i++){
-      if (this.state.allData[i].category == nextTitle){
+    for (var i = 0; i < this.state.allData.length; i++) {
+      if (this.state.allData[i].category == nextTitle) {
         HOME_DATA.push(this.state.allData[i]);
       }
     }
-    this.setState({homeData: HOME_DATA});
+    this.setState({ homeData: HOME_DATA });
     return HOME_DATA;
   }
 
@@ -36,12 +36,7 @@ class CategorySidebar extends Component {
     if (title != null) {
       return (
         <TouchableOpacity
-          style={[styles.roundButton, {
-            borderWidth: 2,
-            borderColor: "black",
-            alignItems: "center",
-            justifyContent: "center"
-          }]}
+          style={styles.menuSidebarBtn}
           onPress={() => {
             navigation.navigate("HomeView", { title: title, data: this.setHomeData(title) });
             navigation.toggleDrawer();
@@ -50,7 +45,7 @@ class CategorySidebar extends Component {
         </TouchableOpacity>
       );
     }
-    else{
+    else {
       return null;
     }
   }
@@ -87,20 +82,22 @@ class CategorySidebar extends Component {
           DATA[iter].category = cat;
           iter++;
         })
-        this.setState({ data: DATA, allData: ALL_DATA });
+        this.setState({ data: DATA, allData: ALL_DATA, homeData: ALL_DATA });
       })
       .catch((error) => {
         console.error(error);
       });
   }
 
+
+
   render() {
     return (
-      <SafeAreaView style={[{ alignItems: "center", justifyContent: "flex-start" }]}>
+      <SafeAreaView style={styles.menuSidebar}>
         {
           <FlatList
             data={this.state.data}
-            contentContainerStyle={{ flex: 2, justifyContent: "space-evenly" }}
+            contentContainerStyle={{ flex: 1, justifyContent: "space-evenly" }}
             numColumns={1}
             renderItem={({ item }) => <this.CategoryButton
               navigation={this.props.navigation}
@@ -114,15 +111,22 @@ class CategorySidebar extends Component {
   }
 };
 
-
-const DrawerNavigator = createDrawerNavigator({
-  Stack: createStackNavigator({
+const StackNavigator = createStackNavigator({
     HomeView,
     InfoSchedule,
     Schedule,
-  }),
+  },
+);
+
+const DrawerNavigator = createDrawerNavigator({
+  StackNavigator,
 }, {
   contentComponent: CategorySidebar,
+});
+
+const SwitchNavigator = createSwitchNavigator({
+  DrawerNavigator,
+  Schedule,
 });
 
 const App = createAppContainer(DrawerNavigator);

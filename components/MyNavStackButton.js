@@ -9,16 +9,16 @@ export default class MyNavStackButton extends Component{
         return(      
         <SafeAreaView>
             <MyButton
-            style={styles.roundButton}
+            style={styles.headerBtn}
             onPress={()=>{
                 this.props.navigation.navigate(
                     this.props.target, 
                     {   
                         title: this.props.title, 
                         data: this.props.data, 
-                        source: this.props.source});
+                        source: this.props.source},{title:this.props.eventName});
                     }}
-            imageStyle={styles.roundButton}
+            imageStyle={styles.headerBtn}
             />
         </SafeAreaView>);
     }

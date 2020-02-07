@@ -33,7 +33,7 @@ class Event:
 			"\ncategory: " + str(self.category)+
 			"\nid: " + str(self.id)+
 			"\ntitle: " + str(self.title)+
-			"\nsouurce: " + str(self.source)+
+			"\nsource: " + str(self.source)+
 			"\ndesc_link: " + str(self.desc_link)+
 			"\ndescription: " + str(self.description)
 		)

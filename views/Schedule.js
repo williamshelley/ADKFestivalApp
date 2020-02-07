@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import { SafeAreaView, View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Image, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import styles from '../styles';
+import MyScheduleButton from '../components/MyScheduleButton';
 
 const DATA = [
 {
@@ -19,6 +20,14 @@ const DATA = [
 ];
 
 export default class Schedule extends Component{
+
+    static navigationOptions = ({navigation}) => {
+        return{
+            headerTitle: "",
+            headerTitleStyle: styles.headerText,
+            headerStyle:styles.headerBar,
+        };
+    };
 
     SchedLocation = ({ text }) => {
         if (text != null){

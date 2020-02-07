@@ -10,10 +10,11 @@ YellowBox.ignoreWarnings(["Warning: Failed prop type: Invalid prop `source` supp
 export default class InfoSchedule extends Component{
     static navigationOptions = ({ navigation }) => {
         return {
-            drawerLabel:"InfoSchedule",
-            headerTitle: navigation.state.routeName,
+            headerTitle: navigation.getParam("title","InfoSchedule"),
+            headerTitleStyle: styles.headerText,
+            headerStyle: styles.headerBar,
             headerRight: () => (
-                <MyScheduleButton navigation={navigation} />
+                <MyScheduleButton navigation={navigation} target="Schedule"/>
             ),
         };
     };

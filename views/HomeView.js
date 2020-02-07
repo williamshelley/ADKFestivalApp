@@ -25,14 +25,14 @@ export default class HomeView extends Component {
             data: data,
             source: source,
             description: description
-          })}>
+          },{title:title})}>
           <Image style={[styles.eventItems]} source={{ uri: source }} />
           {
-          /*
-          <View style={styles.imgTextWrapper, [{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-start', alignItems: 'center' }]}>
+        
+          <View style={styles.imgTextWrapper}>
             <Text style={styles.imgText}>{title}</Text>
           </View>
-          */
+          
           }
         </TouchableOpacity>
       );
@@ -42,23 +42,30 @@ export default class HomeView extends Component {
     }
   }
 
-  static navigationOptions = ({ navigation }) => {
+  HeaderBtn = () =>{
 
+  };
+
+  static navigationOptions = ({ navigation }) => {
+    let headerTitle = navigation.getParam("title", "Home");
     return {
-      headerTitle: navigation.getParam("title", "Bad Title"),
+      headerTitle: headerTitle,
+      headerTitleStyle: styles.headerText,
+      headerStyle:styles.headerBar,
       headerLeft: () => (
         <MyDrawerButton navigation={navigation} />
       ),
       headerRight: () => (
-        <MyScheduleButton navigation={navigation} />
+        //<HeaderButtons 
+        //<MyDrawerButton navigation={navigation} style={{alignSelf: "center"}}/>
+        <MyScheduleButton navigation={navigation} target="Schedule" headerTitle={headerTitle}/>
       ),
     }
   };
 
   render() {
     let data = this.props.navigation.getParam("data", null);
-    //let title = this.props.navigation.getParam("title", null);
-    
+    if (data != null){
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: "black" }]}>
         <FlatList
@@ -75,5 +82,13 @@ export default class HomeView extends Component {
         />
       </SafeAreaView>
     );
+    }
+    else{
+      return(
+        <SafeAreaView style={[styles.container,{backgroundColor:"powderblue"}]}>
+
+        </SafeAreaView>
+      );
+    }
   }
 }
