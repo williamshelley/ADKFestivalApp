@@ -5,19 +5,66 @@ const screenHeight = Math.round(Dimensions.get('window').height);
 const numInfoSections = 3;
 const thinBorder = 2;
 const imageFont = "Times New Roman";
+const infoTitleHeight = 44;
+const tabBarHeight = 25;
 
 const styles = {
+    windowWidth: Math.round(Dimensions.get('window').height),
+    windowHeight: Math.round(Dimensions.get('window').height),
+    infoImgHeight: screenHeight / numInfoSections,
+    infoTitleHeight: infoTitleHeight,
+    tabBarHeight:tabBarHeight,
     container:{
         flex:1,
         justifyContent: "center",
         alignItems:"center",
         backgroundColor:"black",
     },
+    middleTabBar:{
+        backgroundColor: "rgba(45,45,45,1)",
+        position:"relative",
+    },
+    tabBtn:{
+        flex:1,
+        alignItems:"center",
+        justifyContent:"center",
+        backgroundColor: "rgba(45,45,45,1)",
+        borderColor:"white",
+        borderWidth:0.5,
+    },
+    imgTitle:{
+        height: infoTitleHeight,
+        flexDirection:"row",
+        backgroundColor: "black",
+        borderWidth: 0.5,
+        borderColor: "white",
+        alignContent:"center",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     descriptionText:{
         fontFamily: "Times New Roman",
         fontSize: 20,
         padding: 10,
-        color: "black",
+        color: "white",
+        
+    },
+    categoryPicker:{
+        width:screenWidth,
+        height:screenWidth / 2.5,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems:"center",
+    },
+    categoryItem:{
+        width:screenWidth/1.5,
+        height:screenHeight/20,
+        backgroundColor:"rgba(0,0,0,0.8)",
+        borderColor:"red",
+        borderWidth:thinBorder,
+        alignItems:"center",
+        justifyContent:"center",
+        margin:5,
     },
     eventItems:{
         width:screenWidth / 2,
@@ -26,7 +73,7 @@ const styles = {
         borderRadius:10,
         borderWidth: thinBorder,
         borderColor:"black",
-        resizeMode:"contain",
+        resizeMode:"stretch",
     },
     testScreenView:{
         flex:1,
@@ -53,6 +100,8 @@ const styles = {
     medWhiteText:{
         color:"white",
         fontSize:20,
+        textAlign:"center",
+        padding:10,
     },
     bigWhiteText:{
         color:"white",
@@ -69,19 +118,20 @@ const styles = {
         alignSelf: 'center',
     },
     descriptionView:{
-        flex:0,
-        backgroundColor: "powderblue",
+        flex:1,
+        alignSelf:"center",
+        backgroundColor: "black",
         width: screenWidth,
         height: screenHeight / numInfoSections,
-        borderWidth: thinBorder,
-        borderColor: "black",
+        borderWidth: 0.5,
+        borderColor: "white",
     },
     infoImgView:{
+        alignSelf:"center",
         width:screenWidth,
         height:screenHeight / numInfoSections,
         borderColor:"black",
         borderWidth: thinBorder,
-        borderRadius:5,
         resizeMode:"stretch",
     },
     imgText:{
@@ -93,6 +143,7 @@ const styles = {
         borderWidth: thinBorder,
         borderColor: "rgba(0,0,0,0.5)",
     },
+
     imgTextWrapper:{
         //borderRadius:10,
         backgroundColor:"rgba(0,0,0,0.3)",
@@ -111,28 +162,31 @@ const styles = {
         alignContent: "center",
     },
     menuSidebar:{
+        flex:1,
+        flexDirection:"row",
         backgroundColor:"rgba(0,0,0,0.8)",
         alignItems:"center",
         justifyContent:"flex-start",
     },
     menuSidebarBtn:{
-        width:250,
-        height:45,
+        flex:1,
+        flexDirection:"row",
         backgroundColor:"rgba(0,0,0,0.5)",
         borderColor:"red",
         alignItems:"center",
         justifyContent:"center",
         borderWidth:thinBorder,
-        paddingLeft:10,
-        paddingRight:10,
-        paddingBottom:10,
-        paddingTop:10,
+        padding:10,
+        margin:10,
     },
     headerText:{
         color:"red",
     },
     headerBar:{
         backgroundColor:"black",
+    },
+    headerBtnText:{
+        color:"white",
     },
     headerBtn:{
         width: StatusBar.currentHeight,

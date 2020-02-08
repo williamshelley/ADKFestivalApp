@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, SafeAreaView, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Dimensions, SafeAreaView, Text, TouchableOpacity, FlatList,ImageBackground } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createStackNavigator } from 'react-navigation-stack';
@@ -9,39 +9,46 @@ import HomeView from './views/HomeView';
 import Schedule from './views/Schedule';
 import styles from './styles';
 
+const screenWidth = Math.round(Dimensions.get('window').width);
+
+const DATA=[
+  {
+    category: "Program",
+    id: "Program",
+    data: null,
+  },
+  {
+    category: "Schedule",
+    id: "Schedule",
+    data: null,
+  },
+  {
+    category: "Map",
+    id: "Map",
+    data: null,
+  }
+];
+
 class CategorySidebar extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      data: null,
-      homeData: null,
-      allData: null,
+      data: DATA,
     }
   }
 
-  setHomeData = (nextTitle) => {
-    console.log("next screen title: ", nextTitle);
-    let HOME_DATA = []
-    for (var i = 0; i < this.state.allData.length; i++) {
-      if (this.state.allData[i].category == nextTitle) {
-        HOME_DATA.push(this.state.allData[i]);
-      }
-    }
-    this.setState({ homeData: HOME_DATA });
-    return HOME_DATA;
-  }
+  
 
-  CategoryButton = ({ navigation, title }) => {
+  SidebarButton = ({ navigation, title }) => {
     if (title != null) {
       return (
         <TouchableOpacity
           style={styles.menuSidebarBtn}
           onPress={() => {
-            navigation.navigate("HomeView", { title: title, data: this.setHomeData(title) });
-            navigation.toggleDrawer();
+            navigation.navigate(title);
           }}>
-          <Text style={styles.medWhiteText}>{title}</Text>
+          <Text style={[styles.medWhiteText,{}]}>{title}</Text>
         </TouchableOpacity>
       );
     }
@@ -50,63 +57,25 @@ class CategorySidebar extends Component {
     }
   }
 
-  componentDidMount() {
-    fetch('http://127.0.0.1:5000/', {
-      method: 'GET',
-    })
-      .then((response) => response.json())
-      .then((responseJson) => {
-        let DATA = [];
-        let ALL_DATA = [];
-        let CATS = new Set();
-        for (var i = 0; i < responseJson.sources.length; i++) {
-          CATS.add(responseJson.categories[i]);
-          ALL_DATA.push({
-            category: responseJson.categories[i],
-            title: responseJson.titles[i],
-            id: responseJson.id_list[i],
-            //links: responseJson.links[i]
-            source: responseJson.sources[i],
-            description: responseJson.descriptions[i],
-          })
-          if (DATA.length < CATS.size) {
-            DATA.push({
-              id: String(i * Math.random()) + "$%^",
-              category: responseJson.categories[i],
-            });
-          }
-        }
-        var iter = 0;
-        CATS.forEach(cat => {
-          DATA[iter].id = cat;
-          DATA[iter].category = cat;
-          iter++;
-        })
-        this.setState({ data: DATA, allData: ALL_DATA, homeData: ALL_DATA });
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-
-
-
   render() {
     return (
       <SafeAreaView style={styles.menuSidebar}>
-        {
+        
+          <ImageBackground source={require("./images/swan.jpg")} style={styles.container}>
           <FlatList
             data={this.state.data}
-            contentContainerStyle={{ flex: 1, justifyContent: "space-evenly" }}
+            contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
             numColumns={1}
-            renderItem={({ item }) => <this.CategoryButton
+            renderItem={({ item }) => <this.SidebarButton
               navigation={this.props.navigation}
               title={item.category}
               data={item.data} />}
             keyExtractor={item => item.id}
           />
-        }
+        
+        </ImageBackground>
       </SafeAreaView>
+      
     );
   }
 };
@@ -115,6 +84,16 @@ const StackNavigator = createStackNavigator({
     HomeView,
     InfoSchedule,
     Schedule,
+  },{
+    defaultNavigationOptions:
+      navigationOptions = ({navigation}) => {
+        return{
+          headerStyle: styles.headerBar,
+          headerTitle: "",
+          headerBackTitle:"",
+          headerTintColor:"white",
+      };
+    },
   },
 );
 
@@ -122,6 +101,8 @@ const DrawerNavigator = createDrawerNavigator({
   StackNavigator,
 }, {
   contentComponent: CategorySidebar,
+  drawerWidth: screenWidth / 2,
+
 });
 
 const SwitchNavigator = createSwitchNavigator({
