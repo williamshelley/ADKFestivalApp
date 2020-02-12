@@ -4,7 +4,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createStackNavigator } from 'react-navigation-stack';
 import MyNavStackButton from './components/MyNavStackButton';
-import InfoSchedule from './views/InfoSchedule';
+import InfoSchedule from './views/Info';
 import HomeView from './views/HomeView';
 import Schedule from './views/Schedule';
 import styles from './styles';
@@ -101,17 +101,11 @@ const DrawerNavigator = createDrawerNavigator({
   StackNavigator,
 }, {
   contentComponent: CategorySidebar,
-  drawerWidth: screenWidth / 2,
+  //drawerWidth: screenWidth / 2,
 
-});
-
-const SwitchNavigator = createSwitchNavigator({
-  DrawerNavigator,
-  Schedule,
 });
 
 const App = createAppContainer(DrawerNavigator);
-
 
 
 export default App;

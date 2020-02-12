@@ -176,7 +176,8 @@ const styles = {
         alignItems:"center",
         justifyContent:"center",
         borderWidth:thinBorder,
-        padding:10,
+        paddingLeft:50,
+        paddingRight:50,
         margin:10,
     },
     headerText:{
@@ -197,7 +198,40 @@ const styles = {
         paddingBottom:10,
         alignItems:"center",
         justifyContent:"center",
-    }
+    },
+    sectionText:{
+        flex:1,
+        textAlign:"center",
+        padding:5,
+        color:"red",
+        fontSize:20,
+    },
+    sectionContainer:{
+        width:screenWidth/2,
+        height:50,
+        backgroundColor:"rgba(0,0,255,0.5)",
+        borderWidth: 0.5,
+        borderColor: "white",
+        alignContent: "center",
+        margin: 5,
+    },
+    sidebarSectionContainer:{
+        width:screenWidth/6,
+        height:50,
+        backgroundColor:"rgba(255,0,255,0.5)",
+        borderWidth: 0.5,
+        borderColor: "white",
+        alignContent: "center",
+        marginRight: 10, marginLeft: 10, marginBottom: 5, marginTop: 5,
+    },
+    sectionData:{
+        flex:1,
+        textAlign:"center",
+        padding:5,
+        color:"white",
+        fontSize:15,
+    },
+
 };
 
 export default styles;

@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image, YellowBox, TouchableOpacity, StatusBar } from 'react-native';
 import styles from '../styles';
-import MyDrawerButton from '../components/MyDrawerButton';
-import MyScheduleButton from '../components/MyScheduleButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createAppContainer } from 'react-navigation';
-import { createBottomTabNavigator, createMaterialTopTabNavigator } from 'react-navigation-tabs';
-import { useHeaderHeight } from 'react-navigation-stack';
-import { isThisTypeNode } from 'typescript';
-
-YellowBox.ignoreWarnings(["Warning: Failed prop type: Invalid prop `source` supplied to `Image`."]);
+import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 class InfoSchedule extends Component {
     render() {

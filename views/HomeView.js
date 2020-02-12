@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import styles from '../styles';
 import MyDrawerButton from '../components/MyDrawerButton';
-import MyScheduleButton from '../components/MyScheduleButton';
 
 const NUM_COLUMNS = 2;
 
@@ -34,7 +33,7 @@ export default class HomeView extends Component {
 
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
-    let headerTitle = navigation.getParam("headerTitle", "Home");
+    let headerTitle = navigation.getParam("headerTitle", "All");
     return {
       headerTitle: headerTitle,
       headerTitleStyle: styles.headerText,
@@ -78,25 +77,17 @@ export default class HomeView extends Component {
           })
           if (DATA.length < CATS.size) {
             DATA.push({
-              id: String(i * Math.random()) + "$%^",
+              id: responseJson.id_list[i]+responseJson.categories[i],
               category: responseJson.categories[i],
             });
           }
         }
-        var iter = 0;
-        CATS.forEach(cat => {
-          DATA[iter].id = cat;
-          DATA[iter].category = cat;
-          iter++;
-        })
         this.setState({ categories: DATA, allData: ALL_DATA, homeData: ALL_DATA });
       })
       .catch((error) => {
         console.error(error);
       });
   };
-
-
 
   setHomeData = (nextTitle) => {
     console.log("next screen title: ", nextTitle);
@@ -207,6 +198,7 @@ export default class HomeView extends Component {
         <SafeAreaView style={styles.container}>
           <ImageBackground source={require("../images/swan.jpg")} style={styles.container}></ImageBackground>
           <this.Filter />
+          
           <FlatList
             data={data}
             contentContainerStyle={{ flex: 0 }}

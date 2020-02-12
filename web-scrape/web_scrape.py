@@ -181,7 +181,7 @@ category_set = set()
 for event in events:
 	categories.append(event.category)
 	titles.append(event.title)
-	id_list.append(event.id)
+	id_list.append(str(hash(event.id)))
 	sources.append(event.source)
 	desc_links.append(event.desc_link)
 	descriptions.append(event.description)
