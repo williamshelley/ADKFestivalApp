@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
-import { View, Dimensions, SafeAreaView, Text, TouchableOpacity, FlatList,ImageBackground } from 'react-native';
+import { 
+  SafeAreaView, Text, 
+  TouchableOpacity, 
+  FlatList,
+  ImageBackground 
+} from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createStackNavigator } from 'react-navigation-stack';
-import MyNavStackButton from './components/MyNavStackButton';
 import InfoSchedule from './views/Info';
 import HomeView from './views/HomeView';
-import Schedule from './views/Schedule';
+import MasterSchedule from './views/Schedule';
 import styles from './styles';
-
-const screenWidth = Math.round(Dimensions.get('window').width);
 
 const DATA=[
   {
     category: "Program",
     id: "Program",
+    route: "Program",
     data: null,
   },
   {
     category: "Schedule",
     id: "Schedule",
+    route: "MasterSchedule",
     data: null,
   },
   {
     category: "Map",
     id: "Map",
+    rout: "Map",
     data: null,
   }
 ];
@@ -40,15 +45,15 @@ class CategorySidebar extends Component {
 
   
 
-  SidebarButton = ({ navigation, title }) => {
-    if (title != null) {
+  SidebarButton = ({ navigation, dataItem }) => {
+    if (dataItem != null) {
       return (
         <TouchableOpacity
           style={styles.menuSidebarBtn}
           onPress={() => {
-            navigation.navigate(title);
+            navigation.navigate(dataItem.route);
           }}>
-          <Text style={[styles.medWhiteText,{}]}>{title}</Text>
+          <Text style={[styles.medWhiteText,{}]}>{dataItem.category}</Text>
         </TouchableOpacity>
       );
     }
@@ -68,8 +73,8 @@ class CategorySidebar extends Component {
             numColumns={1}
             renderItem={({ item }) => <this.SidebarButton
               navigation={this.props.navigation}
-              title={item.category}
-              data={item.data} />}
+              dataItem={item}
+              />}
             keyExtractor={item => item.id}
           />
         
@@ -83,7 +88,7 @@ class CategorySidebar extends Component {
 const StackNavigator = createStackNavigator({
     HomeView,
     InfoSchedule,
-    Schedule,
+    MasterSchedule,
   },{
     defaultNavigationOptions:
       navigationOptions = ({navigation}) => {
@@ -101,9 +106,12 @@ const DrawerNavigator = createDrawerNavigator({
   StackNavigator,
 }, {
   contentComponent: CategorySidebar,
-  //drawerWidth: screenWidth / 2,
-
 });
+
+const SwitchNavigator = createSwitchNavigator({
+  DrawerNavigator,
+  MasterSchedule,
+})
 
 const App = createAppContainer(DrawerNavigator);
 

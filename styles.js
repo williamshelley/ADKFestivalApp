@@ -14,15 +14,31 @@ const styles = {
     infoImgHeight: screenHeight / numInfoSections,
     infoTitleHeight: infoTitleHeight,
     tabBarHeight:tabBarHeight,
+    mutableScheduleKey: "@mutable_schedule_key",
     container:{
         flex:1,
         justifyContent: "center",
         alignItems:"center",
         backgroundColor:"black",
     },
+    locationDropDown:{
+        height: screenHeight / 20,
+        width: screenWidth,
+        justifyContent:"center",
+        alignItems:"center",
+        backgroundColor:"rgba(200,200,255,0.8)",
+    },
     middleTabBar:{
         backgroundColor: "rgba(45,45,45,1)",
         position:"relative",
+    },
+    topTabBar:{
+        height: screenHeight / 20,
+        width: screenWidth,
+        backgroundColor: "rgba(45,45,45,1)",
+        position:"relative",
+        justifyContent:"center",
+        alignItems:"center",
     },
     tabBtn:{
         flex:1,
@@ -55,6 +71,7 @@ const styles = {
         backgroundColor: "rgba(0,0,0,0.5)",
         justifyContent: "center",
         alignItems:"center",
+        
     },
     categoryItem:{
         width:screenWidth/1.5,
@@ -116,6 +133,8 @@ const styles = {
         height: 24,
         justifyContent: 'center',
         alignSelf: 'center',
+        backgroundColor: "black",
+        margin:10,
     },
     descriptionView:{
         flex:1,
@@ -231,7 +250,14 @@ const styles = {
         color:"white",
         fontSize:15,
     },
-
+    addScheduleBtn:{
+        borderRadius: 15,
+        justifyContent: "center",
+        alignItems:"center",
+        backgroundColor: "gray",
+        borderWidth: 1,
+        borderColor: "gray",
+    },
 };
 
 export default styles;
