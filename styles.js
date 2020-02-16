@@ -7,6 +7,10 @@ const thinBorder = 2;
 const imageFont = "Times New Roman";
 const infoTitleHeight = 44;
 const tabBarHeight = 25;
+const schedHeaderSectHeight = screenHeight / 14;
+const schedSectHeight = screenHeight / 10;
+const schedSectWidth = screenWidth / 3;
+const schedSidebarSectWidth = screenWidth / 6;
 
 const styles = {
     windowWidth: Math.round(Dimensions.get('window').height),
@@ -226,18 +230,36 @@ const styles = {
         fontSize:20,
     },
     sectionContainer:{
-        width:screenWidth/2,
-        height:50,
-        backgroundColor:"rgba(0,0,255,0.5)",
+        width:schedSectWidth,
+        height:schedSectHeight,
+        backgroundColor:"rgba(128,128,150,0.5)",
+        borderWidth: 0.5,
+        borderColor: "white",
+        alignContent: "center",
+        margin: 5,
+    },
+    headerSectionContainer:{
+        width:schedSectWidth,
+        height:schedHeaderSectHeight,
+        backgroundColor:"rgba(255,0,0,0.5)",
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",
         margin: 5,
     },
     sidebarSectionContainer:{
-        width:screenWidth/6,
-        height:50,
-        backgroundColor:"rgba(255,0,255,0.5)",
+        width:schedSidebarSectWidth,
+        height:schedSectHeight,
+        backgroundColor:"rgba(255,0,0,0.5)",
+        borderWidth: 0.5,
+        borderColor: "white",
+        alignContent: "center",
+        marginRight: 10, marginLeft: 10, marginBottom: 5, marginTop: 5,
+    },
+    cornerSectionConteiner:{
+        width: schedSidebarSectWidth,
+        height: schedHeaderSectHeight,
+        backgroundColor:"rgba(255,0,0,0.5)",
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",

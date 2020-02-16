@@ -8,6 +8,7 @@ import {
 import DropdownFilter from '../components/DropdownFilter';
 import IconButton from '../components/IconButton';
 import styles from '../styles';
+import AsynchStorage from '@react-native-community/async-storage';
 
 const HEADER_DATA = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const START_HOUR = 7;
@@ -24,9 +25,7 @@ export default class MasterSchedule extends Component {
             data: null,
             sidebarData: null,
             dropdownData: null,
-            headerData: null,
             yScrollPos: 0,
-            xScrollPos: 0,
             toggleFilter: false,
         };
     }
@@ -71,8 +70,10 @@ export default class MasterSchedule extends Component {
         let SIDEBAR_DATA = [{
             title: "",
             id: "-1",
-            hour: 0,
+            hour: -1,
             day: 0,
+            row:-1,
+            col:0,
         }];
         let SIDEBAR = this.createHourList(startHour, endHour);
         for (var i = 0; i < SIDEBAR.length; i++) {
@@ -81,6 +82,8 @@ export default class MasterSchedule extends Component {
                 title: SIDEBAR[i],
                 hour: i,
                 day: 0,
+                row: i,
+                col:0,
                 id: "Hour " + String(i),
             });
         }
@@ -98,13 +101,15 @@ export default class MasterSchedule extends Component {
         return DROPDOWN_DATA;
     }
 
-    prepareCurrentData(headerData, sidebarData, data) {
+    prepareBlankData(headerData, sidebarData) {
         let DATA = [];
         for (var i = 0; i < headerData.length; i++) {
             DATA.push({
                 title: headerData[i],
                 hour: -1,
                 day: -1,
+                row: -1,
+                col: -1,
                 id: headerData[i] + String(i + Math.random() * Math.random()),
             });
         }
@@ -117,35 +122,49 @@ export default class MasterSchedule extends Component {
                 title: title,
                 hour: hour,
                 day: day,
+                row: hour,
+                col: day,
                 id: title + String(i * Math.random() * Math.random()),
             });
         }
         return DATA;
     }
 
-    setCurrentDisplay = (nextPage) => {
+    storeData(targetKey, data, defaultData){
+        let DATA = (data != null && data != undefined) ? data : defaultData;
+        AsynchStorage.setItem(targetKey, JSON.stringify(DATA));
+    }
+    
+    updateData(targetKey, defaultData){
+        AsynchStorage.getItem(targetKey).then((data)=>{
+            let DATA = (data != null && data != undefined) ? JSON.parse(data) : defaultData;
+            this.setState({data: DATA});
+        });
+    }
 
-        let SIDEBAR_DATA = this.prepareSidebar(START_HOUR, END_HOUR)
-
-        let DROPDOWN_DATA = this.prepareDropdownFilter(LOCATION_DATA);
-
-        let DATA = this.prepareCurrentData(HEADER_DATA,SIDEBAR_DATA);
+    setCurrentDisplay = (nextPage, defaultData) => {
+        this.updateData(nextPage, defaultData);
 
         this.setState({
-            data: DATA,
             currentKey: nextPage,
-            sidebarData: SIDEBAR_DATA,
-            dropdownData: DROPDOWN_DATA,
             headerData: HEADER_DATA,
-        })
+        });
     }
 
     componentDidMount() {
-        this.setCurrentDisplay(LOCATION_DATA[0]);
+        let SIDEBAR_DATA = this.prepareSidebar(START_HOUR, END_HOUR);
+        let DROPDOWN_DATA = this.prepareDropdownFilter(LOCATION_DATA);
+        let DATA = this.prepareBlankData(HEADER_DATA, SIDEBAR_DATA);
+        this.setCurrentDisplay(LOCATION_DATA[0], DATA);
+
+        this.setState({
+            dropdownData: DROPDOWN_DATA,
+            sidebarData: SIDEBAR_DATA,
+        });
+
         this.props.navigation.setParams({
             toggleFilter: this.toggleFilter
         });
-
     }
 
     SchedItem = ({ eventItem, style }) => {
@@ -154,6 +173,12 @@ export default class MasterSchedule extends Component {
             useStyle = style;
         }
         if (eventItem != null) {
+            if (eventItem.hour < 0){
+                useStyle = styles.headerSectionContainer;
+            } 
+            if (eventItem.hour < 0 && eventItem.row < 0){
+                useStyle = styles.cornerSectionConteiner;
+            }
             return (
                 <TouchableOpacity
                     style={[useStyle, { alignItems: "center", alignSelf: "center", justifyContent: "center" }]}
@@ -163,6 +188,8 @@ export default class MasterSchedule extends Component {
                             title: this.state.currentKey + " " + String(xy),
                             hour: eventItem.hour,
                             day: eventItem.day,
+                            row: eventItem.hour,
+                            col: eventItem.day,
                         });
                     }}>
                     <View style={[useStyle, { alignItems: "center", alignSelf: "center", justifyContent: "center" }]}>
@@ -180,14 +207,20 @@ export default class MasterSchedule extends Component {
         return [item.day, item.hour];
     }
 
-    changeItem = (xcol, yrow, newElement) => {
+    changeItem = (xcol, yrow, newElement, shouldSetState = true) => {
         if (yrow >= 0) {
+            let DATA = this.state.data;
             let index = yrow * HEADER_DATA.length + xcol + HEADER_DATA.length;
-            let id = this.state.data[index].id;
-            this.state.data[index] = newElement;
-            this.state.data[index].id = id;
-            this.setState({ data: this.state.data })
+            let id = DATA[index].id;
+            DATA[index] = newElement;
+            DATA[index].id = id;
+            if (shouldSetState){
+                this.storeData(this.state.currentKey, DATA, this.state.data);
+                this.setState({ data: DATA });
+            }
+            return DATA;
         }
+        return null;
     }
 
     synchScroll = (event) => {
@@ -201,24 +234,14 @@ export default class MasterSchedule extends Component {
     };
 
     onFilterItemPress = (item) => {
-        this.state.data = this.state.data;
-        this.state.currentKey = item.category;
         this.toggleFilter();
+        this.setCurrentDisplay(item.category);
     }
 
     render() {
         return (
             <SafeAreaView style={[styles.container]}>
-                <Text style={[styles.bigWhiteText, { color: "white" }]}>Schedule</Text>
-                <TouchableOpacity
-                    style={styles.roundButton}
-                    onPress={() => {
-                        console.log("data:");
-                    }}>
-                    <View style={styles.roundButton}>
-                        <Text style={styles.bigWhiteText}>{this.state.currentKey}</Text>
-                    </View>
-                </TouchableOpacity>
+                <Text style={[styles.bigWhiteText, { color: "white" }]}>{this.state.currentKey} Schedule</Text>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <FlatList
                         data={this.state.sidebarData}
