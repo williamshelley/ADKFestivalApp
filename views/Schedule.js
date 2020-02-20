@@ -9,6 +9,7 @@ import DropdownFilter from '../components/DropdownFilter';
 import IconButton from '../components/IconButton';
 import styles from '../styles';
 import AsynchStorage from '@react-native-community/async-storage';
+import SpringEffect from '../components/SpringEffect';
 
 const HEADER_DATA = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 const START_HOUR = 7;
@@ -17,7 +18,6 @@ var LOCATION_DATA = ["New York", "Florida", "Colorado", "Narnia"];
 
 
 export default class MasterSchedule extends Component {
-
     constructor(props) {
         super(props);
 
@@ -72,8 +72,8 @@ export default class MasterSchedule extends Component {
             id: "-1",
             hour: -1,
             day: 0,
-            row:-1,
-            col:0,
+            row: -1,
+            col: 0,
         }];
         let SIDEBAR = this.createHourList(startHour, endHour);
         for (var i = 0; i < SIDEBAR.length; i++) {
@@ -83,7 +83,7 @@ export default class MasterSchedule extends Component {
                 hour: i,
                 day: 0,
                 row: i,
-                col:0,
+                col: 0,
                 id: "Hour " + String(i),
             });
         }
@@ -130,15 +130,15 @@ export default class MasterSchedule extends Component {
         return DATA;
     }
 
-    storeData(targetKey, data, defaultData){
+    storeData(targetKey, data, defaultData) {
         let DATA = (data != null && data != undefined) ? data : defaultData;
         AsynchStorage.setItem(targetKey, JSON.stringify(DATA));
     }
-    
-    updateData(targetKey, defaultData){
-        AsynchStorage.getItem(targetKey).then((data)=>{
+
+    updateData(targetKey, defaultData) {
+        AsynchStorage.getItem(targetKey).then((data) => {
             let DATA = (data != null && data != undefined) ? JSON.parse(data) : defaultData;
-            this.setState({data: DATA});
+            this.setState({ data: DATA });
         });
     }
 
@@ -173,10 +173,10 @@ export default class MasterSchedule extends Component {
             useStyle = style;
         }
         if (eventItem != null) {
-            if (eventItem.hour < 0){
+            if (eventItem.hour < 0) {
                 useStyle = styles.headerSectionContainer;
-            } 
-            if (eventItem.hour < 0 && eventItem.row < 0){
+            }
+            if (eventItem.hour < 0 && eventItem.row < 0) {
                 useStyle = styles.cornerSectionConteiner;
             }
             return (
@@ -214,7 +214,7 @@ export default class MasterSchedule extends Component {
             let id = DATA[index].id;
             DATA[index] = newElement;
             DATA[index].id = id;
-            if (shouldSetState){
+            if (shouldSetState) {
                 this.storeData(this.state.currentKey, DATA, this.state.data);
                 this.setState({ data: DATA });
             }
@@ -234,8 +234,19 @@ export default class MasterSchedule extends Component {
     };
 
     onFilterItemPress = (item) => {
-        this.toggleFilter();
         this.setCurrentDisplay(item.category);
+        this.toggleFilter();
+    }
+
+    onGridItemPress = (item) => {
+        let xy = this.getColRow(item);
+        this.changeItem(xy[0], xy[1], {
+            title: this.state.currentKey + " " + String(xy),
+            hour: item.hour,
+            day: item.day,
+            row: item.hour,
+            col: item.day,
+        });
     }
 
     render() {

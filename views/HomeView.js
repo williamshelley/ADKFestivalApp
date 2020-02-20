@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { SafeAreaView, FlatList, View } from 'react-native';
+import { SafeAreaView, FlatList, View, Animated } from 'react-native';
 import IconButton from '../components/IconButton';
 import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
 import styles from '../styles';
+import SpringEffect from '../components/SpringEffect';
 
 const NUM_COLUMNS = 2;
 
@@ -48,12 +49,11 @@ export default class HomeView extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
         let ALL_DATA = [];
-        let SET = responseJson.category_set;
         let CATEGORIES = []
-        for (var i = 0; i < responseJson.category_set.length; i++){
+        for (var i = 0; i < responseJson.category_set.length; i++) {
           CATEGORIES.push({
             category: responseJson.category_set[i],
-            id: String(i*Math.random()) + responseJson.category_set + String(i*Math.random()),
+            id: String(i * Math.random()) + responseJson.category_set + String(i * Math.random()),
           });
         }
         for (var i = 0; i < responseJson.sources.length; i++) {
@@ -104,7 +104,7 @@ export default class HomeView extends Component {
     if (this.state.currentData != null) {
       return (
         <SafeAreaView style={[styles.container]}>
-          <View style={{ flex: 0 }}>
+          <View style={{ flex: 0, alignItems: "center" }}>
             <FlatList
               data={this.state.currentData}
               contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
@@ -117,12 +117,12 @@ export default class HomeView extends Component {
                 />}
               keyExtractor={item => item.id}
             />
-            <DropdownFilter
-              toggleFilter={this.state.toggleFilter}
-              data={this.state.categories}
-              onFilterItemPress={this.onFilterItemPress}
-            />
           </View>
+          <DropdownFilter
+            data={this.state.categories}
+            toggleFilter={this.state.toggleFilter}
+            onFilterItemPress={this.onFilterItemPress}
+          />
         </SafeAreaView>
       );
     }

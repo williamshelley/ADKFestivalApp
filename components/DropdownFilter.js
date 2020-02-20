@@ -1,7 +1,8 @@
 import React from 'react';
-import { SafeAreaView, FlatList } from 'react-native';
+import { SafeAreaView, FlatList, ImageBackground, Animated, View } from 'react-native';
 import DrawerItem from './DrawerItem';
 import styles from '../styles';
+import SpringEffect from './SpringEffect';
 
 /**
  * Dropdown filter
@@ -11,29 +12,30 @@ import styles from '../styles';
  *  toggleFilter = { boolean }
  */
 export default class DropdownFilter extends React.Component {
-
     onFilterItemPress = (item) => {
         this.props.onFilterItemPress?.(item);
     }
 
     render() {
-        if (this.props.toggleFilter) {
-            let height = styles.windowHeight / 2;
-            let position = 0; //height / 3
-            return (
-                <SafeAreaView style={[styles.categoryPicker, {
-                    position: "absolute",
-                    height: height,
-                    top: position,
-                    bottom: 0,
-                    right: 0, left: 0,
-                }]}>
-                    {
+        let height = styles.windowHeight / 2;
+        return (
+            <SpringEffect duration={500} toggle={this.props.toggleFilter}>
+
+                <SafeAreaView
+                    style={styles.categoryPicker}>
+
+                    <ImageBackground
+                        source={require("../images/swan.jpg")}
+                        style={[styles.container, {
+                            height: height,
+                            flexDirection: "row",
+                        }]}>
+
                         <FlatList
                             showsVerticalScrollIndicator={true}
                             indicatorStyle="white"
                             data={this.props.data}
-                            contentContainerStyle={{ flex: 0, justifyContent: "center", padding: 10 }}
+                            contentContainerStyle={{ flex: 0, alignItems: "center", justifyContent: "center", padding: 10 }}
                             numColumns={1}
                             renderItem={({ item }) =>
                                 <DrawerItem
@@ -43,12 +45,12 @@ export default class DropdownFilter extends React.Component {
                             }
                             keyExtractor={item => item.id}
                         />
-                    }
+                    </ImageBackground>
+
                 </SafeAreaView>
-            );
-        }
-        else {
-            return null;
-        }
+            </SpringEffect>
+
+
+        );
     }
 }

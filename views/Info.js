@@ -2,19 +2,38 @@ import React, { Component } from 'react';
 import { SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native';
 import styles from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
-import { createAppContainer } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 
 class InfoSchedule extends Component {
     render() {
         let source = this.props.navigation.getParam('source', 'Bad Image');
+        let scheduleInfo = this.props.navigation.getParam('scheduleInfo', 
+        {
+            date: "MM/DD/YYYY",
+            month: "Month",
+            day: "Week Day",
+            startHour: "Start Hour",
+            endHour: "End Hour",
+            location: "Location",
+        });
         return (
             <SafeAreaView style={[styles.container, { justifyContent: "flex-start" }]}>
                 <Image style={styles.infoImgView} source={{ uri: source }} />
 
                 <View style={[styles.container, { flex: 0, flexDirection: "row", }]}>
-                    <View style={[styles.imgTitle, { flex: 1, flexDirection: "row" }]}>
-                        <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "left", paddingLeft: 10, }]}>Left</Text>
+                    <View style={[styles.imgTitle, { flex: 1, flexDirection: "column" }]}>
+                        <Text style={{ flex: 1, flexDirection: "row", 
+                            color:"white", fontSize:10,
+                            textAlign: "left", paddingLeft: 10, 
+                            }}>
+                                {scheduleInfo.day} {scheduleInfo.date}
+                        </Text>
+                        <Text style={{ flex: 1, flexDirection: "column", 
+                            color:"white", fontSize:10,
+                            textAlign: "left", paddingLeft: 10, 
+                            }}>
+                                {scheduleInfo.startHour} - {scheduleInfo.endHour}
+                        </Text>
                     </View>
 
                     <TouchableOpacity
@@ -29,12 +48,9 @@ class InfoSchedule extends Component {
                 </View>
 
                 <View style={[styles.imgTitle, { flex: 0, flexDirection: "row" }]}>
-                    <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "left", paddingLeft: 10, }]}>Left</Text>
+                    <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "left", paddingLeft: 10, }]}>{scheduleInfo.location}</Text>
                 </View>
 
-                <View style={[styles.imgTitle, { flex: 0, flexDirection: "row" }]}>
-                    <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "left", paddingLeft: 10, }]}>Left</Text>
-                </View>
             </SafeAreaView>
         );
     };

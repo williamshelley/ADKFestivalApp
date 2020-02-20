@@ -11,6 +11,24 @@ const schedHeaderSectHeight = screenHeight / 14;
 const schedSectHeight = screenHeight / 10;
 const schedSectWidth = screenWidth / 3;
 const schedSidebarSectWidth = screenWidth / 6;
+const theme = {
+    header: "black",
+    tab: "black",
+    container: "black",
+    icon: "rgba(0,0,0,0)",
+    overlay: "rgba(0,0,0,0.5)",
+    button: "rgba(0,0,0,0.8)",
+    clear: "rgba(0,0,0,0)",
+};
+
+
+/*
+.color-theme_swan-1-rgba { color: rgba(10, 106, 166, 1); }
+.color-theme_swan-2-rgba { color: rgba(7, 73, 115, 1); }
+.color-theme_swan-3-rgba { color: rgba(4, 41, 64, 1); }
+.color-theme_swan-4-rgba { color: rgba(1, 8, 13, 1); }
+.color-theme_swan-5-rgba { color: rgba(242, 242, 242, 1); }
+*/
 
 const styles = {
     windowWidth: Math.round(Dimensions.get('window').height),
@@ -23,35 +41,20 @@ const styles = {
         flex:1,
         justifyContent: "center",
         alignItems:"center",
-        backgroundColor:"black",
+        backgroundColor: theme.container,
     },
     locationDropDown:{
         height: screenHeight / 20,
         width: screenWidth,
         justifyContent:"center",
         alignItems:"center",
-        backgroundColor:"rgba(200,200,255,0.8)",
+        backgroundColor: theme.container,
     },
     middleTabBar:{
-        backgroundColor: "rgba(45,45,45,1)",
+        backgroundColor: theme.tab,
         position:"relative",
     },
-    topTabBar:{
-        height: screenHeight / 20,
-        width: screenWidth,
-        backgroundColor: "rgba(45,45,45,1)",
-        position:"relative",
-        justifyContent:"center",
-        alignItems:"center",
-    },
-    tabBtn:{
-        flex:1,
-        alignItems:"center",
-        justifyContent:"center",
-        backgroundColor: "rgba(45,45,45,1)",
-        borderColor:"white",
-        borderWidth:0.5,
-    },
+//used in Info View
     imgTitle:{
         height: infoTitleHeight,
         flexDirection:"row",
@@ -69,31 +72,47 @@ const styles = {
         color: "white",
         
     },
+
     categoryPicker:{
-        width:screenWidth,
-        height:screenWidth / 2.5,
-        backgroundColor: "rgba(0,0,0,0.5)",
+        flex:1,
+        backgroundColor: theme.overlay,
         justifyContent: "center",
         alignItems:"center",
-        
+        flexDirection:"row",
+        position:"absolute",
     },
-    categoryItem:{
+
+    menuItem:{
         width:screenWidth/1.5,
         height:screenHeight/20,
-        backgroundColor:"rgba(0,0,0,0.8)",
+        backgroundColor: theme.button,
         borderColor:"red",
         borderWidth:thinBorder,
         alignItems:"center",
         justifyContent:"center",
-        margin:5,
+        margin: 10,
     },
+
+    drawerItem: {
+        flex:1,
+        flexDirection:"row",
+        backgroundColor: theme.button,
+        borderColor:"red",
+        alignItems:"center",
+        justifyContent:"center",
+        borderWidth:thinBorder,
+        paddingLeft:50,
+        paddingRight:50,
+        margin:10,
+    },
+
     eventItems:{
         width:screenWidth / 2,
         height:screenWidth / 2-25,
         backgroundColor:"gray",
         borderRadius:10,
         borderWidth: thinBorder,
-        borderColor:"black",
+        borderColor: "black",
         resizeMode:"stretch",
     },
     testScreenView:{
@@ -128,22 +147,19 @@ const styles = {
         color:"white",
         fontSize:30,
     },
-    navBar:{
-        width:StatusBar.width,
-        height:StatusBar.currentHeight,
-    },
+
     icon: {
         width: 24,
         height: 24,
         justifyContent: 'center',
         alignSelf: 'center',
-        backgroundColor: "black",
+        backgroundColor: theme.icon,
         margin:10,
     },
     descriptionView:{
         flex:1,
         alignSelf:"center",
-        backgroundColor: "black",
+        backgroundColor: theme.container,
         width: screenWidth,
         height: screenHeight / numInfoSections,
         borderWidth: 0.5,
@@ -158,20 +174,17 @@ const styles = {
         resizeMode:"stretch",
     },
     imgText:{
-        backgroundColor:"rgba(0,0,0,0.5)",
+        backgroundColor: theme.overlay,
         color:"white",
         fontSize: 15,
         fontFamily: imageFont,
-        //borderRadius: 10,
-        borderWidth: thinBorder,
-        borderColor: "rgba(0,0,0,0.5)",
+        borderColor: theme.container,
     },
 
     imgTextWrapper:{
-        //borderRadius:10,
-        backgroundColor:"rgba(0,0,0,0.3)",
+        borderRadius:10,
         borderWidth: thinBorder,
-        borderColor: "rgba(128,128,128,0.3)",
+        borderColor: theme.container,
         position: 'absolute', 
         alignItems: 'flex-start',
         justifyContent: 'flex-end', 
@@ -187,27 +200,16 @@ const styles = {
     menuSidebar:{
         flex:1,
         flexDirection:"row",
-        backgroundColor:"rgba(0,0,0,0.8)",
+        backgroundColor: theme.header,
         alignItems:"center",
         justifyContent:"flex-start",
     },
-    menuSidebarBtn:{
-        flex:1,
-        flexDirection:"row",
-        backgroundColor:"rgba(0,0,0,0.5)",
-        borderColor:"red",
-        alignItems:"center",
-        justifyContent:"center",
-        borderWidth:thinBorder,
-        paddingLeft:50,
-        paddingRight:50,
-        margin:10,
-    },
+
     headerText:{
         color:"red",
     },
     headerBar:{
-        backgroundColor:"black",
+        backgroundColor: theme.header,
     },
     headerBtnText:{
         color:"white",
@@ -272,6 +274,7 @@ const styles = {
         color:"white",
         fontSize:15,
     },
+
     addScheduleBtn:{
         borderRadius: 15,
         justifyContent: "center",

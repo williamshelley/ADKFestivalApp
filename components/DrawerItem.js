@@ -11,7 +11,7 @@ import styles from '../styles';
 export default DrawerItem = ({ title, onPress }) => {
     return (
         <TouchableOpacity
-            style={styles.categoryItem}
+            style={styles.menuItem}
             onPress={onPress}>
             <Text style={styles.medWhiteText}>{title}</Text>
         </TouchableOpacity>

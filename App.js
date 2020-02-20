@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { 
-  SafeAreaView, Text, 
-  TouchableOpacity, 
+import {
+  SafeAreaView, Text,
+  TouchableOpacity,
   FlatList,
-  ImageBackground 
+  ImageBackground
 } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from "react-navigation-drawer";
@@ -13,7 +13,7 @@ import HomeView from './views/HomeView';
 import MasterSchedule from './views/Schedule';
 import styles from './styles';
 
-const DATA=[
+const DATA = [
   {
     category: "Program",
     id: "Program",
@@ -43,17 +43,17 @@ class CategorySidebar extends Component {
     }
   }
 
-  
+
 
   SidebarButton = ({ navigation, dataItem }) => {
     if (dataItem != null) {
       return (
         <TouchableOpacity
-          style={styles.menuSidebarBtn}
+          style={styles.drawerItem}
           onPress={() => {
             navigation.navigate(dataItem.route);
           }}>
-          <Text style={[styles.medWhiteText,{}]}>{dataItem.category}</Text>
+          <Text style={[styles.medWhiteText, {}]}>{dataItem.category}</Text>
         </TouchableOpacity>
       );
     }
@@ -65,8 +65,8 @@ class CategorySidebar extends Component {
   render() {
     return (
       <SafeAreaView style={styles.menuSidebar}>
-        
-          <ImageBackground source={require("./images/swan.jpg")} style={styles.container}>
+
+        <ImageBackground source={require("./images/swan.jpg")} style={styles.container}>
           <FlatList
             data={this.state.data}
             contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
@@ -74,32 +74,32 @@ class CategorySidebar extends Component {
             renderItem={({ item }) => <this.SidebarButton
               navigation={this.props.navigation}
               dataItem={item}
-              />}
+            />}
             keyExtractor={item => item.id}
           />
-        
+
         </ImageBackground>
       </SafeAreaView>
-      
+
     );
   }
 };
 
 const StackNavigator = createStackNavigator({
-    HomeView,
-    InfoSchedule,
-    MasterSchedule,
-  },{
-    defaultNavigationOptions:
-      navigationOptions = ({navigation}) => {
-        return{
-          headerStyle: styles.headerBar,
-          headerTitle: "",
-          headerBackTitle:"",
-          headerTintColor:"white",
+  HomeView,
+  InfoSchedule,
+  MasterSchedule,
+}, {
+  defaultNavigationOptions:
+    navigationOptions = ({ navigation }) => {
+      return {
+        headerStyle: styles.headerBar,
+        headerTitle: "",
+        headerBackTitle: "",
+        headerTintColor: "white",
       };
     },
-  },
+},
 );
 
 const DrawerNavigator = createDrawerNavigator({
