@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { SafeAreaView, FlatList, View, Animated } from 'react-native';
+import { SafeAreaView, FlatList, View } from 'react-native';
 import IconButton from '../components/IconButton';
 import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
 import styles from '../styles';
-import SpringEffect from '../components/SpringEffect';
 
 const NUM_COLUMNS = 2;
 
@@ -96,38 +95,35 @@ export default class HomeView extends Component {
   componentDidMount() {
     this.fetchData();
     this.props.navigation.setParams({
-      toggleFilter: this.toggleFilter
+      toggleFilter: this.toggleFilter,
     });
   }
 
   render() {
-    if (this.state.currentData != null) {
-      return (
-        <SafeAreaView style={[styles.container]}>
-          <View style={{ flex: 0, alignItems: "center" }}>
-            <FlatList
-              data={this.state.currentData}
-              contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
-              numColumns={NUM_COLUMNS}
-              renderItem={({ item }) =>
-                <EventCard
-                  navigation={this.props.navigation}
-                  data={item}
-                  target="InfoSchedule"
-                />}
-              keyExtractor={item => item.id}
-            />
-          </View>
-          <DropdownFilter
-            data={this.state.categories}
-            toggleFilter={this.state.toggleFilter}
-            onFilterItemPress={this.onFilterItemPress}
+    return (
+      <SafeAreaView style={[styles.container]}>
+        <View style={{ flex: 0, alignItems: "center" }}>
+          <FlatList
+            data={this.state.currentData}
+            contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
+            numColumns={NUM_COLUMNS}
+            renderItem={({ item }) =>
+              <EventCard
+                navigation={this.props.navigation}
+                data={item}
+                target="InfoSchedule"
+              />}
+            keyExtractor={item => item.id}
           />
-        </SafeAreaView>
-      );
-    }
-    else {
-      return null;
-    }
+        </View>
+        <DropdownFilter
+          duration={250}
+          direction="right"
+          data={this.state.categories}
+          toggleFilter={this.state.toggleFilter}
+          onFilterItemPress={this.onFilterItemPress}
+        />
+      </SafeAreaView>
+    );
   }
 }

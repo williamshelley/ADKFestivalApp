@@ -1,6 +1,14 @@
 import React from 'react';
 import { Animated, View } from 'react-native';
+import styles from '../styles';
 
+/**
+ * Spring Animation Effect Horizontal
+ * props:
+ *  toggleFilter = { boolean }
+ *  duration = { int } determines duration of animation
+ *  direction = { string = left } determines direction of animation
+ */
 export default class SpringEffect extends React.Component {
     constructor(props) {
         super(props);
@@ -19,11 +27,10 @@ export default class SpringEffect extends React.Component {
     }
 
     render() {
+        let direction = (this.props.direction == "right") ? 1 : -1;
         this.animate(this.props.duration, this.props.toggle);
         return (
-            <View style={{
-                position: "absolute", top: 0, bottom: 0, justifyContent: "flex-start"
-            }}>
+            <View style={styles.springEffectContainer}>
                 <Animated.View
                     style={{
                         position: "absolute",
@@ -32,7 +39,7 @@ export default class SpringEffect extends React.Component {
                             {
                                 translateX: this.state.effectValue.interpolate({
                                     inputRange: [0, 1],
-                                    outputRange: [600, 0]
+                                    outputRange: [styles.windowWidth * direction, 0]
                                 })
                             }
                         ],

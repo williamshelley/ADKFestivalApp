@@ -4,12 +4,17 @@ import DrawerItem from './DrawerItem';
 import styles from '../styles';
 import SpringEffect from './SpringEffect';
 
+const inidcatorColor = "white";
+
 /**
  * Dropdown filter
  * props:
- *  onFilterItemPress = { function }
  *  data = { array }
+ *  onFilterItemPress = { function }
  *  toggleFilter = { boolean }
+ *  duration = { int } determines duration of animation
+ *  numColumns = { int = 1}
+ *  direction = { string = left } determines direction of animation
  */
 export default class DropdownFilter extends React.Component {
     onFilterItemPress = (item) => {
@@ -17,26 +22,23 @@ export default class DropdownFilter extends React.Component {
     }
 
     render() {
-        let height = styles.windowHeight / 2;
         return (
-            <SpringEffect duration={500} toggle={this.props.toggleFilter}>
-
+            <SpringEffect
+                duration={this.props.duration}
+                toggle={this.props.toggleFilter}
+                direction={this.props.direction}
+            >
                 <SafeAreaView
                     style={styles.categoryPicker}>
-
                     <ImageBackground
                         source={require("../images/swan.jpg")}
-                        style={[styles.container, {
-                            height: height,
-                            flexDirection: "row",
-                        }]}>
-
+                        style={styles.container}>
                         <FlatList
                             showsVerticalScrollIndicator={true}
-                            indicatorStyle="white"
+                            indicatorStyle={inidcatorColor}
                             data={this.props.data}
-                            contentContainerStyle={{ flex: 0, alignItems: "center", justifyContent: "center", padding: 10 }}
-                            numColumns={1}
+                            contentContainerStyle={styles.dropdownFlatlist}
+                            numColumns={this.props.numColumns}
                             renderItem={({ item }) =>
                                 <DrawerItem
                                     title={item.category}
@@ -46,7 +48,6 @@ export default class DropdownFilter extends React.Component {
                             keyExtractor={item => item.id}
                         />
                     </ImageBackground>
-
                 </SafeAreaView>
             </SpringEffect>
 

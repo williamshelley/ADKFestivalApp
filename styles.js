@@ -13,26 +13,19 @@ const schedSectWidth = screenWidth / 3;
 const schedSidebarSectWidth = screenWidth / 6;
 const theme = {
     header: "black",
-    tab: "black",
+    tab: "gray",
     container: "black",
     icon: "rgba(0,0,0,0)",
     overlay: "rgba(0,0,0,0.5)",
     button: "rgba(0,0,0,0.8)",
-    clear: "rgba(0,0,0,0)",
+    navigationAccent: "white",
+    card:"rgba(128,128,150,1)",
+    alternateCard: "#0455BF",
 };
 
-
-/*
-.color-theme_swan-1-rgba { color: rgba(10, 106, 166, 1); }
-.color-theme_swan-2-rgba { color: rgba(7, 73, 115, 1); }
-.color-theme_swan-3-rgba { color: rgba(4, 41, 64, 1); }
-.color-theme_swan-4-rgba { color: rgba(1, 8, 13, 1); }
-.color-theme_swan-5-rgba { color: rgba(242, 242, 242, 1); }
-*/
-
 const styles = {
-    windowWidth: Math.round(Dimensions.get('window').height),
-    windowHeight: Math.round(Dimensions.get('window').height),
+    windowWidth: screenWidth,
+    windowHeight: screenHeight,
     infoImgHeight: screenHeight / numInfoSections,
     infoTitleHeight: infoTitleHeight,
     tabBarHeight:tabBarHeight,
@@ -42,6 +35,18 @@ const styles = {
         justifyContent: "center",
         alignItems:"center",
         backgroundColor: theme.container,
+    },
+    springEffectContainer:{
+        position: "absolute", 
+        top: 0, 
+        bottom: 0, 
+        justifyContent: "flex-start"
+    },
+    dropdownFlatlist:{
+        flex: 0, 
+        alignItems: "center", 
+        justifyContent: "center", 
+        padding: 10 ,
     },
     locationDropDown:{
         height: screenHeight / 20,
@@ -70,23 +75,25 @@ const styles = {
         fontSize: 20,
         padding: 10,
         color: "white",
-        
     },
 
     categoryPicker:{
-        flex:1,
+        width: screenWidth,
+        height: screenHeight / 2,
         backgroundColor: theme.overlay,
         justifyContent: "center",
         alignItems:"center",
         flexDirection:"row",
         position:"absolute",
+        borderWidth: 5,
+        borderColor: theme.overlay,
     },
 
     menuItem:{
         width:screenWidth/1.5,
         height:screenHeight/20,
         backgroundColor: theme.button,
-        borderColor:"red",
+        borderColor: theme.navigationAccent,
         borderWidth:thinBorder,
         alignItems:"center",
         justifyContent:"center",
@@ -97,7 +104,7 @@ const styles = {
         flex:1,
         flexDirection:"row",
         backgroundColor: theme.button,
-        borderColor:"red",
+        borderColor: theme.navigationAccent,
         alignItems:"center",
         justifyContent:"center",
         borderWidth:thinBorder,
@@ -206,7 +213,7 @@ const styles = {
     },
 
     headerText:{
-        color:"red",
+        color: theme.navigationAccent,
     },
     headerBar:{
         backgroundColor: theme.header,
@@ -228,13 +235,13 @@ const styles = {
         flex:1,
         textAlign:"center",
         padding:5,
-        color:"red",
+        color: theme.navigationAccent,
         fontSize:20,
     },
     sectionContainer:{
         width:schedSectWidth,
         height:schedSectHeight,
-        backgroundColor:"rgba(128,128,150,0.5)",
+        backgroundColor: theme.card,
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",
@@ -243,7 +250,7 @@ const styles = {
     headerSectionContainer:{
         width:schedSectWidth,
         height:schedHeaderSectHeight,
-        backgroundColor:"rgba(255,0,0,0.5)",
+        backgroundColor: theme.alternateCard,
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",
@@ -252,7 +259,7 @@ const styles = {
     sidebarSectionContainer:{
         width:schedSidebarSectWidth,
         height:schedSectHeight,
-        backgroundColor:"rgba(255,0,0,0.5)",
+        backgroundColor: theme.alternateCard,
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",
@@ -261,7 +268,7 @@ const styles = {
     cornerSectionConteiner:{
         width: schedSidebarSectWidth,
         height: schedHeaderSectHeight,
-        backgroundColor:"rgba(255,0,0,0.5)",
+        backgroundColor: theme.alternateCard,
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",

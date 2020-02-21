@@ -3,6 +3,20 @@ import { SafeAreaView, View, Text, Image, TouchableOpacity } from 'react-native'
 import styles from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import AsynchStorage from '@react-native-community/async-storage';
+
+storeData = (targetKey, data) => {
+    let DATA = (data != null && data != undefined) ? data : defaultData;
+    AsynchStorage.setItem(targetKey, JSON.stringify(DATA));
+}
+
+updateData = (targetKey, defaultData) => {
+    AsynchStorage.getItem(targetKey).then((data) => {
+        if (data != null && data != undefined) {
+            this.storeData(targetKey, defaultData, defaultData);
+        }
+    });
+}
 
 class InfoSchedule extends Component {
     render() {
