@@ -8,13 +8,14 @@ import styles from '../styles';
  *  onPress = { function }
  *  source = { string }
  */
-export default IconButton = ({ onPress, source }) => {
+export default IconButton = ({ onPress, source, style }) => {
+    let useStyle = (style != null && style != undefined) ? style : styles.icon;
     return (
         <TouchableOpacity
-            style={styles.icon}
+            style={useStyle}
             onPress={onPress}>
             <Image
-                style={styles.icon}
+                style={useStyle}
                 source={source}
             ></Image>
         </TouchableOpacity>

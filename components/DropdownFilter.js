@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, FlatList, ImageBackground, Animated, View } from 'react-native';
+import { SafeAreaView, FlatList, ImageBackground } from 'react-native';
 import DrawerItem from './DrawerItem';
 import styles from '../styles';
 import SpringEffect from './SpringEffect';

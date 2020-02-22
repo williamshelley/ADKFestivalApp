@@ -3,9 +3,11 @@ import { SafeAreaView, FlatList, View } from 'react-native';
 import IconButton from '../components/IconButton';
 import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
-import styles from '../styles';
+import styles, { filterIcon, drawerIcon } from '../styles';
+import scheduleParams from '../helper-functions/scheduleParams';
 
 const NUM_COLUMNS = 2;
+const fetchLocation = 'http://127.0.0.1:5000/';
 
 export default class HomeView extends Component {
   constructor(props) {
@@ -28,24 +30,26 @@ export default class HomeView extends Component {
       headerLeft: () => (
         <IconButton
           onPress={() => { navigation.toggleDrawer(); }}
-          source={require('../images/white_list.png')}
+          source={drawerIcon}
         />
       ),
       headerRight: () => (
         <IconButton
           onPress={() => { params.toggleFilter(); }}
-          source={require('../images/white_filter.png')}
-        >
-        </IconButton>
+          source={filterIcon}
+        />
       ),
     }
   };
 
   fetchData = () => {
-    fetch('http://127.0.0.1:5000/', {
+    fetch(fetchLocation, {
       method: 'GET',
     })
       .then((response) => response.json())
+      .catch((error) => {
+        console.error(error);
+      })
       .then((responseJson) => {
         let ALL_DATA = [];
         let CATEGORIES = []
@@ -56,19 +60,35 @@ export default class HomeView extends Component {
           });
         }
         for (var i = 0; i < responseJson.sources.length; i++) {
+          let day = scheduleParams.DAYS[i % scheduleParams.DAYS.length];
+          let numHours = scheduleParams.END_HOUR - scheduleParams.START_HOUR;
+          let startHour = scheduleParams.START_HOUR + (i % numHours);
+          let endHour = startHour + 1;
+          let location = scheduleParams.LOCATIONS[i % scheduleParams.LOCATIONS.length];
+          let storageKey = location;
+          
           ALL_DATA.push({
             title: responseJson.titles[i],
             category: responseJson.categories[i],
             source: responseJson.sources[i],
             description: responseJson.descriptions[i],
             id: responseJson.id_list[i],
+
+
+            location: location,
+            storageKey: storageKey,
+            date: {
+              day: day,
+              month: 2,
+              year: scheduleParams.YEAR,
+              startTime: startHour, //military time
+              endTime: endHour,
+            },
           })
         }
         this.setState({ categories: CATEGORIES, allData: ALL_DATA, currentData: ALL_DATA });
-      })
-      .catch((error) => {
-        console.error(error);
       });
+
   };
 
   setCurrentDisplay = (nextTitle) => {
@@ -101,11 +121,11 @@ export default class HomeView extends Component {
 
   render() {
     return (
-      <SafeAreaView style={[styles.container]}>
-        <View style={{ flex: 0, alignItems: "center" }}>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.scrollContainer}>
           <FlatList
             data={this.state.currentData}
-            contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
+            contentContainerStyle={styles.scrollContainer}
             numColumns={NUM_COLUMNS}
             renderItem={({ item }) =>
               <EventCard
@@ -117,7 +137,7 @@ export default class HomeView extends Component {
           />
         </View>
         <DropdownFilter
-          duration={250}
+          duration={styles.dropdownOpenSpeed}
           direction="right"
           data={this.state.categories}
           toggleFilter={this.state.toggleFilter}

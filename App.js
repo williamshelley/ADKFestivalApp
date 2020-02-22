@@ -13,6 +13,9 @@ import HomeView from './views/HomeView';
 import MasterSchedule from './views/Schedule';
 import styles from './styles';
 
+console.ignoredYellowBox = ['Unable to find module for UIManager'];
+
+
 const DATA = [
   {
     category: "Program",

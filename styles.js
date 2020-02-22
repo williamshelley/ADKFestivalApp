@@ -1,4 +1,4 @@
-import {StatusBar,Dimensions} from "react-native";
+import { StatusBar, Dimensions } from "react-native";
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
@@ -19,140 +19,132 @@ const theme = {
     overlay: "rgba(0,0,0,0.5)",
     button: "rgba(0,0,0,0.8)",
     navigationAccent: "white",
-    card:"rgba(128,128,150,1)",
+    card: "rgba(128,128,150,1)",
     alternateCard: "#0455BF",
 };
+
+export const filterIcon = require("./images/white_filter.png");
+export const drawerIcon = require("./images/white_list.png");
 
 const styles = {
     windowWidth: screenWidth,
     windowHeight: screenHeight,
     infoImgHeight: screenHeight / numInfoSections,
     infoTitleHeight: infoTitleHeight,
-    tabBarHeight:tabBarHeight,
+    tabBarHeight: tabBarHeight,
     mutableScheduleKey: "@mutable_schedule_key",
-    container:{
-        flex:1,
+    emptySource: require("./images/empty.png"),
+    dropdownOpenSpeed: 250,
+    container: {
+        flex: 1,
         justifyContent: "center",
-        alignItems:"center",
+        alignItems: "center",
         backgroundColor: theme.container,
     },
-    springEffectContainer:{
-        position: "absolute", 
-        top: 0, 
-        bottom: 0, 
+    horizontalContainer: {
+        flex: 1,
+        flexDirection: "row",
+    },
+    springEffectContainer: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
         justifyContent: "flex-start"
     },
-    dropdownFlatlist:{
-        flex: 0, 
-        alignItems: "center", 
-        justifyContent: "center", 
-        padding: 10 ,
+    dropdownFlatlist: {
+        flex: 0,
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 10,
     },
-    locationDropDown:{
+    locationDropDown: {
         height: screenHeight / 20,
         width: screenWidth,
-        justifyContent:"center",
-        alignItems:"center",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: theme.container,
     },
-    middleTabBar:{
+    middleTabBar: {
         backgroundColor: theme.tab,
-        position:"relative",
+        position: "relative",
     },
-//used in Info View
-    imgTitle:{
+    //used in Info View
+    imgTitle: {
         height: infoTitleHeight,
-        flexDirection:"row",
+        flexDirection: "row",
         backgroundColor: "black",
         borderWidth: 0.5,
         borderColor: "white",
-        alignContent:"center",
+        alignContent: "center",
         alignItems: 'center',
         justifyContent: 'center',
     },
-    descriptionText:{
+    descriptionText: {
         fontFamily: "Times New Roman",
         fontSize: 20,
         padding: 10,
         color: "white",
+        textAlignVertical: "center",
     },
 
-    categoryPicker:{
+    categoryPicker: {
         width: screenWidth,
         height: screenHeight / 2,
         backgroundColor: theme.overlay,
         justifyContent: "center",
-        alignItems:"center",
-        flexDirection:"row",
-        position:"absolute",
+        alignItems: "center",
+        flexDirection: "row",
+        position: "absolute",
         borderWidth: 5,
         borderColor: theme.overlay,
     },
 
-    menuItem:{
-        width:screenWidth/1.5,
-        height:screenHeight/20,
+    menuItem: {
+        width: screenWidth / 1.5,
+        height: screenHeight / 20,
         backgroundColor: theme.button,
         borderColor: theme.navigationAccent,
-        borderWidth:thinBorder,
-        alignItems:"center",
-        justifyContent:"center",
+        borderWidth: thinBorder,
+        alignItems: "center",
+        justifyContent: "center",
         margin: 10,
     },
 
     drawerItem: {
-        flex:1,
-        flexDirection:"row",
+        flex: 1,
+        flexDirection: "row",
         backgroundColor: theme.button,
         borderColor: theme.navigationAccent,
-        alignItems:"center",
-        justifyContent:"center",
-        borderWidth:thinBorder,
-        paddingLeft:50,
-        paddingRight:50,
-        margin:10,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: thinBorder,
+        paddingLeft: 50,
+        paddingRight: 50,
+        margin: 10,
     },
 
-    eventItems:{
-        width:screenWidth / 2,
-        height:screenWidth / 2-25,
-        backgroundColor:"gray",
-        borderRadius:10,
+    eventItems: {
+        width: screenWidth / 2,
+        height: screenWidth / 2 - 25,
+        backgroundColor: "gray",
+        borderRadius: 10,
         borderWidth: thinBorder,
         borderColor: "black",
-        resizeMode:"stretch",
+        resizeMode: "stretch",
     },
-    testScreenView:{
-        flex:1,
-        alignItems:"center",
-    },
-    roundDrawerBtn:{
-        borderRadius:30,
-        width:50,
-        height: StatusBar.currentHeight,
-        backgroundColor:"blue",
-    },
-    roundButton:{
-        borderRadius:30,
-        width:250,
-        height: 50,
-        backgroundColor:"blue",
-        alignItems:"center",
-        justifyContent:"center",
-    },
-    statBarWhiteText:{
-        color:"white",
+    statBarWhiteText: {
+        color: "white",
         fontSize: 5,
     },
-    medWhiteText:{
-        color:"white",
-        fontSize:20,
-        textAlign:"center",
-        padding:10,
+    medWhiteText: {
+        color: "white",
+        fontSize: 20,
+        textAlign: "center",
+        padding: 10,
     },
-    bigWhiteText:{
-        color:"white",
-        fontSize:30,
+    bigWhiteText: {
+        color: "white",
+        fontSize: 30,
     },
 
     icon: {
@@ -161,131 +153,159 @@ const styles = {
         justifyContent: 'center',
         alignSelf: 'center',
         backgroundColor: theme.icon,
-        margin:10,
+        margin: 10,
     },
-    descriptionView:{
-        flex:1,
-        alignSelf:"center",
+    topRightCornerContainer: {
+        flex: 1,
+        justifyContent: "flex-start",
+        alignSelf: "flex-end"
+    },
+    miniIcon: {
+        width: 15,
+        height: 15,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        backgroundColor: theme.icon,
+        margin: 5,
+        tintColor: theme.navigationAccent,
+        backgroundColor: theme.overlay,
+        borderRadius: 15,
+
+    },
+    descriptionView: {
+        flex: 1,
+        alignSelf: "center",
+        justifyContent:"center",
         backgroundColor: theme.container,
         width: screenWidth,
-        height: screenHeight / numInfoSections,
+        height: String(100 / numInfoSections) + "%",
         borderWidth: 0.5,
         borderColor: "white",
     },
-    infoImgView:{
-        alignSelf:"center",
-        width:screenWidth,
-        height:screenHeight / numInfoSections,
-        borderColor:"black",
+    infoImgView: {
+        alignSelf: "center",
+        width: screenWidth,
+        height: String(100 / numInfoSections) + "%",
+        borderColor: "black",
         borderWidth: thinBorder,
-        resizeMode:"stretch",
+        resizeMode: "stretch",
     },
-    imgText:{
+    imgText: {
         backgroundColor: theme.overlay,
-        color:"white",
+        color: "white",
         fontSize: 15,
         fontFamily: imageFont,
         borderColor: theme.container,
     },
 
-    imgTextWrapper:{
-        borderRadius:10,
-        borderWidth: thinBorder,
-        borderColor: theme.container,
-        position: 'absolute', 
+    imgTextWrapper: {
+        position: 'absolute',
         alignItems: 'flex-start',
-        justifyContent: 'flex-end', 
-        top: 0, left: 0, right: 0, bottom: 0, 
+        justifyContent: 'flex-end',
+        top: 0, left: 0, right: 0, bottom: 0,
     },
-    scheduleScrollView:{
-        backgroundColor:"gray",
+    scheduleScrollView: {
+        backgroundColor: "gray",
         flex: 1,
-        scrollingDirection:"horizontal",
+        scrollingDirection: "horizontal",
         justifyContent: "center",
         alignContent: "center",
     },
-    menuSidebar:{
-        flex:1,
-        flexDirection:"row",
+    menuSidebar: {
+        flex: 1,
+        flexDirection: "row",
         backgroundColor: theme.header,
-        alignItems:"center",
-        justifyContent:"flex-start",
+        alignItems: "center",
+        justifyContent: "flex-start",
     },
 
-    headerText:{
+    headerText: {
         color: theme.navigationAccent,
     },
-    headerBar:{
+    headerBar: {
         backgroundColor: theme.header,
     },
-    headerBtnText:{
-        color:"white",
+    headerBtnText: {
+        color: "white",
     },
-    headerBtn:{
+    headerBtn: {
         width: StatusBar.currentHeight,
         height: StatusBar.currentHeight,
-        paddingLeft:10,
-        paddingRight:10,
-        paddingTop:10,
-        paddingBottom:10,
-        alignItems:"center",
-        justifyContent:"center",
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop: 10,
+        paddingBottom: 10,
+        alignItems: "center",
+        justifyContent: "center",
     },
-    sectionText:{
-        flex:1,
-        textAlign:"center",
-        padding:5,
+    sectionText: {
+        flex: 1,
+        textAlign: "center",
+        padding: 5,
         color: theme.navigationAccent,
-        fontSize:20,
+        fontSize: 20,
     },
-    sectionContainer:{
-        width:schedSectWidth,
-        height:schedSectHeight,
+    sectionContainer: {
+        width: schedSectWidth,
+        height: schedSectHeight,
         backgroundColor: theme.card,
         borderWidth: 0.5,
         borderColor: "white",
-        alignContent: "center",
+        alignSelf: "center",
+        alignItems:"center",
+        justifyContent: "center",
         margin: 5,
     },
-    headerSectionContainer:{
-        width:schedSectWidth,
-        height:schedHeaderSectHeight,
+    scrollContainer: {
+        flex:0,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    headerSectionContainer: {
+        width: schedSectWidth,
+        height: schedHeaderSectHeight,
         backgroundColor: theme.alternateCard,
+        alignSelf: "center",
         borderWidth: 0.5,
         borderColor: "white",
         alignContent: "center",
+        justifyContent: "center",
         margin: 5,
     },
-    sidebarSectionContainer:{
-        width:schedSidebarSectWidth,
-        height:schedSectHeight,
+    sidebarSectionContainer: {
+        width: schedSidebarSectWidth,
+        height: schedSectHeight,
         backgroundColor: theme.alternateCard,
         borderWidth: 0.5,
         borderColor: "white",
-        alignContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        justifyContent: "center",
         marginRight: 10, marginLeft: 10, marginBottom: 5, marginTop: 5,
     },
-    cornerSectionConteiner:{
+    cornerSectionConteiner: {
         width: schedSidebarSectWidth,
         height: schedHeaderSectHeight,
         backgroundColor: theme.alternateCard,
         borderWidth: 0.5,
         borderColor: "white",
-        alignContent: "center",
+        alignSelf: "center",
+        alignItems: "center",
+        justifyContent: "center",
         marginRight: 10, marginLeft: 10, marginBottom: 5, marginTop: 5,
     },
-    sectionData:{
-        flex:1,
-        textAlign:"center",
-        padding:5,
-        color:"white",
-        fontSize:15,
+    sectionData: {
+        flex: 1,
+        textAlign: "center",
+        padding: 5,
+        color: "white",
+        fontSize: 15,
     },
 
-    addScheduleBtn:{
+    addScheduleBtn: {
         borderRadius: 15,
         justifyContent: "center",
-        alignItems:"center",
+        alignItems: "center",
         backgroundColor: "gray",
         borderWidth: 1,
         borderColor: "gray",
