@@ -1,6 +1,6 @@
 import React from 'react';
-import { Animated, View } from 'react-native';
-import styles from '../styles';
+import { Animated } from 'react-native';
+import { screenWidth } from '../styles';
 
 /**
  * Spring Animation Effect Horizontal
@@ -14,12 +14,18 @@ export default class SpringEffect extends React.Component {
         super(props);
         this.state = {
             effectValue: new Animated.Value(0),
+            fadeValue: new Animated.Value(0),
             showing: true,
         }
+
     }
 
     animate = (duration, toggle) => {
         let target = !toggle ? 0 : 1;
+        Animated.timing(this.state.fadeValue, {
+            toValue: target,
+            duration: duration,
+        }).start();
         Animated.timing(this.state.effectValue, {
             toValue: target,
             duration: duration,
@@ -30,24 +36,25 @@ export default class SpringEffect extends React.Component {
         let direction = (this.props.direction == "right") ? 1 : -1;
         this.animate(this.props.duration, this.props.toggle);
         return (
-            <View style={styles.springEffectContainer}>
-                <Animated.View
-                    style={{
-                        position: "absolute",
-                        alignItems: "center",
-                        transform: [
-                            {
-                                translateX: this.state.effectValue.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [styles.windowWidth * direction, 0]
-                                })
-                            }
-                        ],
-                    }}
-                >
-                    {this.props.children}
-                </Animated.View>
-            </View>
+            <Animated.View
+                style={{
+                    position: "absolute",
+                    top: 0, bottom: 0, right: 0, left: 0,
+                    justifyContent: "flex-start",
+                    opacity: this.state.fadeValue,
+                    transform: [
+                        {
+                            scale: this.state.fadeValue
+                        }, {
+                            translateX: this.state.effectValue.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [screenWidth * direction, 0]
+                            })
+                        }],
+                }}
+            >
+                {this.props.children}
+            </Animated.View>
         );
     }
 }

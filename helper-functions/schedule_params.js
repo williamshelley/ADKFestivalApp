@@ -1,4 +1,4 @@
-import {emptyStorageItem, storageItem} from './storageFunctions';
+import {emptyStorageItem, storageItem} from './storage_functions';
 
 
 export default scheduleParams = {
@@ -9,6 +9,7 @@ export default scheduleParams = {
     END_HOUR: 20,
     YEAR: 2020,
 };
+
 
 export const createHourList = (startHour, endHour) => {
     let res = [];
@@ -64,7 +65,7 @@ export const prepareBlankData = (headerData, sidebarData, storageKey) => {
         DATA.push(
             storageItem({
                 title: null,
-                row:Math.trunc(i / headerData.length),
+                row: Math.trunc(i / headerData.length),
                 col:i % headerData.length,
                 storageKey: storageKey,
             })

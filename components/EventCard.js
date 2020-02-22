@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Image, View, Text } from 'react-native';
-import styles from '../styles';
+import styles, { emptyImage } from '../styles';
+import { isNull, notNull } from '../helper-functions/helpers';
 
 /**
  * Front page event card
@@ -20,21 +21,16 @@ import styles from '../styles';
  *  target = { string } -> it is the destination navigated to
  *  style = { properties } -> defaults to styles.eventItems
  */
-export default class EventCard extends React.Component {
-    render() {
-        let target = this.props.target;
-        let data = this.props.data;
-        let useStyle = (this.props.style == null) ? styles.eventItems : this.props.style
-        let imgSource = (data.source == null 
-                        || data.source == "" 
-                        || data.source == undefined) 
-                        ? styles.emptySource : { uri: data.source };
+export default EventCard = (props) => {
+        let data = props.data;
+        let useStyle = isNull(props.style) ? styles.eventItems : props.style
+        let imgSource = isNull(data.source) ? emptyImage : { uri: data.source };
         return (
             <TouchableOpacity
                 style={useStyle}
                 onPress={() => {
-                    if (target != null && target != undefined && target != "") {
-                        this.props.navigation.navigate(target,
+                    if (notNull(props.target)){
+                        props.navigation.navigate(props.target,
                             {
                                 title: data.title,
                                 source: data.source,
@@ -49,7 +45,7 @@ export default class EventCard extends React.Component {
                 <Image style={useStyle} source={imgSource} />
                 <View style={styles.imgTextWrapper}>
                     <View style={styles.topRightCornerContainer}>
-                        {this.props.children}
+                        {props.children}
                     </View>
                     <Text style={styles.imgText}>
                         {data.title}
@@ -57,5 +53,4 @@ export default class EventCard extends React.Component {
                 </View>
             </TouchableOpacity>
         );
-    }
 };

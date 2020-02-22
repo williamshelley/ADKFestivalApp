@@ -1,10 +1,12 @@
 import React from 'react';
-import { SafeAreaView, FlatList, ImageBackground } from 'react-native';
+import { FlatList, ImageBackground } from 'react-native';
 import DrawerItem from './DrawerItem';
 import styles from '../styles';
 import SpringEffect from './SpringEffect';
+import OutsidePressContainer from './OutsidePressContainer'
 
 const inidcatorColor = "white";
+const backgroundImg = require("../images/swan.jpg");
 
 /**
  * Dropdown filter
@@ -16,42 +18,29 @@ const inidcatorColor = "white";
  *  numColumns = { int = 1}
  *  direction = { string = left } determines direction of animation
  */
-export default class DropdownFilter extends React.Component {
-    onFilterItemPress = (item) => {
-        this.props.onFilterItemPress?.(item);
-    }
-
-    render() {
-        return (
-            <SpringEffect
-                duration={this.props.duration}
-                toggle={this.props.toggleFilter}
-                direction={this.props.direction}
-            >
-                <SafeAreaView
-                    style={styles.categoryPicker}>
-                    <ImageBackground
-                        source={require("../images/swan.jpg")}
-                        style={styles.container}>
-                        <FlatList
-                            showsVerticalScrollIndicator={true}
-                            indicatorStyle={inidcatorColor}
-                            data={this.props.data}
-                            contentContainerStyle={styles.dropdownFlatlist}
-                            numColumns={this.props.numColumns}
-                            renderItem={({ item }) =>
-                                <DrawerItem
-                                    title={item.category}
-                                    onPress={() => { this.onFilterItemPress(item); }}
-                                />
-                            }
-                            keyExtractor={item => item.id}
-                        />
-                    </ImageBackground>
-                </SafeAreaView>
-            </SpringEffect>
-
-
-        );
-    }
-}
+export default DropdownFilter = (props) => (
+    <SpringEffect
+        duration={props.duration}
+        toggle={props.toggleFilter}
+        direction={props.direction}>
+        <OutsidePressContainer onPress={() => { props.onOutsidePress() }} />
+        <ImageBackground
+            source={backgroundImg}
+            style={styles.dropdownFilter}>
+            <FlatList
+                showsVerticalScrollIndicator={true}
+                indicatorStyle={inidcatorColor}
+                data={props.data}
+                contentContainerStyle={styles.dropdownFlatlist}
+                numColumns={props.numColumns}
+                renderItem={({ item }) =>
+                    <DrawerItem
+                        title={item.category}
+                        onPress={() => { props.onFilterItemPress(item); }}
+                    />
+                }
+                keyExtractor={item => item.id}
+            />
+        </ImageBackground>
+    </SpringEffect>
+);

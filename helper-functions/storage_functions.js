@@ -1,7 +1,7 @@
 
 import AsynchStorage from '@react-native-community/async-storage';
-
-
+import { emptyImage } from '../styles';
+import { isNull } from './helpers';
 
 export const storeData = (targetKey, data, defaultData) => {
     let DATA = (data != null && data != undefined) ? data : defaultData;

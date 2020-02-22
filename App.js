@@ -1,10 +1,5 @@
 import React, { Component } from 'react';
-import {
-  SafeAreaView, Text,
-  TouchableOpacity,
-  FlatList,
-  ImageBackground
-} from 'react-native';
+import { FlatList, ImageBackground } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createDrawerNavigator } from "react-navigation-drawer";
 import { createStackNavigator } from 'react-navigation-stack';
@@ -12,9 +7,7 @@ import InfoSchedule from './views/Info';
 import HomeView from './views/HomeView';
 import MasterSchedule from './views/Schedule';
 import styles from './styles';
-
-console.ignoredYellowBox = ['Unable to find module for UIManager'];
-
+import DrawerItem from './components/DrawerItem';
 
 const DATA = [
   {
@@ -32,7 +25,7 @@ const DATA = [
   {
     category: "Map",
     id: "Map",
-    rout: "Map",
+    route: "Map",
     data: null,
   }
 ];
@@ -46,43 +39,25 @@ class CategorySidebar extends Component {
     }
   }
 
-
-
-  SidebarButton = ({ navigation, dataItem }) => {
-    if (dataItem != null) {
-      return (
-        <TouchableOpacity
-          style={styles.drawerItem}
-          onPress={() => {
-            navigation.navigate(dataItem.route);
-          }}>
-          <Text style={[styles.medWhiteText, {}]}>{dataItem.category}</Text>
-        </TouchableOpacity>
-      );
-    }
-    else {
-      return null;
-    }
-  }
-
   render() {
     return (
-      <SafeAreaView style={styles.menuSidebar}>
-
-        <ImageBackground source={require("./images/swan.jpg")} style={styles.container}>
+        <ImageBackground source={require("./images/swan.jpg")} style={{
+          flex:1,
+          justifyContent: "center"
+        }}>
           <FlatList
             data={this.state.data}
-            contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
+            contentContainerStyle={styles.scrollContainer}
             numColumns={1}
-            renderItem={({ item }) => <this.SidebarButton
-              navigation={this.props.navigation}
-              dataItem={item}
+            renderItem={({ item }) => 
+            <DrawerItem 
+              title={item.category}
+              onPress={()=>{this.props.navigation.navigate(item.route);}}
             />}
             keyExtractor={item => item.id}
           />
 
         </ImageBackground>
-      </SafeAreaView>
 
     );
   }
@@ -94,7 +69,7 @@ const StackNavigator = createStackNavigator({
   MasterSchedule,
 }, {
   defaultNavigationOptions:
-    navigationOptions = ({ navigation }) => {
+    navigationOptions = () => {
       return {
         headerStyle: styles.headerBar,
         headerTitle: "",

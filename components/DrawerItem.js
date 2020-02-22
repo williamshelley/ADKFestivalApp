@@ -8,12 +8,10 @@ import styles from '../styles';
  *  title = { string }
  *  onPress = { function }
  */
-export default DrawerItem = ({ title, onPress }) => {
-    return (
-        <TouchableOpacity
-            style={styles.menuItem}
-            onPress={onPress}>
-            <Text style={styles.medWhiteText}>{title}</Text>
-        </TouchableOpacity>
-    );
-};
+export default DrawerItem = ({ title, onPress }) => (
+    <TouchableOpacity
+        style={styles.drawerItem}
+        onPress={onPress}>
+        <Text style={styles.drawerItemText}>{title}</Text>
+    </TouchableOpacity>
+);

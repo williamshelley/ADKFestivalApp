@@ -2,6 +2,7 @@ import React from 'react';
 import styles from '../styles';
 import EventCard from './EventCard';
 import IconButton from './IconButton';
+import { notNull, isNull } from '../helper-functions/helpers';
 
 const targetScreen = "InfoSchedule";
 const rmImage = require("../images/circleX.png");
@@ -18,36 +19,25 @@ const rmImage = require("../images/circleX.png");
 export default ScheduleItem = ({ navigation, style, item, onDeletePress }) => {
     let useStyle = styles.sectionContainer;
     let rmIconStyle = styles.miniIcon;
-    if (style != null) {
-        useStyle = style;
-    }
+    let specialStyle = false;
+    useStyle = notNull(style) ? style : useStyle;
     if (item.row < 0 && item.col >= 0) {
         useStyle = styles.headerSectionContainer;
-        rmIconStyle = {width:0,height:0};
+        specialStyle = true;
     }
     else if (item.row < 0 && item.col < 0) {
         useStyle = styles.cornerSectionConteiner;
-        rmIconStyle = {width:0,height:0};
+        specialStyle = true;
     }
-    rmIconStyle = (useStyle == styles.sidebarSectionContainer 
-                || useStyle == styles.cornerSectionConteiner
-                || useStyle == styles.headerSectionContainer)
-                || item.title == null || item.title == undefined || item.title == ""
-                ? {width:0,height:0} : rmIconStyle;
-
-    let target = (useStyle != styles.sectionContainer 
-                || item.title == "" 
-                || item.title==null
-                || item.title==undefined) 
-                ? null : targetScreen;
+    specialStyle = (useStyle == styles.sidebarSectionContainer) || specialStyle;
+    rmIconStyle = specialStyle || isNull(item.title) ? { width: 0, height: 0 } : rmIconStyle;
+    let target = (useStyle != styles.sectionContainer || isNull(item.title)) ? null : targetScreen;
     return (
-
         <EventCard
             navigation={navigation}
             style={useStyle}
             data={item}
-            target={target}
-        >
+            target={target}>
             <IconButton
                 style={rmIconStyle}
                 onPress={onDeletePress}

@@ -1,7 +1,7 @@
 import { StatusBar, Dimensions } from "react-native";
 
-const screenWidth = Math.round(Dimensions.get('window').width);
-const screenHeight = Math.round(Dimensions.get('window').height);
+export const screenWidth = Math.round(Dimensions.get('window').width);
+export const screenHeight = Math.round(Dimensions.get('window').height);
 const numInfoSections = 3;
 const thinBorder = 2;
 const imageFont = "Times New Roman";
@@ -11,7 +11,7 @@ const schedHeaderSectHeight = screenHeight / 14;
 const schedSectHeight = screenHeight / 10;
 const schedSectWidth = screenWidth / 3;
 const schedSidebarSectWidth = screenWidth / 6;
-const theme = {
+export const theme = {
     header: "black",
     tab: "gray",
     container: "black",
@@ -22,9 +22,10 @@ const theme = {
     card: "rgba(128,128,150,1)",
     alternateCard: "#0455BF",
 };
-
+export const opacityValue = (value) => ( value ? 0.5 : 1 );
 export const filterIcon = require("./images/white_filter.png");
 export const drawerIcon = require("./images/white_list.png");
+export const emptyImage = require("./images/empty.png");
 
 const styles = {
     windowWidth: screenWidth,
@@ -45,17 +46,12 @@ const styles = {
         flex: 1,
         flexDirection: "row",
     },
-    springEffectContainer: {
-        position: "absolute",
-        top: 0,
-        bottom: 0,
-        justifyContent: "flex-start"
+    dropdownFilter: {
+        height: screenHeight / 2,
     },
     dropdownFlatlist: {
-        flex: 0,
         alignItems: "center",
         justifyContent: "center",
-        padding: 10,
     },
     locationDropDown: {
         height: screenHeight / 20,
@@ -99,27 +95,18 @@ const styles = {
         borderColor: theme.overlay,
     },
 
-    menuItem: {
-        width: screenWidth / 1.5,
-        height: screenHeight / 20,
-        backgroundColor: theme.button,
-        borderColor: theme.navigationAccent,
-        borderWidth: thinBorder,
-        alignItems: "center",
-        justifyContent: "center",
-        margin: 10,
+    drawerItemText: {
+        color: theme.navigationAccent,
+        fontSize: 20,
+        textAlign: "center",
+        padding: 10,
     },
-
     drawerItem: {
-        flex: 1,
-        flexDirection: "row",
+        width: screenWidth / 1.5,
         backgroundColor: theme.button,
         borderColor: theme.navigationAccent,
-        alignItems: "center",
         justifyContent: "center",
         borderWidth: thinBorder,
-        paddingLeft: 50,
-        paddingRight: 50,
         margin: 10,
     },
 
@@ -204,7 +191,7 @@ const styles = {
         justifyContent: 'flex-end',
         top: 0, left: 0, right: 0, bottom: 0,
     },
-    scheduleScrollView: {
+    scheduleView: {
         backgroundColor: "gray",
         flex: 1,
         scrollingDirection: "horizontal",
@@ -216,6 +203,8 @@ const styles = {
         flexDirection: "row",
         backgroundColor: theme.header,
         alignItems: "center",
+        alignSelf: "center",
+        alignContent: "center",
         justifyContent: "flex-start",
     },
 
@@ -257,8 +246,8 @@ const styles = {
         margin: 5,
     },
     scrollContainer: {
-        flex:0,
-        alignItems: "center",
+        flexGrow:1,
+        alignSelf: "center",
         justifyContent: "center",
     },
     headerSectionContainer: {

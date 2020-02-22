@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Image } from 'react-native';
 import styles from '../styles';
+import { notNull } from '../helper-functions/helpers';
 
 /**
  * Button with icon size and image
@@ -9,7 +10,7 @@ import styles from '../styles';
  *  source = { string }
  */
 export default IconButton = ({ onPress, source, style }) => {
-    let useStyle = (style != null && style != undefined) ? style : styles.icon;
+    let useStyle =  notNull(style) ? style : styles.icon;
     return (
         <TouchableOpacity
             style={useStyle}

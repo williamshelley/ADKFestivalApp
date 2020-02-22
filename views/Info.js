@@ -4,12 +4,12 @@ import styles from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import AsynchStorage from '@react-native-community/async-storage';
-import scheduleParams from '../helper-functions/scheduleParams';
+import scheduleParams from '../helper-functions/schedule_params';
 import { 
     storeData, 
     convertFromMilitaryTime, 
     storageItem 
-} from '../helper-functions/storageFunctions';
+} from '../helper-functions/storage_functions';
 
 class InfoSchedule extends Component {
     constructor(props) {

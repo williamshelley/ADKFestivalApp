@@ -3,8 +3,8 @@ import { SafeAreaView, FlatList, View } from 'react-native';
 import IconButton from '../components/IconButton';
 import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
-import styles, { filterIcon, drawerIcon } from '../styles';
-import scheduleParams from '../helper-functions/scheduleParams';
+import styles, { filterIcon, drawerIcon, theme, opacityValue } from '../styles';
+import scheduleParams from '../helper-functions/schedule_params';
 
 const NUM_COLUMNS = 2;
 const fetchLocation = 'http://127.0.0.1:5000/';
@@ -29,7 +29,11 @@ export default class HomeView extends Component {
       headerTitleStyle: styles.headerText,
       headerLeft: () => (
         <IconButton
-          onPress={() => { navigation.toggleDrawer(); }}
+          onPress={() => {
+            params.disableFilter();
+            navigation.toggleDrawer();
+
+          }}
           source={drawerIcon}
         />
       ),
@@ -66,7 +70,7 @@ export default class HomeView extends Component {
           let endHour = startHour + 1;
           let location = scheduleParams.LOCATIONS[i % scheduleParams.LOCATIONS.length];
           let storageKey = location;
-          
+
           ALL_DATA.push({
             title: responseJson.titles[i],
             category: responseJson.categories[i],
@@ -88,7 +92,6 @@ export default class HomeView extends Component {
         }
         this.setState({ categories: CATEGORIES, allData: ALL_DATA, currentData: ALL_DATA });
       });
-
   };
 
   setCurrentDisplay = (nextTitle) => {
@@ -106,6 +109,10 @@ export default class HomeView extends Component {
     this.setState({ toggleFilter: !this.state.toggleFilter });
   };
 
+  disableFilter = () => {
+    this.setState({ toggleFilter: false });
+  }
+
   onFilterItemPress = (item) => {
     this.setState({ title: item.category, currentData: this.setCurrentDisplay(item.category) });
     this.toggleFilter();
@@ -116,6 +123,7 @@ export default class HomeView extends Component {
     this.fetchData();
     this.props.navigation.setParams({
       toggleFilter: this.toggleFilter,
+      disableFilter: this.disableFilter,
     });
   }
 
@@ -125,7 +133,10 @@ export default class HomeView extends Component {
         <View style={styles.scrollContainer}>
           <FlatList
             data={this.state.currentData}
-            contentContainerStyle={styles.scrollContainer}
+            contentContainerStyle={[styles.scrollContainer,{
+                backgroundColor: theme.overlay,
+                opacity: opacityValue(this.state.toggleFilter),
+            }]}
             numColumns={NUM_COLUMNS}
             renderItem={({ item }) =>
               <EventCard
@@ -137,6 +148,7 @@ export default class HomeView extends Component {
           />
         </View>
         <DropdownFilter
+          onOutsidePress={() => { this.disableFilter(); }}
           duration={styles.dropdownOpenSpeed}
           direction="right"
           data={this.state.categories}
@@ -144,6 +156,7 @@ export default class HomeView extends Component {
           onFilterItemPress={this.onFilterItemPress}
         />
       </SafeAreaView>
+
     );
   }
 }
