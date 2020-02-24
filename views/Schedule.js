@@ -11,7 +11,7 @@ import scheduleParams, {
     prepareSidebar
 } from '../helper-functions/schedule_params';
 import { storeData, emptyStorageItem } from '../helper-functions/storage_functions';
-import { notNull } from '../helper-functions/helpers';
+import { notNull, isNull } from '../helper-functions/helpers';
 
 const LOCATION_DATA = scheduleParams.LOCATIONS;
 const HEADER_DATA = scheduleParams.DAYS;
@@ -25,6 +25,7 @@ export default class MasterSchedule extends Component {
             data: null,
             sidebarData: null,
             dropdownData: null,
+            blankData: null,
             toggleFilter: false,
             currentKey: LOCATION_DATA[0],
         };
@@ -37,9 +38,7 @@ export default class MasterSchedule extends Component {
             headerRight: () => (
                 <IconButton
                     onPress={() => { params.toggleFilter(); }}
-                    source={filterIcon}
-                >
-                </IconButton>
+                    source={filterIcon} />
             ),
         };
     }
@@ -49,17 +48,11 @@ export default class MasterSchedule extends Component {
             if (data == null || data == undefined) {
                 storeData(targetKey, defaultData, defaultData);
             }
-            let DATA = (data != null && data != undefined) ? JSON.parse(data) : defaultData;
-            this.setState({ data: DATA });
-        });
-    }
-
-    setCurrentDisplay = (nextPage, defaultData) => {
-        this.updateData(nextPage, defaultData);
-
-        this.setState({
-            currentKey: nextPage,
-            headerData: HEADER_DATA,
+            let DATA = notNull(data) ? JSON.parse(data) : defaultData;
+            this.setState({
+                toggleFilter: false,
+                data: DATA, currentKey: targetKey, headerData: HEADER_DATA
+            });
         });
     }
 
@@ -68,20 +61,21 @@ export default class MasterSchedule extends Component {
             contentOffset: {
                 y: event.nativeEvent.contentOffset.y,
             }
-        })
+        });
     }
 
     toggleFilter = () => {
         this.setState({ toggleFilter: !this.state.toggleFilter });
-    };
+    }
 
     disableFilter = () => {
-        this.setState({ toggleFilter: false });
+        if (this.state.toggleFilter) {
+            this.setState({ toggleFilter: false });
+        }
     }
 
     onFilterItemPress = (item) => {
-        this.setCurrentDisplay(item.category);
-        this.toggleFilter();
+        this.updateData(item.category, this.state.blankData);
     }
 
     cleanScheduleItem = (item) => {
@@ -100,14 +94,13 @@ export default class MasterSchedule extends Component {
         let SIDEBAR_DATA = prepareSidebar(START_HOUR, END_HOUR);
         let DROPDOWN_DATA = prepareDropdownFilter(LOCATION_DATA);
         let DATA = prepareBlankData(HEADER_DATA, SIDEBAR_DATA, this.state.currentKey);
-        for (var i = 1; i < LOCATION_DATA.length; i++) {
-            this.setCurrentDisplay(LOCATION_DATA[i], DATA);
-        }
-        this.setCurrentDisplay(LOCATION_DATA[0], DATA);
+
+        this.updateData(LOCATION_DATA[0], DATA);
 
         this.setState({
             dropdownData: DROPDOWN_DATA,
             sidebarData: SIDEBAR_DATA,
+            blankData: DATA,
         });
 
         this.props.navigation.setParams({

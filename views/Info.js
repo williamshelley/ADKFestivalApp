@@ -4,12 +4,17 @@ import styles from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import AsynchStorage from '@react-native-community/async-storage';
-import scheduleParams from '../helper-functions/schedule_params';
-import { 
-    storeData, 
-    convertFromMilitaryTime, 
-    storageItem 
+import scheduleParams, { prepareBlankData, prepareSidebar } from '../helper-functions/schedule_params';
+import {
+    storeData,
+    convertFromMilitaryTime,
+    storageItem
 } from '../helper-functions/storage_functions';
+import { notNull, isNull } from '../helper-functions/helpers';
+
+/**
+ * NEED TO CONSOLIDATE AND INTEGRATE
+ */
 
 class InfoSchedule extends Component {
     constructor(props) {
@@ -36,17 +41,26 @@ class InfoSchedule extends Component {
 
     addItemToSchedule = (item) => {
         AsynchStorage.getItem(this.state.storageKey).then((data) => {
-            if (data != null && data != undefined) {
+            if (notNull(data)) {
                 if (item.row >= 0 && item.col >= 0) {
-                    var DATA = JSON.parse(data);
+                    let DATA = JSON.parse(data);
                     let index = item.row * scheduleParams.DAYS.length + item.col + scheduleParams.DAYS.length;
                     let id = DATA[index].id;
                     DATA[index] = item;
                     DATA[index].id = id;
                     storeData(this.state.storageKey, DATA, data);
                     this.setState({ inSchedule: true });
-                    return DATA;
                 }
+            } else if (isNull(data) && scheduleParams.LOCATIONS.includes(this.state.storageKey)) {
+                let DATA = prepareBlankData(scheduleParams.DAYS,
+                    prepareSidebar(scheduleParams.START_HOUR, scheduleParams.END_HOUR));
+                let index = item.row * scheduleParams.DAYS.length + item.col + scheduleParams.DAYS.length;
+                let id = DATA[index].id;
+                DATA[index] = item;
+                DATA[index].id = id;
+                storeData(this.state.storageKey, DATA, data);
+                this.setState({ inSchedule: true });
+                return DATA;
             }
         });
     }

@@ -5,9 +5,10 @@ import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
 import styles, { filterIcon, drawerIcon, theme, opacityValue } from '../styles';
 import scheduleParams from '../helper-functions/schedule_params';
+import { notNull } from '../helper-functions/helpers';
 
 const NUM_COLUMNS = 2;
-const fetchLocation = 'http://127.0.0.1:5000/';
+const fetchLocation = true ? 'http://127.0.0.1:5000/' : null;
 
 export default class HomeView extends Component {
   constructor(props) {
@@ -114,13 +115,14 @@ export default class HomeView extends Component {
   }
 
   onFilterItemPress = (item) => {
-    this.setState({ title: item.category, currentData: this.setCurrentDisplay(item.category) });
-    this.toggleFilter();
+    this.setState({ toggleFilter: !this.state.toggleFilter, title: item.category, currentData: this.setCurrentDisplay(item.category) });
     this.props.navigation.setParams({ headerTitle: item.category });
   }
 
   componentDidMount() {
-    this.fetchData();
+    if (notNull(fetchLocation)){
+      this.fetchData();
+    }
     this.props.navigation.setParams({
       toggleFilter: this.toggleFilter,
       disableFilter: this.disableFilter,
