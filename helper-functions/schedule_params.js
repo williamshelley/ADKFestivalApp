@@ -3,10 +3,10 @@ import {emptyStorageItem, storageItem} from './storage_functions';
 
 export default scheduleParams = {
     LOCATIONS: ["New York", "Florida", "Colorado", "Narnia"],
-    DAYS: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-    DAYS_DICT: {"Monday":0, "Tuesday":1, "Wednesday":2, "Thursday":3, "Friday":4},
-    START_HOUR: 7,
-    END_HOUR: 20,
+    DAYS: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    DAYS_DICT: {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5,"Saturday":6},
+    START_HOUR: 5,
+    END_HOUR: 22,
     YEAR: 2020,
 };
 
@@ -33,7 +33,6 @@ export const createHourList = (startHour, endHour) => {
     }
     return res;
 }
-
 
 export const prepareSidebar = (startHour, endHour) => {
     let SIDEBAR_DATA = [emptyStorageItem({col:-1,row:-1})];
@@ -73,3 +72,6 @@ export const prepareBlankData = (headerData, sidebarData, storageKey) => {
     }
     return DATA;
 }
+
+export const BLANK_DATA = prepareBlankData(scheduleParams.DAYS, 
+                        prepareSidebar(scheduleParams.START_HOUR, scheduleParams.END_HOUR));

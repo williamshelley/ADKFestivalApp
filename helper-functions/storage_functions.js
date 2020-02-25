@@ -1,12 +1,18 @@
 
 import AsynchStorage from '@react-native-community/async-storage';
-import { emptyImage } from '../styles';
-import { isNull, notNull } from './helpers';
+import { notNull } from './helpers';
 
 export const storeData = (targetKey, data, defaultData) => {
     let DATA = notNull(data) ? data : defaultData;
     AsynchStorage.setItem(targetKey, JSON.stringify(DATA));
 }
+
+export const storeItem = (data, defaultData, item, index) => {
+    let id = data[index].id;
+    data[index] = item;
+    data[index].id = id;
+    storeData(item.storageKey, data, defaultData);
+};
 
 export const retrieveData = (targetKey, callback) => {
     AsynchStorage.getItem(targetKey).then((data) => {

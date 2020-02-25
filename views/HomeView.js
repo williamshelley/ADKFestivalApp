@@ -65,12 +65,15 @@ export default class HomeView extends Component {
           });
         }
         for (var i = 0; i < responseJson.sources.length; i++) {
-          let day = scheduleParams.DAYS[i % scheduleParams.DAYS.length];
+          let weekDay = scheduleParams.DAYS[i % scheduleParams.DAYS.length];
           let numHours = scheduleParams.END_HOUR - scheduleParams.START_HOUR;
           let startHour = scheduleParams.START_HOUR + (i % numHours);
           let endHour = startHour + 1;
           let location = scheduleParams.LOCATIONS[i % scheduleParams.LOCATIONS.length];
           let storageKey = location;
+
+            let col = scheduleParams.DAYS_DICT[weekDay];
+            let row = Math.abs(startHour - scheduleParams.START_HOUR);
 
           ALL_DATA.push({
             title: responseJson.titles[i],
@@ -78,12 +81,12 @@ export default class HomeView extends Component {
             source: responseJson.sources[i],
             description: responseJson.descriptions[i],
             id: responseJson.id_list[i],
-
-
+            col: col,
+            row: row,
             location: location,
             storageKey: storageKey,
             date: {
-              day: day,
+              weekDay: weekDay,
               month: 2,
               year: scheduleParams.YEAR,
               startTime: startHour, //military time

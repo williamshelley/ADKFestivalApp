@@ -18,6 +18,9 @@ const HEADER_DATA = scheduleParams.DAYS;
 const START_HOUR = scheduleParams.START_HOUR;
 const END_HOUR = scheduleParams.END_HOUR;
 
+const CLEAR_STORAGE = false;
+
+
 export default class MasterSchedule extends Component {
     constructor(props) {
         super(props);
@@ -29,7 +32,7 @@ export default class MasterSchedule extends Component {
             toggleFilter: false,
             currentKey: LOCATION_DATA[0],
         };
-        //AsynchStorage.clear();
+        if (CLEAR_STORAGE) { AsynchStorage.clear(); }
     }
 
     static navigationOptions = ({ navigation }) => {

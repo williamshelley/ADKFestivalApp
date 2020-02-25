@@ -4,35 +4,23 @@ import styles from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import AsynchStorage from '@react-native-community/async-storage';
-import scheduleParams, { prepareBlankData, prepareSidebar } from '../helper-functions/schedule_params';
+import scheduleParams, { 
+    prepareBlankData, 
+    prepareSidebar, 
+    BLANK_DATA } from '../helper-functions/schedule_params';
 import {
     storeData,
+    storeItem,
     convertFromMilitaryTime,
-    storageItem
 } from '../helper-functions/storage_functions';
 import { notNull, isNull } from '../helper-functions/helpers';
-
-/**
- * NEED TO CONSOLIDATE AND INTEGRATE
- */
 
 class InfoSchedule extends Component {
     constructor(props) {
         super(props);
 
         this.item = this.state = {
-            title: this.props.navigation.getParam('title', 'Bad Title'),
-            source: this.props.navigation.getParam('source', null),
-            location: this.props.navigation.getParam('location', "Bad Location"),
-            description: this.props.navigation.getParam('description', 'Bad Description'),
-            storageKey: this.props.navigation.getParam('location', ''),
-            date: this.props.navigation.getParam('date', {
-                day: "Bad Day",
-                month: "Bad Month",
-                year: "Bad Year",
-                startTime: "Bad Start",
-                endTime: "Bad End",
-            }),
+            data: this.props.navigation.getParam('data', null),
             inSchedule: false,
             col: null,
             row: null,
@@ -40,40 +28,17 @@ class InfoSchedule extends Component {
     }
 
     addItemToSchedule = (item) => {
-        AsynchStorage.getItem(this.state.storageKey).then((data) => {
+        AsynchStorage.getItem(this.state.data.storageKey).then((data) => {
+            let index = item.row * scheduleParams.DAYS.length + item.col + scheduleParams.DAYS.length;
+            let DATA = null;
             if (notNull(data)) {
-                if (item.row >= 0 && item.col >= 0) {
-                    let DATA = JSON.parse(data);
-                    let index = item.row * scheduleParams.DAYS.length + item.col + scheduleParams.DAYS.length;
-                    let id = DATA[index].id;
-                    DATA[index] = item;
-                    DATA[index].id = id;
-                    storeData(this.state.storageKey, DATA, data);
-                    this.setState({ inSchedule: true });
-                }
-            } else if (isNull(data) && scheduleParams.LOCATIONS.includes(this.state.storageKey)) {
-                let DATA = prepareBlankData(scheduleParams.DAYS,
-                    prepareSidebar(scheduleParams.START_HOUR, scheduleParams.END_HOUR));
-                let index = item.row * scheduleParams.DAYS.length + item.col + scheduleParams.DAYS.length;
-                let id = DATA[index].id;
-                DATA[index] = item;
-                DATA[index].id = id;
-                storeData(this.state.storageKey, DATA, data);
-                this.setState({ inSchedule: true });
-                return DATA;
+                DATA = JSON.parse(data);
+            } else if (scheduleParams.LOCATIONS.includes(this.state.data.storageKey)) {
+                DATA = BLANK_DATA;
             }
+            storeItem(DATA, data, item, index);
         });
-    }
-
-    getColRow = () => {
-        let column = null;
-        for (var i = 0; i < scheduleParams.DAYS.length; i++) {
-            if (this.state.date.day == scheduleParams.DAYS[i]) {
-                column = i;
-            }
-        }
-        let row = Math.abs(this.state.date.startTime - scheduleParams.START_HOUR);
-        return [column, row];
+        this.setState({ inSchedule: true });
     }
 
     addButton = () => {
@@ -81,19 +46,7 @@ class InfoSchedule extends Component {
             return (
                 <TouchableOpacity
                     style={[styles.addScheduleBtn, { height: "50%", flex: 1, flexDirection: "row" }]}
-                    onPress={() => {
-                        let xy = this.getColRow()
-                        this.addItemToSchedule(storageItem({
-                            title: this.state.title,
-                            source: this.state.source,
-                            description: this.state.description,
-                            location: this.state.location,
-                            date: this.state.date,
-                            row: this.state.row,
-                            col: this.state.col,
-                            storageKey: this.state.storageKey,
-                        }));
-                    }}
+                    onPress={() => { this.addItemToSchedule(this.state.data); }}
                 >
                     <View style={[styles.addScheduleBtn, { flex: 1, flexDirection: "row", paddingRight: 10 }]}>
                         <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "center" }]}>Add Event</Text>
@@ -106,20 +59,16 @@ class InfoSchedule extends Component {
     }
 
     componentDidMount() {
-        let xy = this.getColRow();
-        this.setState({ col: xy[0], row: xy[1] });
-        AsynchStorage.getItem(this.state.storageKey).then((data) => {
-            if (data != null && data != undefined) {
-                if (this.state.col >= 0 && this.state.row >= 0) {
-                    var DATA = JSON.parse(data);
-                    let index = this.state.row * scheduleParams.DAYS.length + this.state.col + scheduleParams.DAYS.length;
-                    let item = DATA[index];
-                    if (item.title == "" || item.title == null || item.title == undefined) {
-                        this.setState({ inSchedule: false });
-                    }
-                    else {
-                        this.setState({ inSchedule: true });
-                    }
+        AsynchStorage.getItem(this.state.data.storageKey).then((data) => {
+            if (notNull(data)) {
+                var DATA = JSON.parse(data);
+                let index = this.state.data.row * scheduleParams.DAYS.length + this.state.data.col + scheduleParams.DAYS.length;
+                let item = DATA[index];
+                if (isNull(item.title)) {
+                    this.setState({ inSchedule: false });
+                }
+                else {
+                    this.setState({ inSchedule: true });
                 }
             }
         });
@@ -128,7 +77,7 @@ class InfoSchedule extends Component {
     render() {
         return (
             <SafeAreaView style={[styles.container, { justifyContent: "flex-start" }]}>
-                <Image style={styles.infoImgView} source={{ uri: this.state.source }} />
+                <Image style={styles.infoImgView} source={{ uri: this.state.data.source }} />
 
                 <View style={[styles.container, { flex: 1, flexDirection: "row", }]}>
                     <View style={[styles.imgTitle, { flex: 1, flexDirection: "column", height: "100%" }]}>
@@ -137,37 +86,40 @@ class InfoSchedule extends Component {
                             color: "white", fontSize: 20,
                             textAlign: "left", paddingLeft: 10,
                         }}>
-                            {this.state.date.day}
+                            {this.state.data.date.day}
                         </Text>
                         <Text style={{
                             flex: 1, flexDirection: "column",
                             color: "white", fontSize: 16,
                             textAlign: "left", paddingLeft: 10,
                         }}>
-                            {convertFromMilitaryTime(this.state.date.startTime)}-{convertFromMilitaryTime(this.state.date.endTime)}
+                            {convertFromMilitaryTime(this.state.data.date.startTime)}-{convertFromMilitaryTime(this.state.data.date.endTime)}
                         </Text>
                     </View>
                     <this.addButton />
                 </View>
 
                 <View style={[styles.imgTitle, { flex: 1, height: "100%", flexDirection: "row" }]}>
-                    <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "center", paddingLeft: 10, }]}>{this.state.location}</Text>
+                    <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "center", paddingLeft: 10, }]}>{this.state.data.location}</Text>
                 </View>
-
             </SafeAreaView>
         );
     };
 }
 
 class InfoAbout extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: this.props.navigation.getParam('data', null),
+        }
+    }
     render() {
-        let source = this.props.navigation.getParam('source', 'Bad Image');
-        let description = this.props.navigation.getParam("description", "Bad Description");
         return (
             <SafeAreaView style={[styles.container, { justifyContent: "center" }]}>
-                <Image style={styles.infoImgView} source={{ uri: source }} />
+                <Image style={styles.infoImgView} source={{ uri: this.state.data.source }} />
                 <ScrollView contentStyle={styles.descriptionView}>
-                    <Text style={styles.descriptionText}>{description}</Text>
+                    <Text style={styles.descriptionText}>{this.state.data.description}</Text>
                 </ScrollView>
             </SafeAreaView>
         );
