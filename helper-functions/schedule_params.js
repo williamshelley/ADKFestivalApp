@@ -1,18 +1,39 @@
 import {emptyStorageItem, storageItem} from './storage_functions';
 
 export const MONTHS = {
-    0:"January", 1:"February", 2:"March", 3:"April", 4:"May", 5:"June",
-    6:"July", 7:"August", 8:"September", 9:"October",10:"November", 11: "December",
+    0:"January","January":0,
+    1:"February","February":1,
+    2:"March","March":2,
+    3:"April","April":3,
+    4:"May","May":4,
+    5:"June","June":5,
+    6:"July","July":6,
+    7:"August","August":7,
+    8:"September","September":8,
+    9:"October","October":9,
+    10:"November","November":10,
+    11: "December","December":11,
 };
+
 
 export default scheduleParams = {
     LOCATIONS: ["New York", "Florida", "Colorado", "Narnia"],
     DAYS: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     DAYS_DICT: {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5,"Saturday":6},
-    START_HOUR: 5,
-    END_HOUR: 22,
+    START_HOUR: 0,
+    END_HOUR: 24,
     YEAR: 2020,
 };
+
+timeToString = (time) => (
+    (time < 10) ? ("0" + String(time)) : String(time)
+);
+
+export const dateAsString = ( date ) => (
+    date.monthName + " " + String(date.dd) + ", " + 
+    String(date.yyyy) + " " + timeToString(date.hour) 
+    + ":" + timeToString(date.minutes) + ":" + timeToString(date.seconds)
+);
 
 export const getIndex = ({ xcol, yrow }) => (
     yrow * scheduleParams.DAYS.length + xcol + scheduleParams.DAYS.length

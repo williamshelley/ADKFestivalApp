@@ -6,6 +6,7 @@ import EventCard from '../components/EventCard';
 import styles, { filterIcon, drawerIcon, theme, opacityValue } from '../styles';
 import scheduleParams, { MONTHS } from '../helper-functions/schedule_params';
 import { notNull } from '../helper-functions/helpers';
+import { _data, _date } from '../helper-functions/data';
 
 const NUM_COLUMNS = 2;
 const fetchLocation = true ? 'http://127.0.0.1:5000/' : null;
@@ -65,9 +66,14 @@ export default class HomeView extends Component {
           });
         }
         for (var i = 0; i < responseJson.sources.length; i++) {
+          let date = new Date(Date.now());
+
           let weekDay = scheduleParams.DAYS[i % scheduleParams.DAYS.length];
           let numHours = scheduleParams.END_HOUR - scheduleParams.START_HOUR;
-          let startHour = scheduleParams.START_HOUR + (i % numHours);
+
+          //let startHour = scheduleParams.START_HOUR + (i % numHours);
+          let startHour = date.getHours();
+
           let location = scheduleParams.LOCATIONS[i % scheduleParams.LOCATIONS.length];
           let storageKey = location;
           
@@ -75,14 +81,14 @@ export default class HomeView extends Component {
           let row = Math.abs(startHour - scheduleParams.START_HOUR);
           
           let endHour = startHour + 1;
-          let date = new Date(Date.now());
-          let mm = MONTHS[date.getMonth()];
+          let mm = date.getMonth();
           let dd = date.getDate();
           let minutes = date.getMinutes();
-          let secs = date.getSeconds() + 10;
-          let seconds = (secs < 60) ? secs : 59;
+          let seconds = date.getSeconds();
+          let monthName = MONTHS[mm];
 
-          ALL_DATA.push({
+          ALL_DATA.push(
+            _data({
             title: responseJson.titles[i],
             category: responseJson.categories[i],
             source: responseJson.sources[i],
@@ -90,8 +96,9 @@ export default class HomeView extends Component {
             id: responseJson.id_list[i],
             location: location,
             storageKey: storageKey,
-            date: {
+            date: _date({
               weekDay: weekDay,
+              monthName: monthName, 
               mm: mm,
               dd: dd,
               yyyy: scheduleParams.YEAR,
@@ -99,10 +106,10 @@ export default class HomeView extends Component {
               minutes: minutes, 
               seconds: seconds,
               endTime: endHour,
-            },
+            }),
             col: col, //column for schedule component
             row: row, //row for schedule component
-          })
+          }))
         }
         this.setState({ categories: CATEGORIES, allData: ALL_DATA, currentData: ALL_DATA });
       });
