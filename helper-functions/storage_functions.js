@@ -27,17 +27,21 @@ export const convertFromMilitaryTime = (time) => {
     return (time == halfday) ? String(time) + "PM" : converted;
 }
 
-export const emptyStorageItem = ({col, row, storageKey}) => {
+export const emptyStorageItem = ({ item, col, row, storageKey }) => {
+    let empty = {col:null, row:null, storageKey:null};
+    empty.col = notNull(item) ? item.col : col;
+    empty.row = notNull(item) ? item.row : row;
+    empty.storageKey = notNull(item) ? item.storageKey : storageKey;
     return {
         title: null,
         source: null,
         description: null,
         location: null,
         date: null,
-        row: row,
-        col: col,
-        storageKey: storageKey,
-        id: String(col * Math.random()) + storageKey + String(row * Math.random()),
+        row: empty.row,
+        col: empty.col,
+        storageKey: empty.storageKey,
+        id: String(empty.col * Math.random()) + empty.storageKey + String(empty.row * Math.random()),
     };
 };
 

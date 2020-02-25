@@ -4,7 +4,7 @@ import IconButton from '../components/IconButton';
 import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
 import styles, { filterIcon, drawerIcon, theme, opacityValue } from '../styles';
-import scheduleParams from '../helper-functions/schedule_params';
+import scheduleParams, { MONTHS } from '../helper-functions/schedule_params';
 import { notNull } from '../helper-functions/helpers';
 
 const NUM_COLUMNS = 2;
@@ -68,12 +68,19 @@ export default class HomeView extends Component {
           let weekDay = scheduleParams.DAYS[i % scheduleParams.DAYS.length];
           let numHours = scheduleParams.END_HOUR - scheduleParams.START_HOUR;
           let startHour = scheduleParams.START_HOUR + (i % numHours);
-          let endHour = startHour + 1;
           let location = scheduleParams.LOCATIONS[i % scheduleParams.LOCATIONS.length];
           let storageKey = location;
-
-            let col = scheduleParams.DAYS_DICT[weekDay];
-            let row = Math.abs(startHour - scheduleParams.START_HOUR);
+          
+          let col = scheduleParams.DAYS_DICT[weekDay];
+          let row = Math.abs(startHour - scheduleParams.START_HOUR);
+          
+          let endHour = startHour + 1;
+          let date = new Date(Date.now());
+          let mm = MONTHS[date.getMonth()];
+          let dd = date.getDate();
+          let minutes = date.getMinutes();
+          let secs = date.getSeconds() + 10;
+          let seconds = (secs < 60) ? secs : 59;
 
           ALL_DATA.push({
             title: responseJson.titles[i],
@@ -81,17 +88,20 @@ export default class HomeView extends Component {
             source: responseJson.sources[i],
             description: responseJson.descriptions[i],
             id: responseJson.id_list[i],
-            col: col,
-            row: row,
             location: location,
             storageKey: storageKey,
             date: {
               weekDay: weekDay,
-              month: 2,
-              year: scheduleParams.YEAR,
-              startTime: startHour, //military time
+              mm: mm,
+              dd: dd,
+              yyyy: scheduleParams.YEAR,
+              hour: startHour, //military time
+              minutes: minutes, 
+              seconds: seconds,
               endTime: endHour,
             },
+            col: col, //column for schedule component
+            row: row, //row for schedule component
           })
         }
         this.setState({ categories: CATEGORIES, allData: ALL_DATA, currentData: ALL_DATA });
@@ -123,7 +133,7 @@ export default class HomeView extends Component {
   }
 
   componentDidMount() {
-    if (notNull(fetchLocation)){
+    if (notNull(fetchLocation)) {
       this.fetchData();
     }
     this.props.navigation.setParams({
@@ -138,9 +148,9 @@ export default class HomeView extends Component {
         <View style={styles.scrollContainer}>
           <FlatList
             data={this.state.currentData}
-            contentContainerStyle={[styles.scrollContainer,{
-                backgroundColor: theme.overlay,
-                opacity: opacityValue(this.state.toggleFilter),
+            contentContainerStyle={[styles.scrollContainer, {
+              backgroundColor: theme.overlay,
+              opacity: opacityValue(this.state.toggleFilter),
             }]}
             numColumns={NUM_COLUMNS}
             renderItem={({ item }) =>

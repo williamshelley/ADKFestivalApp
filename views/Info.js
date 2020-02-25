@@ -4,15 +4,8 @@ import styles from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import AsynchStorage from '@react-native-community/async-storage';
-import scheduleParams, { 
-    prepareBlankData, 
-    prepareSidebar, 
-    BLANK_DATA } from '../helper-functions/schedule_params';
-import {
-    storeData,
-    storeItem,
-    convertFromMilitaryTime,
-} from '../helper-functions/storage_functions';
+import scheduleParams, { BLANK_DATA, getIndex } from '../helper-functions/schedule_params';
+import { storeItem, convertFromMilitaryTime } from '../helper-functions/storage_functions';
 import { notNull, isNull } from '../helper-functions/helpers';
 
 class InfoSchedule extends Component {
@@ -29,7 +22,7 @@ class InfoSchedule extends Component {
 
     addItemToSchedule = (item) => {
         AsynchStorage.getItem(this.state.data.storageKey).then((data) => {
-            let index = item.row * scheduleParams.DAYS.length + item.col + scheduleParams.DAYS.length;
+            let index = getIndex({ xcol: item.col, yrow: item.row });
             let DATA = null;
             if (notNull(data)) {
                 DATA = JSON.parse(data);
@@ -46,8 +39,7 @@ class InfoSchedule extends Component {
             return (
                 <TouchableOpacity
                     style={[styles.addScheduleBtn, { height: "50%", flex: 1, flexDirection: "row" }]}
-                    onPress={() => { this.addItemToSchedule(this.state.data); }}
-                >
+                    onPress={() => { this.addItemToSchedule(this.state.data); }}>
                     <View style={[styles.addScheduleBtn, { flex: 1, flexDirection: "row", paddingRight: 10 }]}>
                         <Text style={[styles.medWhiteText, { flex: 1, flexDirection: "row", textAlign: "center" }]}>Add Event</Text>
                         <Image style={[styles.icon, { flex: 0.1, paddingRight: 10 }]} source={require("../images/white_addSchedule.png")} />
@@ -58,16 +50,17 @@ class InfoSchedule extends Component {
         return null;
     }
 
+    selfInSchedule = (data) => {
+        let index = getIndex({ xcol: this.state.data.col, yrow: this.state.data.row });
+        let item = data[index];
+        return notNull(item.title);
+    }
+
     componentDidMount() {
         AsynchStorage.getItem(this.state.data.storageKey).then((data) => {
             if (notNull(data)) {
-                var DATA = JSON.parse(data);
-                let index = this.state.data.row * scheduleParams.DAYS.length + this.state.data.col + scheduleParams.DAYS.length;
-                let item = DATA[index];
-                if (isNull(item.title)) {
-                    this.setState({ inSchedule: false });
-                }
-                else {
+                let DATA = JSON.parse(data);
+                if (this.selfInSchedule(DATA)) {
                     this.setState({ inSchedule: true });
                 }
             }
@@ -86,14 +79,14 @@ class InfoSchedule extends Component {
                             color: "white", fontSize: 20,
                             textAlign: "left", paddingLeft: 10,
                         }}>
-                            {this.state.data.date.day}
+                            {this.state.data.date.weekDay}, {this.state.data.date.mm} {this.state.data.date.dd} {this.state.data.date.yyyy}
                         </Text>
                         <Text style={{
                             flex: 1, flexDirection: "column",
                             color: "white", fontSize: 16,
                             textAlign: "left", paddingLeft: 10,
                         }}>
-                            {convertFromMilitaryTime(this.state.data.date.startTime)}-{convertFromMilitaryTime(this.state.data.date.endTime)}
+                            {convertFromMilitaryTime(this.state.data.date.hour)}-{convertFromMilitaryTime(this.state.data.date.endTime)}
                         </Text>
                     </View>
                     <this.addButton />

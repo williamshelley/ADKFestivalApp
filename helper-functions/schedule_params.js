@@ -1,5 +1,9 @@
 import {emptyStorageItem, storageItem} from './storage_functions';
 
+export const MONTHS = {
+    0:"January", 1:"February", 2:"March", 3:"April", 4:"May", 5:"June",
+    6:"July", 7:"August", 8:"September", 9:"October",10:"November", 11: "December",
+};
 
 export default scheduleParams = {
     LOCATIONS: ["New York", "Florida", "Colorado", "Narnia"],
@@ -10,6 +14,9 @@ export default scheduleParams = {
     YEAR: 2020,
 };
 
+export const getIndex = ({ xcol, yrow }) => (
+    yrow * scheduleParams.DAYS.length + xcol + scheduleParams.DAYS.length
+);
 
 export const createHourList = (startHour, endHour) => {
     let res = [];

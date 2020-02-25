@@ -8,9 +8,10 @@ import ScheduleItem from '../components/ScheduleItem';
 import scheduleParams, {
     prepareDropdownFilter,
     prepareBlankData,
-    prepareSidebar
+    prepareSidebar,
+    getIndex
 } from '../helper-functions/schedule_params';
-import { storeData, emptyStorageItem } from '../helper-functions/storage_functions';
+import { storeData, emptyStorageItem, storeItem } from '../helper-functions/storage_functions';
 import { notNull, isNull } from '../helper-functions/helpers';
 
 const LOCATION_DATA = scheduleParams.LOCATIONS;
@@ -19,7 +20,6 @@ const START_HOUR = scheduleParams.START_HOUR;
 const END_HOUR = scheduleParams.END_HOUR;
 
 const CLEAR_STORAGE = false;
-
 
 export default class MasterSchedule extends Component {
     constructor(props) {
@@ -32,7 +32,8 @@ export default class MasterSchedule extends Component {
             toggleFilter: false,
             currentKey: LOCATION_DATA[0],
         };
-        if (CLEAR_STORAGE) { AsynchStorage.clear(); }
+
+        CLEAR_STORAGE ? AsynchStorage.clear() : null;
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -48,7 +49,7 @@ export default class MasterSchedule extends Component {
 
     updateData = (targetKey, defaultData) => {
         AsynchStorage.getItem(targetKey).then((data) => {
-            if (data == null || data == undefined) {
+            if (isNull(data)) {
                 storeData(targetKey, defaultData, defaultData);
             }
             let DATA = notNull(data) ? JSON.parse(data) : defaultData;
@@ -82,15 +83,10 @@ export default class MasterSchedule extends Component {
     }
 
     cleanScheduleItem = (item) => {
-        if (item.row >= 0 && item.col >= 0) {
-            let DATA = this.state.data;
-            let index = item.row * HEADER_DATA.length + item.col + HEADER_DATA.length;
-            let id = DATA[index].id;
-            DATA[index] = emptyStorageItem({ col: item.col, row: item.row });
-            DATA[index].id = id;
-            storeData(this.state.currentKey, DATA, this.state.data);
-            this.setState({ data: DATA });
-        }
+        let DATA = this.state.data;
+        let index = getIndex({ xcol: item.col, yrow: item.row });
+        storeItem(DATA, this.state.data, emptyStorageItem({ item: item }), index);
+        this.setState({ data: DATA });
     }
 
     componentDidMount() {
