@@ -1,6 +1,16 @@
 import { MONTHS, dateAsString } from "./schedule_params";
 import { notNull } from "./helpers";
 
+const _scheduleData = ({
+    title,
+    id,
+    source,
+}) => ({
+    title,
+    id,
+    source,
+});
+
 export const _data = ({ 
     title,
     category,
@@ -147,4 +157,6 @@ export class CustomDate {
 };
 
 export const EMPTY_DATA = _data({});
+export const EMPTY_SCHED_DATA = _scheduleData({});
 export const EMPTY_DATE = _date({});
+export const JSON_DATA = require('../web-scrape/sample.json')

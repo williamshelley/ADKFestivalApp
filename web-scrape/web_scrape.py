@@ -157,12 +157,6 @@ cat_soup = BeautifulSoup(cat_request.text,"html.parser")
 cat_width_a = cat_soup.find(id="full-width").find_all("a")
 category_links = find_categories(cat_width_a)
 
-categories = []
-titles = []
-id_list = []
-desc_links = []
-sources = []
-descriptions = []
 pages = []
 events = []
 
@@ -178,20 +172,21 @@ for thread in threads:
 num_pages = 0
 category_set = set()
 
+data_list = []
+
 for event in events:
-	categories.append(event.category)
-	titles.append(event.title)
-	id_list.append(str(hash(event.id)))
-	sources.append(event.source)
-	desc_links.append(event.desc_link)
-	descriptions.append(event.description)
+	hashed_id = str(hash(event.id))
+	category_set.add(event.category)
 
-for category in categories:
-	category_set.add(category)
+	data_list.append(json.dumps(json.dumps({hashed_id: {
+		"title": event.title,
+		"category": event.category,
+		"description": event.description,
+		"source": event.source,
+	}})))
+category_set = list(category_set)
 
-category_arr_from_set = []
-for category in category_set:
-	category_arr_from_set.append(category)
+data = json.dumps(data_list)
 
 
 elapsed_time = time.time() - start_time
@@ -199,16 +194,16 @@ print("ELAPSED TIME: ", time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 
 web_scrape = Flask(__name__)
 
+json_dictionary = { "data": data, "category_set": category_set }
+json_object = json.dumps(json_dictionary) 
+with open("sample.json", "w") as outfile: 
+    outfile.write(json_object) 
+
 @web_scrape.route('/',methods=["GET"])
 def ping():
 	return jsonify({
-		"category_set": category_arr_from_set,
-		"categories": categories,
-		"titles": titles,
-		"id_list": id_list,
-		"links": desc_links,
-		"sources": sources,
-		"descriptions": descriptions,
+		"data": data,
+		"category_set": category_set,
 	})
 
 web_scrape.run()

@@ -4,16 +4,17 @@ import IconButton from '../components/IconButton';
 import DropdownFilter from '../components/DropdownFilter';
 import EventCard from '../components/EventCard';
 import styles, { filterIcon, drawerIcon, theme, opacityValue } from '../styles';
-import scheduleParams, { MONTHS } from '../helper-functions/schedule_params';
-import { notNull } from '../helper-functions/helpers';
-import { _data, _date } from '../helper-functions/data';
+import { notNull, isNull } from '../helper-functions/helpers';
+import { _data, _date, JSON_DATA } from '../helper-functions/data';
+import { pushData, pushCategories, storeData, retrieveData, OFFLINE_STORAGE_KEY } from '../helper-functions/storage_functions';
+
 
 const NUM_COLUMNS = 2;
-const fetchLocation = true ? 'http://127.0.0.1:5000/' : null;
 
 export default class HomeView extends Component {
   constructor(props) {
     super(props);
+    this.fetchLocation = true ? 'http://127.0.0.1:5000/' : null;
 
     this.state = {
       categories: null,
@@ -21,6 +22,7 @@ export default class HomeView extends Component {
       currentData: null,
       toggleFilter: false,
     }
+
   }
 
   static navigationOptions = ({ navigation }) => {
@@ -49,71 +51,31 @@ export default class HomeView extends Component {
   };
 
   fetchData = () => {
-    fetch(fetchLocation, {
+    fetch(this.fetchLocation, {
       method: 'GET',
     })
-      .then((response) => response.json())
-      .catch((error) => {
-        console.error(error);
-      })
-      .then((responseJson) => {
-        let ALL_DATA = [];
-        let CATEGORIES = []
-        for (var i = 0; i < responseJson.category_set.length; i++) {
-          CATEGORIES.push({
-            category: responseJson.category_set[i],
-            id: String(i * Math.random()) + responseJson.category_set + String(i * Math.random()),
-          });
-        }
-        for (var i = 0; i < responseJson.sources.length; i++) {
-          let date = new Date(Date.now());
-
-          let weekDay = scheduleParams.DAYS[i % scheduleParams.DAYS.length];
-          let numHours = scheduleParams.END_HOUR - scheduleParams.START_HOUR;
-
-          //let startHour = scheduleParams.START_HOUR + (i % numHours);
-          let startHour = date.getHours();
-
-          let location = scheduleParams.LOCATIONS[i % scheduleParams.LOCATIONS.length];
-          let storageKey = location;
-          
-          let col = scheduleParams.DAYS_DICT[weekDay];
-          let row = Math.abs(startHour - scheduleParams.START_HOUR);
-          
-          let endHour = startHour + 1;
-          let mm = date.getMonth();
-          let dd = date.getDate();
-          let minutes = date.getMinutes();
-          let seconds = date.getSeconds();
-          let monthName = MONTHS[mm];
-
-          ALL_DATA.push(
-            _data({
-            title: responseJson.titles[i],
-            category: responseJson.categories[i],
-            source: responseJson.sources[i],
-            description: responseJson.descriptions[i],
-            id: responseJson.id_list[i],
-            location: location,
-            storageKey: storageKey,
-            date: _date({
-              weekDay: weekDay,
-              monthName: monthName, 
-              mm: mm,
-              dd: dd,
-              yyyy: scheduleParams.YEAR,
-              hour: startHour, //military time
-              minutes: minutes, 
-              seconds: seconds,
-              endTime: endHour,
-            }),
-            col: col, //column for schedule component
-            row: row, //row for schedule component
-          }))
-        }
-        this.setState({ categories: CATEGORIES, allData: ALL_DATA, currentData: ALL_DATA });
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error(error);
+    })
+    .then((responseJson) => {
+        storeData(OFFLINE_STORAGE_KEY, responseJson, responseJson);
+        this.setAllData(responseJson);
       });
   };
+
+  setAllData = (json) => {
+    let ALL_DATA = [];
+    let CATEGORIES = []
+    for (var i = 0; i < json.category_set.length; i++) {
+      pushCategories({json: json, destination:CATEGORIES, index:i});
+    }
+    let parsedData = JSON.parse(json.data);
+    for (var i = 0; i < parsedData.length; i++) {
+      pushData({jsonData: parsedData, destination: ALL_DATA, index: i});
+    }
+    this.setState({ categories: CATEGORIES, allData: ALL_DATA, currentData: ALL_DATA });
+  }
 
   setCurrentDisplay = (nextTitle) => {
     let HOME_DATA = []
@@ -140,8 +102,10 @@ export default class HomeView extends Component {
   }
 
   componentDidMount() {
-    if (notNull(fetchLocation)) {
+    if (notNull(this.fetchLocation)) {
       this.fetchData();
+    } else{
+      retrieveData(OFFLINE_STORAGE_KEY, this.setAllData);
     }
     this.props.navigation.setParams({
       toggleFilter: this.toggleFilter,

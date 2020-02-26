@@ -27,6 +27,10 @@ export const filterIcon = require("./images/white_filter.png");
 export const drawerIcon = require("./images/white_list.png");
 export const emptyImage = require("./images/empty.png");
 
+const minMargin = 2
+const scheduleItemMarginsRL = 10;
+const scheduleItemMarginsTB = 2;
+
 const styles = {
     windowWidth: screenWidth,
     windowHeight: screenHeight,
@@ -243,7 +247,7 @@ const styles = {
         alignSelf: "center",
         alignItems:"center",
         justifyContent: "center",
-        margin: 5,
+        margin: minMargin,
     },
     scrollContainer: {
         flexGrow:1,
@@ -259,7 +263,7 @@ const styles = {
         borderColor: "white",
         alignContent: "center",
         justifyContent: "center",
-        margin: 5,
+        margin: minMargin,
     },
     sidebarSectionContainer: {
         width: schedSidebarSectWidth,
@@ -270,7 +274,10 @@ const styles = {
         alignItems: "center",
         alignSelf: "center",
         justifyContent: "center",
-        marginRight: 10, marginLeft: 10, marginBottom: 5, marginTop: 5,
+        marginRight: scheduleItemMarginsRL, 
+        marginLeft: scheduleItemMarginsRL, 
+        marginBottom: scheduleItemMarginsTB,
+        marginTop: scheduleItemMarginsTB,
     },
     cornerSectionConteiner: {
         width: schedSidebarSectWidth,
@@ -281,7 +288,10 @@ const styles = {
         alignSelf: "center",
         alignItems: "center",
         justifyContent: "center",
-        marginRight: 10, marginLeft: 10, marginBottom: 5, marginTop: 5,
+        marginRight: scheduleItemMarginsRL, 
+        marginLeft: scheduleItemMarginsRL, 
+        marginBottom: scheduleItemMarginsTB, 
+        marginTop: scheduleItemMarginsTB,
     },
     sectionData: {
         flex: 1,

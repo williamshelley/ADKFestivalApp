@@ -5,10 +5,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import AsynchStorage from '@react-native-community/async-storage';
 import scheduleParams, { BLANK_DATA, getIndex, dateAsString } from '../helper-functions/schedule_params';
-import { storeItem, convertFromMilitaryTime } from '../helper-functions/storage_functions';
+import { storeItem, convertFromMilitaryTime, OFFLINE_STORAGE_KEY, retrieveData } from '../helper-functions/storage_functions';
 import { notNull, isNull } from '../helper-functions/helpers';
 import { scheduleNotification } from '../helper-functions/notification_services';
-import { EMPTY_DATA } from '../helper-functions/data';
+import { EMPTY_DATA, EMPTY_SCHED_DATA } from '../helper-functions/data';
 
 class InfoSchedule extends Component {
     constructor(props) {
@@ -24,6 +24,7 @@ class InfoSchedule extends Component {
     }
 
     addItemToSchedule = (item) => {
+        console.log(this.state.data.storageKey);
         scheduleNotification({ message: this.state.data.title, date: Date.now() + (5*1000)});
         AsynchStorage.getItem(this.state.data.storageKey).then((data) => {
             let index = getIndex({ xcol: item.col, yrow: item.row });
@@ -57,10 +58,15 @@ class InfoSchedule extends Component {
     selfInSchedule = (data) => {
         let index = getIndex({ xcol: this.state.data.col, yrow: this.state.data.row });
         let item = data[index];
-        return notNull(item.title);
+        return notNull(item.title) && this.state.data.title == item.title;
+    }
+
+    setData = (data) => {
+        this.setState({ data: data });
     }
 
     componentDidMount() {
+        //retrieveData(OFFLINE_STORAGE_KEY, )
         AsynchStorage.getItem(this.state.data.storageKey).then((data) => {
             if (notNull(data)) {
                 let DATA = JSON.parse(data);

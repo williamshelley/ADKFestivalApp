@@ -1,6 +1,8 @@
 
 import AsynchStorage from '@react-native-community/async-storage';
 import { notNull } from './helpers';
+import { MONTHS } from './schedule_params';
+import { _data, _date } from './data';
 
 export const storeData = (targetKey, data, defaultData) => {
     let DATA = notNull(data) ? data : defaultData;
@@ -13,6 +15,9 @@ export const storeItem = (data, defaultData, item, index) => {
     data[index].id = id;
     storeData(item.storageKey, data, defaultData);
 };
+
+export const OFFLINE_STORAGE_KEY = 'OFFLINE_STORAGE_KEY';
+
 
 export const retrieveData = (targetKey, callback) => {
     AsynchStorage.getItem(targetKey).then((data) => {
@@ -72,3 +77,85 @@ export const storageItemCopy = ({ item }) => {
         id: title + item.id + String(row + col * Math.random() * Math.random()),
     });
 };
+
+const parseData = ({ originalJson, index }) => (
+    JSON.parse( JSON.parse( originalJson[index]) )
+);
+
+export const pushCategories = ({ json, destination, index }) => {
+    let i = index;
+    destination.push({
+        category: json.category_set[i],
+        id: String(i * Math.random()) + json.category_set + String(i * Math.random()),
+      });
+}
+
+export const getID = ({ json }) => (
+    Object.keys(json)[0]
+);
+
+export const getScheduleCol = (weekDay) => (
+    scheduleParams.DAYS_DICT[weekDay]
+);
+
+export const getScheduleRow = (hour) => (
+    Math.abs(hour - scheduleParams.START_HOUR)
+);
+
+export const putDataInStructFromID = (id) => {
+    AsynchStorage.getItem(OFFLINE_STORAGE_KEY).then((data)=>{
+        let data_i = parseData({ originalJson: jsonData, index: index})
+        let id = getID({ json: data_i });
+        let json = data_i[id];
+    });
+};
+
+export const pushData = ({ jsonData, destination, index }) => {
+    let data_i = parseData({ originalJson: jsonData, index: index})
+    let id = getID({ json: data_i });
+    let json = data_i[id];
+
+    let date = new Date(Date.now());
+
+    let weekDay = scheduleParams.DAYS[index % scheduleParams.DAYS.length];
+    let numHours = scheduleParams.END_HOUR - scheduleParams.START_HOUR;
+
+    let startHour = date.getHours();
+
+    let location = scheduleParams.LOCATIONS[index % scheduleParams.LOCATIONS.length];
+    let storageKey = location;
+    
+    let col = getScheduleCol(weekDay);
+    let row = getScheduleRow(startHour);
+    
+    let endHour = startHour + 1;
+    let mm = date.getMonth();
+    let dd = date.getDate();
+    let minutes = date.getMinutes();
+    let seconds = date.getSeconds();
+    let monthName = MONTHS[mm];
+
+    destination.push(
+      _data({
+      title: json.title,
+      category: json.category,
+      source: json.source,
+      description: json.description,
+      id: id,
+      location: location,
+      storageKey: storageKey,
+      date: _date({
+        weekDay: weekDay,
+        monthName: monthName, 
+        mm: mm,
+        dd: dd,
+        yyyy: scheduleParams.YEAR,
+        hour: startHour, //military time
+        minutes: minutes, 
+        seconds: seconds,
+        endTime: endHour,
+      }),
+      col: col, //column for schedule component
+      row: row, //row for schedule component
+    }));
+  }
