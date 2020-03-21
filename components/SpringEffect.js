@@ -17,7 +17,6 @@ export default class SpringEffect extends React.Component {
             fadeValue: new Animated.Value(0),
             showing: true,
         }
-
     }
 
     animate = (duration, toggle) => {
@@ -34,25 +33,18 @@ export default class SpringEffect extends React.Component {
 
     render() {
         let direction = (this.props.direction == "right") ? 1 : -1;
-        this.animate(this.props.duration, this.props.toggle);
+        this.animate(this.props.duration, this.props.toggleFilter);
         return (
             <Animated.View
-                style={{
-                    position: "absolute",
-                    top: 0, bottom: 0, right: 0, left: 0,
-                    justifyContent: "flex-start",
+                style={[this.props.style, {
                     opacity: this.state.fadeValue,
-                    transform: [
-                        {
-                            scale: this.state.fadeValue
-                        }, {
+                    transform: [{
                             translateX: this.state.effectValue.interpolate({
                                 inputRange: [0, 1],
                                 outputRange: [screenWidth * direction, 0]
                             })
                         }],
-                }}
-            >
+                }]}>
                 {this.props.children}
             </Animated.View>
         );

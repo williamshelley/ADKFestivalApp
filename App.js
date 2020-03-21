@@ -1,97 +1,89 @@
-import React, { Component } from 'react';
-import { FlatList, ImageBackground } from 'react-native';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createDrawerNavigator } from "react-navigation-drawer";
-import { createStackNavigator } from 'react-navigation-stack';
-import InfoSchedule from './views/Info';
-import HomeView from './views/HomeView';
-import MasterSchedule from './views/Schedule';
-import styles from './styles';
-import DrawerItem from './components/DrawerItem';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 
-const DATA = [
-  {
-    category: "Program",
-    id: "Program",
-    route: "Program",
-    data: null,
-  },
-  {
-    category: "Schedule",
-    id: "Schedule",
-    route: "MasterSchedule",
-    data: null,
-  },
-  {
-    category: "Map",
-    id: "Map",
-    route: "Map",
-    data: null,
-  }
-];
+import Home from './views/Home';
+import Details from './views/Details';
+import Schedule from './views/Schedule';
 
-class CategorySidebar extends Component {
-  constructor(props) {
-    super(props);
+import { styles, theme } from './styles';
+import IconButton from './components/IconButton';
+import { requestJson } from './utils/data-funcs';
+import Sponsors from './views/Sponsors';
+import DrawerContent from './components/DrawerContent';
 
-    this.state = {
-      data: DATA,
-    }
-  }
+const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
-  render() {
-    return (
-        <ImageBackground source={require("./images/swan.jpg")} style={{
-          flex:1,
-          justifyContent: "center"
-        }}>
-          <FlatList
-            data={this.state.data}
-            contentContainerStyle={styles.scrollContainer}
-            numColumns={1}
-            renderItem={({ item }) => 
-            <DrawerItem 
-              title={item.category}
-              onPress={()=>{this.props.navigation.navigate(item.route);}}
-            />}
-            keyExtractor={item => item.id}
-          />
+const drawerIcon = require("./images/drawerIcon-white.png");
 
-        </ImageBackground>
+const HomeStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: theme.navigationAccent,
+        headerStyle: styles.stackHeader,
+      }}>
+      <Stack.Screen name="Home" component={Home}
+        options={{
+          headerLeft: () => (
+            <IconButton source={drawerIcon}
+              onPress={() => { navigation.toggleDrawer() }} />),
+        }} />
+      <Stack.Screen name="Details" component={Details} />
+    </Stack.Navigator>
+  );
+}
 
-    );
-  }
-};
 
-const StackNavigator = createStackNavigator({
-  HomeView,
-  InfoSchedule,
-  MasterSchedule,
-}, {
-  defaultNavigationOptions:
-    navigationOptions = () => {
-      return {
-        headerStyle: styles.headerBar,
-        headerTitle: "",
-        headerBackTitle: "",
-        headerTintColor: "white",
-      };
-    },
-},
+
+const ScheduleStack = ({ navigation }) => (
+  <Stack.Navigator
+    screenOptions={{
+      headerTintColor: theme.navigationAccent,
+      headerStyle: styles.stackHeader,
+    }}>
+    <Stack.Screen name="Schedule" component={Schedule}
+      options={{
+        headerLeft: () => (
+          <IconButton source={drawerIcon}
+            onPress={() => { navigation.toggleDrawer() }} />)
+      }} />
+    <Stack.Screen name="Details" component={Details} />
+  </Stack.Navigator>
 );
 
-const DrawerNavigator = createDrawerNavigator({
-  StackNavigator,
-}, {
-  contentComponent: CategorySidebar,
-});
+const SponsorStack = ({ navigation }) => {
 
-const SwitchNavigator = createSwitchNavigator({
-  DrawerNavigator,
-  MasterSchedule,
-})
+  return (
+    <Stack.Navigator screenOptions={{
+      headerTintColor: theme.navigationAccent,
+      headerStyle: styles.stackHeader,
+    }}>
+      <Stack.Screen name="Sponsors" component={Sponsors} options={{
+        headerLeft: () => (
+          <IconButton source={drawerIcon}
+            onPress={() => { navigation.toggleDrawer() }} />)
+      }} />
+    </Stack.Navigator>
+  );
+}
 
-const App = createAppContainer(DrawerNavigator);
+export default class App extends React.Component {
+  componentDidMount = async () => {
+    await requestJson();
+  }
 
-
-export default App;
+  render = () => {
+    return (
+      <NavigationContainer>
+        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+          <Drawer.Screen name="Home" component={HomeStack} />
+          <Drawer.Screen name="Schedule" component={ScheduleStack} />
+          <Drawer.Screen name="Sponsors" component={SponsorStack} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    );
+  };
+}
