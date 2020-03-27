@@ -44,7 +44,11 @@ export default class DetailsBox extends React.Component {
                 <ScrollView contentContainerStyle={styles.detailsTextScroll}>
                     <View style={[centered, styles.addButtonContainer, {flex: 0.5, backgroundColor: theme.accent}]}>
                         <Text style={style.title}>{title}</Text>
-                        <Text style={style.info}>{date}</Text>
+                        {
+                            date.split(",").map((time, index)=>(
+                                <Text key={index} style={style.info}>{time}</Text>
+                            ))
+                        }
                     <Text style={style.info}>{location}</Text>
                     </View>
 

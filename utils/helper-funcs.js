@@ -66,8 +66,8 @@ export const arrayifyDate = (data)=>{
     return [];
 }
 
-export const parseDateFromArr = (listOfDates) => {
-
+export const parseDateFromArr = (listOfDates, index) => {
+    return listOfDates[index].split(" to ");
 }
 
 export const getDatePosition = (dateString) => {

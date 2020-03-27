@@ -144,6 +144,11 @@ def set_event(pg_item, category):
 			same_day = start[:11] + SECOND_TIME[9:]
 			end = random_date(start, same_day, random.random())
 			event.date = start + " to " + end
+
+			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
+			same_day = start[:11] + SECOND_TIME[9:]
+			end = random_date(start, same_day, random.random())
+			event.date += "," + start + " to " + end
 			#DATE AND LOCATION
 
 			#event.id = event.title
