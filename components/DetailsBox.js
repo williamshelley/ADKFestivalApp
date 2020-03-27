@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddButton from './AddButton';
 import { addToSchedule, rmFromSchedule, itemInSchedule } from '../utils/data-funcs';
 import PushNotification from  '../utils/notification-services';
-import { getFormattedStartDate } from '../utils/helper-funcs';
+import { getFormattedStartDate, notNull } from '../utils/helper-funcs';
 
 /**
  * Information section (below image) on Date Details page
@@ -30,7 +30,7 @@ export default class DetailsBox extends React.Component {
     }
 
     render = () => {
-        const { id, date, location, title } = this.props;
+        const { id, date, location, title, videoLink } = this.props;
         let searchLocation = "";
         location.split("").map((char)=>{
             if (char == " "){
@@ -68,6 +68,12 @@ export default class DetailsBox extends React.Component {
                     <AddButton text={"Directions"} onPress={()=>{
                         Linking.openURL("https://www.google.com/maps/search/?api=1&query=" + searchLocation + "%2C+Glenn+Falls+%2C+NY");
                     }}/>
+                    {
+                        notNull(videoLink) ? (<AddButton text={"Trailer"} onPress={()=>{
+                            Linking.openURL(videoLink);
+                        }}/>) : null
+                    }
+
                 </ScrollView>
             </View>
         );

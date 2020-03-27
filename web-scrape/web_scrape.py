@@ -63,6 +63,7 @@ class Event:
 		self.title = None
 		self.source = None
 		self.desc_link = None
+		self.video_link = None
 		self.description =  None
 		self.location = None
 		self.date = None
@@ -134,6 +135,7 @@ def set_event(pg_item, category):
 			desc_cats = get_description_and_categories(event.desc_link)
 			event.description = desc_cats[0]
 			event.category = desc_cats[1]
+			event.video_link = desc_cats[2]
 
 			#DATE AND LOCATION
 			#event.location = VENUES_PLACEHOLDER[int(event.id)%len(VENUES_PLACEHOLDER)]
@@ -197,13 +199,18 @@ def get_description_and_categories(description_url):
 	cats.append("All")
 	desc_html = soup.find_all("p")
 	result = ""
+	video_link = ""
+	iframe = full_width.find_all("iframe")
+	if (iframe is not None and len(iframe)>0):
+		video_link = iframe[0].get("src")
+
 	for desc in desc_html:
 		part = desc.getText()
 		
 		if part is not None:
 			result += " " + part
 
-	return (result, cats)
+	return (result, cats, video_link)
 
 def scrape_page(page_url, events):
 	global lock, id_set, category_set
@@ -274,6 +281,7 @@ for event in events:
 		"title": event.title,
 		"category": list(event.category),
 		"description": event.description,
+		"video_link": event.video_link,
 		"image": event.source,
 		"location": event.location,
 		"date": event.date,

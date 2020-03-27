@@ -33,7 +33,7 @@ export const Container = (props) => (
  */
 export const Date = ({ route: {params: { data, id }} }) => (
     <Container image={data.image}>
-        <DetailsBox id={id} date={data.date} location={data.location} title={data.title}/>
+        <DetailsBox id={id} date={data.date} location={data.location} title={data.title} videoLink={data.video_link}/>
     </Container>
 );
 
