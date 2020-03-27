@@ -145,6 +145,9 @@ def set_event(pg_item, category):
 			end = random_date(start, same_day, random.random())
 			event.date = start + " to " + end
 			#DATE AND LOCATION
+
+			#event.id = event.title
+
 	
 	if event.is_valid_event():
 		return event
@@ -257,8 +260,11 @@ for url in category_links:
 for thread in threads:
 	thread.join()
 
+print(len(events))
 for event in events:
-	hashed_id = str(hash(event.id))
+	
+	#hashed_id = str(hash(event.id))
+	hashed_id = str(event.id)
 	data_list.append({hashed_id: {
 		"title": event.title,
 		"category": list(event.category),

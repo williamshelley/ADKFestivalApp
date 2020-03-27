@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { notNull, parseDate, parseTime } from '../utils/helper-funcs';
 import { rmFromSchedule, getItem } from '../utils/data-funcs';
 import { _week_, _venue_name_img_separator_ } from '../utils/architecture';
-import { styles, theme, clear } from '../styles';
+import { styles, theme, clear, screenWidth } from '../styles';
 import IconButton from './IconButton';
 import EventCard from '../components/EventCard';
 
@@ -24,15 +24,11 @@ export default class ScheduleListItem extends React.Component {
         const props = this.props;
         parsedDate = parseDate(data, props.tab);
         let correctTab = false;
-        let correctSection = false;
-        const section = props.section.split(_venue_name_img_separator_)
-        const sectionName = section[0]
         if (notNull(data)) {
             const itemStatus = parseDate(data, props.tab);
             correctTab = props.tab == itemStatus.day;
-            correctSection = sectionName == data.location;
         }
-        return correctTab && correctSection;
+        return correctTab;
     }
 
     stateCallback = (data) => {
@@ -54,7 +50,7 @@ export default class ScheduleListItem extends React.Component {
             const date = this.state.data.date;
             return (
                 <View style={[props.style, 
-                { width: "100%", flexDirection: "row", height: height, margin: 5}]}>
+                { width: screenWidth - 10, flexDirection: "row", height: height, margin: 5}]}>
                     <View style={[styles.eventCard, { justifyContent: "center", borderRadius: 0, 
                             borderWidth: 0, flex: 1, height:height,backgroundColor: theme.lightOverlay}]}>
                         <Text style={[styles.detailsDateText]}>{parseTime(date.split(" to ")[0])}</Text>

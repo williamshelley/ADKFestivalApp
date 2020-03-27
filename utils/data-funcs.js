@@ -1,6 +1,6 @@
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { notNull, isNull } from './helper-funcs';
+import { notNull, isNull, getFormattedStartDate } from './helper-funcs';
 import PushNotification from './notification-services';
 
 //key for all items added to schedule
@@ -61,6 +61,40 @@ export const multiGet = async (callback) => {
                 callback(store);
             }
         });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const multiGetFromAsyncUsingKeys = async (keys, callback) => {
+    try {
+        let values = await AsyncStorage.multiGet(keys);
+        values.map((store) => {
+            const parsed = JSON.parse(store[1]);
+            const isEvent = notNull(parsed) && notNull(parsed.title);
+            if (isEvent) {
+                callback(store);
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const sortIDsByDate = async (ids, callbackOnSorted) => {
+    try {
+        let values = await AsyncStorage.multiGet(ids);
+        let sortedValues = values.sort((a, b) => {
+            
+            let dateA = new Date(getFormattedStartDate(JSON.parse(a[1]).date));
+            let dateB = new Date(getFormattedStartDate(JSON.parse(b[1]).date));
+            return (dateA - dateB)
+        });
+        let sortedKeys = []
+        sortedValues.map((store)=>{
+            sortedKeys.push(store[0]);
+        })
+        callbackOnSorted(sortedKeys);
     } catch (error) {
         console.log(error);
     }
@@ -213,7 +247,7 @@ export const requestJson = async () => {
 
 
             //STORAGE CLEARING
-            AsyncStorage.clear();
+            //AsyncStorage.clear();
 
 
 
@@ -232,7 +266,7 @@ export const requestJson = async () => {
 
 
             //STORAGE CLEARING
-            AsyncStorage.clear();
+            //AsyncStorage.clear();
 
 
 

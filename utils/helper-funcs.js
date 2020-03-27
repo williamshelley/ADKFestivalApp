@@ -57,13 +57,47 @@ export const getFormattedStartDate = (string) => {
 
 export const parseTime = (timeString) => (timeString.slice(11));
 
+export const arrayifyDate = (data)=>{
+    if (notNull(data) && notNull(data.date)) {
+        const date = data.date;
+        const dateList = date.split(",");
+        return dateList;
+    }
+    return [];
+}
+
+export const parseDateFromArr = (listOfDates) => {
+
+}
+
+export const getDatePosition = (dateString) => {
+    const dateArr = dateString.split(" to ");
+
+    const start = dateArr[0];
+    const end = dateArr[1];
+    if (notNull(start) && notNull(end)) {
+        const startDate = new Date(formatDate(start));
+        const endDate = new Date(formatDate(end));
+
+        durationInQuarters = getNumQuartersBetween(startDate, endDate);
+        startInQuarters = getNumQuarters(startDate);
+        weekDay = _week_[startDate.getUTCDay()];
+    }
+    return {
+        day: weekDay,
+        durationInQuarters: durationInQuarters,
+        startInQuarters: startInQuarters,
+    }
+}
+
 export const parseDate = (data, tab) => {
     let weekDay = null;
     let durationInQuarters = null;
     let startInQuarters = null;
     if (notNull(data) && notNull(data.date) && notNull(tab)) {
         const date = data.date;
-        const dateArr = date.split(" to ");
+        const dateList = date.split(",");
+        const dateArr = dateList[0].split(" to ");
 
         const start = dateArr[0];
         const end = dateArr[1];
