@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, SectionList, Text, Image, FlatList } from "react-native";
-import { styles, centered, screenWidth, theme } from "../styles";
+import { View, Text, FlatList } from "react-native";
+import { styles, centered, theme } from "../styles";
 import { getItem, SCHEDULE_KEY, sortIDsByDate } from '../utils/data-funcs';
-import { notNull, parseDate } from '../utils/helper-funcs';
+import { notNull } from '../utils/helper-funcs';
 import ScheduleListItem from '../components/ScheduleListItem';
 import { _venue_name_img_separator_ } from '../utils/architecture';
 
@@ -23,14 +23,11 @@ export default class ListView extends React.Component {
         getItem(SCHEDULE_KEY, this.setDataCallback);
     }
 
-    sortData = (data) => {
-        
-    }
-
     setDataCallback = (data) => {
         const parsed = JSON.parse(data);
         const useData = notNull(parsed) ? parsed : [];
-        sortIDsByDate(useData, (sorted)=>{
+        const params = this.props.route.params;
+        sortIDsByDate(useData, params.tab, (sorted)=>{
             this._isMounted && this.setState({ data: sorted });
         });
     }
@@ -58,13 +55,13 @@ export default class ListView extends React.Component {
                         contentContainerStyle={[styles.eventCardContainer]}
                         showsVerticalScrollIndicator={false}
                         data={this.state.data}
-                        keyExtractor={({ category }, index) => {
-                            return category + String(index);
+                        keyExtractor={(item, index)=>{
+                            return String(item.key) + String(index) + String(index*Math.random());
                         }}
                         renderItem={({ item, index }) => {
                             return (
                                 <ScheduleListItem key={index + String(item)} tab={params.tab}
-                                    rmOnPress={this.updateSchedule} data={item} 
+                                    rmOnPress={this.updateSchedule} data={item.key} dateIndex={item.dateIndex}
                                     navigation={this.props.navigation} />
                             )
                         }}
@@ -72,7 +69,7 @@ export default class ListView extends React.Component {
                 </View>
             );
         } else return (
-            <View style={[styles.container, centered]}>
+            <View style={[styles.container, centered, {backgroundColor: theme.loadingColor}]}>
                 <Text style={{ fontSize: 35, color: "white" }}>Empty</Text>
             </View>
         );

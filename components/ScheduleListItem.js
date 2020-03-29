@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { notNull, parseDate, parseTime, parseDateFromArr, arrayifyDate, getDatePosition } from '../utils/helper-funcs';
+import { notNull, parseDate, parseTime, parseDateFromArr, arrayifyDate, getDatePosition, getFormattedStartDate } from '../utils/helper-funcs';
 import { rmFromSchedule, getItem } from '../utils/data-funcs';
 import { _week_, _venue_name_img_separator_ } from '../utils/architecture';
-import { styles, theme, clear, screenWidth } from '../styles';
+import { styles, theme, screenWidth } from '../styles';
 import IconButton from './IconButton';
 import EventCard from '../components/EventCard';
 
@@ -26,24 +26,24 @@ export default class ScheduleListItem extends React.Component {
         parsedDate = parseDate(data, props.tab);
         let correctTab = false;
         let numPerDay = 0;
+        let indices = [];
         if (notNull(data)) {
             const dateArr = arrayifyDate(data);
-            dateArr.map((timeStr)=>{
+            dateArr.map((timeStr, index)=>{
                 let status = getDatePosition(timeStr);
                 if (props.tab == status.day){
+                    indices.push(index);
                     numPerDay++;
                 }
             });
             correctTab = numPerDay > 0;
         }
-        return {correctTab: correctTab, numPerDay: numPerDay};
+        return {correctTab: correctTab, numPerDay: numPerDay, dateIndices: indices};
     }
 
     stateCallback = (data) => {
         const parsed = JSON.parse(data)
-        const sectionStatus = this.isCorrectSection(parsed)
-        const shouldRender = sectionStatus.correctTab;
-        this.setState({ data: parsed, shouldRender: shouldRender})
+        this.setState({ data: parsed, shouldRender: true})
     }
 
     componentDidMount = async () => {
@@ -58,8 +58,8 @@ export default class ScheduleListItem extends React.Component {
         if (this.state.shouldRender) {
             const date = this.state.data.date;
             const dateArr = date.split(",")
-            
-            const time = parseDateFromArr(dateArr, 0);
+            let time = parseDateFromArr(dateArr, props.dateIndex);
+
             return (
                 <View style={[props.style, 
                 { width: screenWidth - 10, flexDirection: "row", height: height, margin: 5}]}>

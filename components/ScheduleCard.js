@@ -1,7 +1,7 @@
 import React from 'react';
 import EventCard from '../components/EventCard';
 import { notNull, parseDate } from '../utils/helper-funcs';
-import { styles, quarterHourHeight } from '../styles';
+import { styles, quarterHourHeight, theme } from '../styles';
 import { rmFromSchedule, getItem } from '../utils/data-funcs';
 import { _week_ } from '../utils/architecture';
 
@@ -51,16 +51,13 @@ export default class ScheduleCard extends EventCard {
         const data = this.state.data;
         const rmIconStyle = notNull(props.rmOnPress) && notNull(data) ? styles.rmIcon : { width: 0, height: 0 };
         const item = this.getItemStatus(data);
-        const r = String(Math.random() * 255);
-        const g = String(Math.random() * 255);
-        const b = String(Math.random() * 255);
         if (item.correctColumn && this.isCorrectSection(data)) {
             return (
                 <EventCard category={props.tab} data={props.data}
                     rmOnPress={props.rmOnPress} navigation={props.navigation} target={TARGET}
                     imageStyle={{resizeMode: "contain"}}
                     style={[styles.scheduleItem, {
-                        backgroundColor: "rgba("+r+","+g+","+b+",1)",
+                        backgroundColor: theme.accent,
                         position: "absolute",
                         top: item.itemPosition,
                         bottom: 0,

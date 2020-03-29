@@ -1,6 +1,6 @@
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { notNull, isNull, getFormattedStartDate } from './helper-funcs';
+import { notNull, isNull, getFormattedStartDate, getDatePosition, arrayifyDate } from './helper-funcs';
 import PushNotification from './notification-services';
 
 //key for all items added to schedule
@@ -81,19 +81,42 @@ export const multiGetFromAsyncUsingKeys = async (keys, callback) => {
     }
 }
 
-export const sortIDsByDate = async (ids, callbackOnSorted) => {
+export const sortIDsByDate = async (ids, day, callbackOnSorted) => {
     try {
         let values = await AsyncStorage.multiGet(ids);
-        let sortedValues = values.sort((a, b) => {
+        let singleDateValues = [];
+        values.map((store) => {
+            const value = JSON.parse(store[1]);
+            const dateStr = value.date;
+            const dateArr = dateStr.split(",");
+
+            dateArr.map((date,index) => {
+                if (getDatePosition(date).day == day) {
+                    singleDateValues.push({dateIndex: index, store: store});
+                }
+            });
+        });
+        let sortedValues = singleDateValues.sort((a, b) => {
+
+            const fullDateStrA = JSON.parse(a.store[1]).date;
+            const dateIndexA = JSON.parse(a.dateIndex);
+            const dateArrA = fullDateStrA.split(",");
+            const dateStrA = dateArrA[dateIndexA];
+            let dateA = new Date(getFormattedStartDate(dateStrA));
+
+            const fullDateStrB = JSON.parse(b.store[1]).date;
+            const dateIndexB = JSON.parse(b.dateIndex);
+            const dateArrB = fullDateStrB.split(",");
+            const dateStrB = dateArrB[dateIndexB];
+            let dateB = new Date(getFormattedStartDate(dateStrB));
             
-            let dateA = new Date(getFormattedStartDate(JSON.parse(a[1]).date));
-            let dateB = new Date(getFormattedStartDate(JSON.parse(b[1]).date));
             return (dateA - dateB)
         });
         let sortedKeys = []
-        sortedValues.map((store)=>{
-            sortedKeys.push(store[0]);
+        sortedValues.map(({dateIndex, store}) => {
+            sortedKeys.push({dateIndex: dateIndex, key: store[0]});
         })
+
         callbackOnSorted(sortedKeys);
     } catch (error) {
         console.log(error);
@@ -134,7 +157,7 @@ export const addToSchedule = async (value, toggleInSchedule) => {
  *  **See AddToSchedule for parameter documentation**
  */
 export const rmFromSchedule = async (value, toggleInSchedule) => {
-    PushNotification.cancelLocalNotifications({id: parseInt(value)});
+    PushNotification.cancelLocalNotifications({ id: parseInt(value) });
     await getItem(SCHEDULE_KEY, (val) => {
         let data = JSON.parse(val);
         let filtered = null;
@@ -170,7 +193,7 @@ export const itemInSchedule = async (value, toggleInSchedule) => {
  * and sends result to callback
  *  key: { string } -> id (key) for an item (value) in async storage
  *  callback: { function } -> usage is callback(json-string)
- */ 
+ */
 export const getItem = async (key, callback) => {
     let value = null;
     try {

@@ -12,7 +12,9 @@ export const hourHeight = quarterHourHeight * 4;
 export const scheduleItemWidth = 150;
 export const scheduleHeaderItemHeight = hourHeight / 1.5;
 
-export const weekDays = ["SUN","MON", "TUE", "WED", "THU", "FRI","SAT"];
+// CHANGE 'weekDays' TO ALTER THE DAYS SHOWN ON A SINGLE SCHEDULE PAGE
+export const weekDays = ["THU", "FRI", "SAT", "SUN"];
+
 export const createHourList = (startHour, endHour) => {
     let res = [];
     let currentHour = startHour;

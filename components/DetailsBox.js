@@ -31,6 +31,7 @@ export default class DetailsBox extends React.Component {
 
     render = () => {
         const { id, date, location, title, videoLink } = this.props;
+        const numDates = date.split(",").length;
         let searchLocation = "";
         location.split("").map((char)=>{
             if (char == " "){
@@ -42,7 +43,7 @@ export default class DetailsBox extends React.Component {
         return (
             <View style={styles.detailsDateWrapper}>
                 <ScrollView contentContainerStyle={styles.detailsTextScroll}>
-                    <View style={[centered, styles.addButtonContainer, {flex: 0.5, backgroundColor: theme.accent}]}>
+                    <View style={[centered, styles.addButtonContainer, {flex: 0.5 * numDates, backgroundColor: theme.accent}]}>
                         <Text style={style.title}>{title}</Text>
                         {
                             date.split(",").map((time, index)=>(
@@ -69,7 +70,7 @@ export default class DetailsBox extends React.Component {
                         Linking.openURL("https://www.google.com/maps/search/?api=1&query=" + searchLocation + "%2C+Glenn+Falls+%2C+NY");
                     }}/>
                     {
-                        notNull(videoLink) ? (<AddButton text={"Trailer"} onPress={()=>{
+                        (notNull(videoLink) && videoLink != "") ? (<AddButton text={"Trailer"} onPress={()=>{
                             Linking.openURL(videoLink);
                         }}/>) : null
                     }
