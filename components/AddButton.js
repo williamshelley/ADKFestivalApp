@@ -8,9 +8,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
  *  onPress: { function }
  *  text: { string } -> main text displayed by button
  */
-export default AddButton = ({ onPress, text }) => (
+export default AddButton = ({ onPress, text, style }) => (
     <TouchableOpacity
-        style={[styles.addButtonContainer,{flexDirection:"row"}]}
+        style={[styles.addButtonContainer,{flexDirection:"row"}, style]}
         onPress={onPress}>
         <View style={{flex:1}}>
             <Text style={styles.addButtonText}>{text}</Text>

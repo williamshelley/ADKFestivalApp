@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AddButton from './AddButton';
 import { addToSchedule, rmFromSchedule, itemInSchedule } from '../utils/data-funcs';
 import PushNotification from  '../utils/notification-services';
-import { getFormattedStartDate, notNull } from '../utils/helper-funcs';
+import { getFormattedStartDate, notNull, formatDateForDetails } from '../utils/helper-funcs';
 
 /**
  * Information section (below image) on Date Details page
@@ -46,9 +46,11 @@ export default class DetailsBox extends React.Component {
                     <View style={[centered, styles.addButtonContainer, {flex: 0.5 * numDates, backgroundColor: theme.accent}]}>
                         <Text style={style.title}>{title}</Text>
                         {
-                            date.split(",").map((time, index)=>(
-                                <Text key={index} style={style.info}>{time}</Text>
-                            ))
+                            date.split(",").map((time, index)=>{
+                                
+                                return <Text key={index} style={style.info}>{formatDateForDetails(time)}</Text>
+                                //return <Text key={index} style={style.info}>{time}</Text>
+                            })
                         }
                     <Text style={style.info}>{location}</Text>
                     </View>
@@ -66,7 +68,7 @@ export default class DetailsBox extends React.Component {
                             rmFromSchedule(id, this.setButtonState);
                         }
                     }} />
-                    <AddButton text={"Directions"} onPress={()=>{
+                    <AddButton text={"Location"} onPress={()=>{
                         Linking.openURL("https://www.google.com/maps/search/?api=1&query=" + searchLocation + "%2C+Glenn+Falls+%2C+NY");
                     }}/>
                     {

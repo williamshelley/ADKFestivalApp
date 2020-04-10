@@ -1,4 +1,4 @@
-import { _week_ } from './architecture';
+import { _week_, _formal_week_, _formal_months_ } from './architecture';
 
 export const isNull = (object) => ( object == null || object == undefined );
 export const notNull = (object) => (  !isNull(object) );
@@ -64,6 +64,22 @@ export const arrayifyDate = (data)=>{
         return dateList;
     }
     return [];
+}
+
+export const formatDateForDetails = (dateStr) => {
+    let startTime = getFormattedStartDate(dateStr);
+    let startDate = new Date(startTime);
+    let weekDay = _formal_week_[startDate.getUTCDay()];
+    let month = _formal_months_[startDate.getUTCMonth()];
+    let hours = startDate.getUTCHours();
+    let am_pm = "am";
+    if (hours > 12){
+        hours-=12;
+        am_pm = "pm";
+    }
+    let minutes = startDate.getUTCMinutes();
+    let timeStr = String(hours) + ":" + String(minutes) + am_pm;
+    return weekDay + ", " + month + " @ " + timeStr;
 }
 
 export const parseDateFromArr = (listOfDates, index) => {

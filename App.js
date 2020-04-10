@@ -6,6 +6,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from './views/Home';
 import Details from './views/Details';
 import Schedule from './views/Schedule';
+import SpecialEvents from './views/SpecialEvents';
 
 import { styles, theme } from './styles';
 import IconButton from './components/IconButton';
@@ -25,7 +26,7 @@ const HomeStack = ({ navigation }) => {
         headerTintColor: theme.navigationAccent,
         headerStyle: styles.stackHeader,
       }}>
-      <Stack.Screen name="Home" component={Home}
+      <Stack.Screen name="Films" component={Home}
         options={{
           headerLeft: () => (
             <IconButton source={drawerIcon}
@@ -36,7 +37,23 @@ const HomeStack = ({ navigation }) => {
   );
 }
 
-
+const SpecEventStack = ({ navigation }) => {
+  return (
+    <Stack.Navigator
+    screenOptions={{
+      headerTintColor: theme.navigationAccent,
+      headerStyle: styles.stackHeader,
+    }}>
+    <Stack.Screen name="Special Events" component={SpecialEvents}
+      options={{
+        headerLeft: () => (
+          <IconButton source={drawerIcon}
+            onPress={() => { navigation.toggleDrawer() }} />),
+      }} />
+    <Stack.Screen name="Details" component={Details} />
+  </Stack.Navigator>
+  );
+}
 
 const ScheduleStack = ({ navigation }) => (
   <Stack.Navigator
@@ -79,7 +96,8 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-          <Drawer.Screen name="Home" component={HomeStack} />
+        <Drawer.Screen name="Films" component={HomeStack} />
+        <Drawer.Screen name="Special Events" component={SpecEventStack} />
           <Drawer.Screen name="Schedule" component={ScheduleStack} />
           <Drawer.Screen name="Sponsors" component={SponsorStack} />
         </Drawer.Navigator>

@@ -37,7 +37,8 @@ sponsor_soup = BeautifulSoup(sponsor_request.text, "html.parser")
 sponsor_width = sponsor_soup.find(id="full-width").find_all("a")
 sponsor_list = []
 for item in sponsor_width:
-	sponsor_list.append(item.text)
+	sponsor = [item.text, item.get("href")]
+	sponsor_list.append(sponsor)
 
 FIRST_TIME = "3/1/2020 7:00 AM"
 SECOND_TIME = "3/7/2020 7:00 PM"
@@ -51,10 +52,7 @@ style_prefix = "background-image:url("
 for item in venues_width:
 	name = item.find("div",{"class":"sc-wraper"}).getText()
 	image_url = item.find("div",{"class":"services-img"})["style"][len(style_prefix):-1]
-	#venues[name] = image_url
 	venues.append([name, image_url])
-
-#VENUES_PLACEHOLDER = ["Crandall Public Library", "The Park Theater", "Charles R. Wood Theater","The Queensbury Hotel","Charles R. Wood Theater Cabaret Space"]
 
 class Event:
 	def __init__(self):
@@ -67,6 +65,7 @@ class Event:
 		self.description =  None
 		self.location = None
 		self.date = None
+		self.time_and_locations = None
 
 	def is_valid_event(self):
 		if (self.category is not None and
@@ -76,7 +75,9 @@ class Event:
 			self.desc_link is not None and
 			self.description is not None and
 			self.location is not None and 
-			self.date is not None):
+			self.time_and_locations is not None
+			#self.date is not None
+			):
 			return True
 		return False
 
@@ -141,21 +142,31 @@ def set_event(pg_item, category):
 			#event.location = VENUES_PLACEHOLDER[int(event.id)%len(VENUES_PLACEHOLDER)]
 			location = venues[int(event.id)%len(venues)]
 			event.location = location[0]
+			location2 = venues[int(event.id + "10000")%len(venues)]
+
 			location_set.add(event.location + name_image_separator + location[1])
 			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
 			same_day = start[:11] + SECOND_TIME[9:]
 			end = random_date(start, same_day, random.random())
 			event.date = start + " to " + end
+			date1 = start + " to " + end
 
 			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
 			same_day = start[:11] + SECOND_TIME[9:]
 			end = random_date(start, same_day, random.random())
-			event.date += "," + start + " to " + end
+			#event.date += "," + start + " to " + end
+			date2 = start + " to " + end
+
+			time_and_locations = [{
+				"time":date1,
+				"location":location[0],
+			},{
+				"time":date2,
+				"location":location2[0],
+			}]
+			event.time_and_locations = time_and_locations
 			#DATE AND LOCATION
 
-			#event.id = event.title
-
-	
 	if event.is_valid_event():
 		return event
 
@@ -226,16 +237,10 @@ def scrape_page(page_url, events):
 		event = set_event(item, parsed_category)
 		if event is not None:
 			lock.acquire()
-			#if event.id not in id_set:
 			events.add(event)
 			for cat in event.category:
 				category_set.add(cat)
 			id_set.add(event.id)
-			#else:
-			#	for e in events:
-			#		if e.id == event.id:
-			#			category = e.category.union(e.category, event.category)
-			#			e.category = category
 			lock.release()
 
 	return
@@ -261,7 +266,6 @@ def scrape_category(category_url, events):
 	return
 
 
-#category_links = find_categories(cat_width_a)
 category_links = ['https://www.adkfilmfestival.org/festival/']
 threads = []
 for url in category_links:
@@ -274,8 +278,6 @@ for thread in threads:
 
 print(len(events))
 for event in events:
-	
-	#hashed_id = str(hash(event.id))
 	hashed_id = str(event.id)
 	data_list.append({hashed_id: {
 		"title": event.title,
@@ -285,6 +287,7 @@ for event in events:
 		"image": event.source,
 		"location": event.location,
 		"date": event.date,
+		"time_and_locations": event.time_and_locations,
 	}})
 	
 category_list = list(category_set)
