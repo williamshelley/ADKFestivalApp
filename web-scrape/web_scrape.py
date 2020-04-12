@@ -164,7 +164,7 @@ def set_event(pg_item, category):
 				"time":date2,
 				"location":location2[0],
 			}]
-			event.time_and_locations = time_and_locations
+			event.time_and_locations = json.dumps(time_and_locations)
 			#DATE AND LOCATION
 
 	if event.is_valid_event():

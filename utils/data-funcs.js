@@ -81,6 +81,8 @@ export const multiGetFromAsyncUsingKeys = async (keys, callback) => {
     }
 }
 
+
+/*
 export const sortIDsByDate = async (ids, day, callbackOnSorted) => {
     try {
         let values = await AsyncStorage.multiGet(ids);
@@ -122,6 +124,9 @@ export const sortIDsByDate = async (ids, day, callbackOnSorted) => {
         console.log(error);
     }
 }
+
+*/
+
 
 /**
  * Adds item to SCHEDULE_KEY of async storage
@@ -182,8 +187,11 @@ export const itemInSchedule = async (value, toggleInSchedule) => {
                 if (id == value) {
                     inSchedule = (id == value);
                     toggleInSchedule(inSchedule);
+                    return;
                 }
             })
+        } else{
+            toggleInSchedule(false);
         }
     })
 }

@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, Linking } from 'react-native';
+import { View, Text, Linking, FlatList } from 'react-native';
 import { styles, theme, centered } from '../styles';
 import { ScrollView } from 'react-native-gesture-handler';
 import AddButton from './AddButton';
 import { addToSchedule, rmFromSchedule, itemInSchedule } from '../utils/data-funcs';
 import PushNotification from  '../utils/notification-services';
-import { getFormattedStartDate, notNull, formatDateForDetails } from '../utils/helper-funcs';
+import { getFormattedStartDate, isNull, notNull, formatDateForDetails, formatDate } from '../utils/helper-funcs';
 
 /**
  * Information section (below image) on Date Details page
@@ -19,18 +19,51 @@ export default class DetailsBox extends React.Component {
         super(props)
         this.state={
             inSchedule: false,
+            inScheduleArray: Array(JSON.parse(this.props.data.time_and_locations).length).fill(false),
         }
     }
-    setButtonState = (inSchedule) => {
-        this.setState({ inSchedule: inSchedule });
+
+
+    setButtonState = (data) => {
+        let time_and_locations = JSON.parse(data.time_and_locations);
+        let inScheduleArray = Array(time_and_locations.length);
+        time_and_locations.map( async (item, index)=>{
+            await itemInSchedule(this.props.id + ":" + index, (value)=>{
+                inScheduleArray[index] = value;
+                console.log("something")
+            });
+            if (index == time_and_locations.length - 1){
+                this.setState({inScheduleArray: inScheduleArray});
+            }
+        });
     }
 
-    componentDidMount = async () => {
-        await itemInSchedule(this.props.id, this.setButtonState);
+    addButtonState = (id) => {
+        let arr = this.state.inScheduleArray;
+        addToSchedule(id, (value, index)=>{
+            arr[index] = value;
+            arr[index] = isNull(arr[index]) ? false : arr[index];
+            console.log("added");
+            this.setState({ inScheduleArray: arr });
+        })
+    }
+
+    rmButtonState =  (id) => {
+        let arr = this.state.inScheduleArray;
+         rmFromSchedule(id, (value,index)=>{
+            arr[index] = value;
+            console.log("removed");
+            this.setState({ inScheduleArray: arr });
+        })
+    }
+
+    componentDidMount =  () => {
+         this.setButtonState(this.props.data);
+        console.log(this.state.inScheduleArray);
     }
 
     render = () => {
-        const { id, date, location, title, videoLink } = this.props;
+        const { id, date, data, location, title, videoLink } = this.props;
         const numDates = date.split(",").length;
         let searchLocation = "";
         location.split("").map((char)=>{
@@ -46,31 +79,36 @@ export default class DetailsBox extends React.Component {
                     <View style={[centered, styles.addButtonContainer, {flex: 0.5 * numDates, backgroundColor: theme.accent}]}>
                         <Text style={style.title}>{title}</Text>
                         {
-                            date.split(",").map((time, index)=>{
-                                
-                                return <Text key={index} style={style.info}>{formatDateForDetails(time)}</Text>
-                                //return <Text key={index} style={style.info}>{time}</Text>
+                            JSON.parse(data.time_and_locations).map((item, index)=>{
+                                let inSchedule = this.state.inScheduleArray[index];
+                                return <AddButton key={index} 
+                                    text={!inSchedule ? 
+                                            "Add " + item.time + " at " + item.location 
+                                            : "Remove from schedule"} 
+                                    onPress={()=>{
+                                        if (!inSchedule){
+                                            PushNotification.localNotificationSchedule({
+                                                userInfo:{id: id},
+                                                id: parseInt(id),
+                                                message: title + " is happening soon!",
+                                                date: new Date(formatDate(item.time.split(" to ")[0])),
+                                            });
+                                        
+                                        this.addButtonState(id+":"+index);
+                                        let arr = this.state.inScheduleArray;
+                                        arr[index] = true;
+                                        this.setState({inScheduleArray: arr})
+                                    } else {
+                                        this.rmButtonState(id+":"+index);
+                                        let arr = this.state.inScheduleArray;
+                                        arr[index] = false;
+                                        this.setState({inScheduleArray: arr})
+                                    }
+                                }}/>
                             })
                         }
                     <Text style={style.info}>{location}</Text>
                     </View>
-
-                    <AddButton text={this.state.inSchedule ? "Remove from schedule" : "Add to schedule"} onPress={() => {
-                        if (!this.state.inSchedule){
-                            PushNotification.localNotificationSchedule({
-                                userInfo:{id: id},
-                                id: parseInt(id),
-                                message: title + " is happening soon!",
-                                date: new Date(getFormattedStartDate(date)),
-                            });
-                            addToSchedule(id, this.setButtonState);
-                        } else {
-                            rmFromSchedule(id, this.setButtonState);
-                        }
-                    }} />
-                    <AddButton text={"Location"} onPress={()=>{
-                        Linking.openURL("https://www.google.com/maps/search/?api=1&query=" + searchLocation + "%2C+Glenn+Falls+%2C+NY");
-                    }}/>
                     {
                         (notNull(videoLink) && videoLink != "") ? (<AddButton text={"Trailer"} onPress={()=>{
                             Linking.openURL(videoLink);

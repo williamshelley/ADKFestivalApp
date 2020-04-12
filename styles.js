@@ -171,9 +171,6 @@ export const styles = {
     }],
     detailsTextWrapper: [centered, details, {
         width: "100%",
-        //borderColor: theme.accent,
-        //borderWidth: 3,
-        //borderRadius: 10,
         height: "25%",
         marginBottom: 20,
     }],
@@ -198,12 +195,14 @@ export const styles = {
         alignSelf: "center",
     }],
     addButtonContainer: [centered, {
-        flex: 1,
-        borderRadius: 5,
-        width: "100%",
-        height: "100%",
+       alignSelf:"center",
+        width: screenWidth,
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        borderColor: "black",
         backgroundColor: theme.button,
         marginVertical: 5,
+        marginHorizontal:5,
     }],
     addButtonText: {
         textAlign: "center",
