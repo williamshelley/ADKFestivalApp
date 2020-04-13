@@ -186,7 +186,6 @@ export const styles = {
     }],
     detailsDateWrapper: [{
         flex: 1,
-        width: "100%",
         marginBottom: 20,
     }],
     detailsDateText: [{
@@ -195,20 +194,16 @@ export const styles = {
         alignSelf: "center",
     }],
     addButtonContainer: [centered, {
-       alignSelf:"center",
-        width: "100%",
-        //borderTopWidth: 2,
+        ///alignSelf:"center",
+        //width: "100%",
         borderBottomWidth: 2,
         borderColor: "black",
         backgroundColor: theme.button,
-        
-        //marginVertical: 5,
-        //marginHorizontal:5,
     }],
     addButtonText: {
         textAlign: "center",
         textAlignVertical: "center",
-        fontSize: 20,
+        fontSize: 16,
         color: theme.buttonAccent,
         margin:16,
         fontWeight: "900",

@@ -34,11 +34,12 @@ export default class ScheduleListItem extends React.Component {
     stateCallback = (data) => {
         const parsed = JSON.parse(data)
         let shouldRender = this.isCorrectTab(JSON.parse(parsed.time_and_locations)[this.props.dateIndex].time);
-        this.setState({ data: parsed, shouldRender: shouldRender})
+        this._isMounted && this.setState({ data: parsed, shouldRender: shouldRender})
     }
 
-    componentDidMount = async () => {
-        await getItem(this.state.id, this.stateCallback);
+    componentDidMount = () => {
+        this._isMounted = true;
+        getItem(this.state.id, this.stateCallback);
     }
 
     render = () => {

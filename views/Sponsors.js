@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList } from 'react-native-gesture-handler';
 import { View, Text, Linking } from 'react-native';
-import { styles, theme, screenWidth } from '../styles';
+import { styles, theme, screenWidth, screenHeight } from '../styles';
 import { SPONSOR_STORAGE } from '../utils/data-funcs';
 import { getItem } from '../utils/data-funcs';
 import AddButton from '../components/AddButton';
@@ -29,12 +29,10 @@ export default class Sponsors extends React.Component {
                 renderItem={({ item }) => (
                     <View style={{
                         width: screenWidth,
-                        padding:5,
-                        paddingLeft:10,
-                        paddingRight: 10,
                     }}>
                     <AddButton style={{
-                        height:100,
+                        height:screenHeight * 0.08,
+                        backgroundColor: theme.overlay,
                     }}text={item[0]} onPress={()=>{
                         Linking.openURL(item[1]);
                     }}/>

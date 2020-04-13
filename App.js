@@ -13,6 +13,7 @@ import IconButton from './components/IconButton';
 import { requestJson } from './utils/data-funcs';
 import Sponsors from './views/Sponsors';
 import DrawerContent from './components/DrawerContent';
+import Venues from './views/Venues';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -40,18 +41,18 @@ const HomeStack = ({ navigation }) => {
 const SpecEventStack = ({ navigation }) => {
   return (
     <Stack.Navigator
-    screenOptions={{
-      headerTintColor: theme.navigationAccent,
-      headerStyle: styles.stackHeader,
-    }}>
-    <Stack.Screen name="Special Events" component={SpecialEvents}
-      options={{
-        headerLeft: () => (
-          <IconButton source={drawerIcon}
-            onPress={() => { navigation.toggleDrawer() }} />),
-      }} />
-    <Stack.Screen name="Details" component={Details} />
-  </Stack.Navigator>
+      screenOptions={{
+        headerTintColor: theme.navigationAccent,
+        headerStyle: styles.stackHeader,
+      }}>
+      <Stack.Screen name="Special Events" component={SpecialEvents}
+        options={{
+          headerLeft: () => (
+            <IconButton source={drawerIcon}
+              onPress={() => { navigation.toggleDrawer() }} />),
+        }} />
+      <Stack.Screen name="Details" component={Details} />
+    </Stack.Navigator>
   );
 }
 
@@ -87,6 +88,22 @@ const SponsorStack = ({ navigation }) => {
   );
 }
 
+const VenueStack = ({ navigation }) => {
+
+  return (
+    <Stack.Navigator screenOptions={{
+      headerTintColor: theme.navigationAccent,
+      headerStyle: styles.stackHeader,
+    }}>
+      <Stack.Screen name="Venues" component={Venues} options={{
+        headerLeft: () => (
+          <IconButton source={drawerIcon}
+            onPress={() => { navigation.toggleDrawer() }} />)
+      }} />
+    </Stack.Navigator>
+  );
+}
+
 export default class App extends React.Component {
   componentDidMount = async () => {
     await requestJson();
@@ -96,9 +113,10 @@ export default class App extends React.Component {
     return (
       <NavigationContainer>
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-        <Drawer.Screen name="Films" component={HomeStack} />
-        <Drawer.Screen name="Special Events" component={SpecEventStack} />
+          <Drawer.Screen name="Films" component={HomeStack} />
+          <Drawer.Screen name="Special Events" component={SpecEventStack} />
           <Drawer.Screen name="Schedule" component={ScheduleStack} />
+          <Drawer.Screen name="Venues" component={VenueStack} />
           <Drawer.Screen name="Sponsors" component={SponsorStack} />
         </Drawer.Navigator>
       </NavigationContainer>
