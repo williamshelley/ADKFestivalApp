@@ -196,13 +196,14 @@ export const styles = {
     }],
     addButtonContainer: [centered, {
        alignSelf:"center",
-        width: screenWidth,
-        borderTopWidth: 2,
+        width: "100%",
+        //borderTopWidth: 2,
         borderBottomWidth: 2,
         borderColor: "black",
         backgroundColor: theme.button,
-        marginVertical: 5,
-        marginHorizontal:5,
+        
+        //marginVertical: 5,
+        //marginHorizontal:5,
     }],
     addButtonText: {
         textAlign: "center",

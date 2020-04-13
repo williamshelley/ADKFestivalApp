@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { notNull, parseDate, parseTime, parseDateFromArr, arrayifyDate, getDatePosition, getFormattedStartDate } from '../utils/helper-funcs';
+import { notNull, parseDate, parseTime, parseDateFromArr, arrayifyDate, getDatePosition, getFormattedStartDate, formatDate, getStartTime, getEndTime } from '../utils/helper-funcs';
 import { rmFromSchedule, getItem } from '../utils/data-funcs';
 import { _week_, _venue_name_img_separator_ } from '../utils/architecture';
 import { styles, theme, screenWidth } from '../styles';
@@ -21,29 +21,20 @@ export default class ScheduleListItem extends React.Component {
         }
     }
 
-    isCorrectSection = (data) => {
-        const props = this.props;
-        parsedDate = parseDate(data, props.tab);
-        let correctTab = false;
-        let numPerDay = 0;
-        let indices = [];
-        if (notNull(data)) {
-            const dateArr = arrayifyDate(data);
-            dateArr.map((timeStr, index)=>{
-                let status = getDatePosition(timeStr);
-                if (props.tab == status.day){
-                    indices.push(index);
-                    numPerDay++;
-                }
-            });
-            correctTab = numPerDay > 0;
+
+    isCorrectTab = (dateStr) => {
+        if (notNull(dateStr)){
+            let date = new Date(formatDate(dateStr));
+            let day = date.getUTCDay();
+            return this.props.tab == _week_[day];
         }
-        return {correctTab: correctTab, numPerDay: numPerDay, dateIndices: indices};
+        return false
     }
 
     stateCallback = (data) => {
         const parsed = JSON.parse(data)
-        this.setState({ data: parsed, shouldRender: true})
+        let shouldRender = this.isCorrectTab(JSON.parse(parsed.time_and_locations)[this.props.dateIndex].time);
+        this.setState({ data: parsed, shouldRender: shouldRender})
     }
 
     componentDidMount = async () => {
@@ -52,22 +43,25 @@ export default class ScheduleListItem extends React.Component {
 
     render = () => {
         const props = this.props;
-        
+        let data = this.state.data;
+        let time = ""
+        if (notNull(data) ){
+            let time_and_loc = data.time_and_locations
+            if (notNull(time_and_loc)){
+                time = JSON.parse(time_and_loc)[this.props.dateIndex].time
+            }
+        }
         const rmIconStyle = notNull(props.rmOnPress) && notNull(this.state.data) ? styles.rmIcon : { width: 0, height: 0 };
         const height = 100;
-        if (this.state.shouldRender) {
-            const date = this.state.data.date;
-            const dateArr = date.split(",")
-            let time = parseDateFromArr(dateArr, props.dateIndex);
-
+        if (this.state.shouldRender && time != "") {
             return (
                 <View style={[props.style, 
                 { width: screenWidth - 10, flexDirection: "row", height: height, margin: 5}]}>
                     <View style={[styles.eventCard, { justifyContent: "center", borderRadius: 0, 
                             borderWidth: 0, flex: 1, height:height,backgroundColor: theme.lightOverlay}]}>
-                        <Text style={[styles.detailsDateText]}>{parseTime(time[0])}</Text>
+                        <Text style={[styles.detailsDateText]}>{getStartTime(time)}</Text>
                         <Text style={[styles.detailsDateText, { margin: 0 }]}>to</Text>
-                        <Text style={[styles.detailsDateText]}>{parseTime(time[1])}</Text>
+                        <Text style={[styles.detailsDateText]}>{getEndTime(time)}</Text>
                     </View>
                     <EventCard style={{ flex: 3,height:height, alignItems: "center",  
                         backgroundColor: theme.overlay}}
@@ -77,7 +71,8 @@ export default class ScheduleListItem extends React.Component {
                         navigation={props.navigation} target={TARGET}>
                         <IconButton style={[rmIconStyle, { alignSelf: "center", top:"-100%"}]} 
                             source={rmIcon}
-                            onPress={() => { rmFromSchedule(this.state.id, props.rmOnPress) }} />
+                            onPress={() => { 
+                                rmFromSchedule(this.state.id + ":" + this.props.dateIndex, props.rmOnPress) }} />
                     </EventCard>
                 </View>
             );

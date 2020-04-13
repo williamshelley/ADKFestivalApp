@@ -30,7 +30,6 @@ export default class DetailsBox extends React.Component {
         time_and_locations.map( async (item, index)=>{
             await itemInSchedule(this.props.id + ":" + index, (value)=>{
                 inScheduleArray[index] = value;
-                console.log("something")
             });
             if (index == time_and_locations.length - 1){
                 this.setState({inScheduleArray: inScheduleArray});
@@ -38,28 +37,8 @@ export default class DetailsBox extends React.Component {
         });
     }
 
-    addButtonState = (id) => {
-        let arr = this.state.inScheduleArray;
-        addToSchedule(id, (value, index)=>{
-            arr[index] = value;
-            arr[index] = isNull(arr[index]) ? false : arr[index];
-            console.log("added");
-            this.setState({ inScheduleArray: arr });
-        })
-    }
-
-    rmButtonState =  (id) => {
-        let arr = this.state.inScheduleArray;
-         rmFromSchedule(id, (value,index)=>{
-            arr[index] = value;
-            console.log("removed");
-            this.setState({ inScheduleArray: arr });
-        })
-    }
-
     componentDidMount =  () => {
          this.setButtonState(this.props.data);
-        console.log(this.state.inScheduleArray);
     }
 
     render = () => {
@@ -77,7 +56,7 @@ export default class DetailsBox extends React.Component {
             <View style={styles.detailsDateWrapper}>
                 <ScrollView contentContainerStyle={styles.detailsTextScroll}>
                     <View style={[centered, styles.addButtonContainer, {flex: 0.5 * numDates, backgroundColor: theme.accent}]}>
-                        <Text style={style.title}>{title}</Text>
+                        <Text style={[style.title, {marginVertical: "5%"}]}>{title}</Text>
                         {
                             JSON.parse(data.time_and_locations).map((item, index)=>{
                                 let inSchedule = this.state.inScheduleArray[index];
@@ -94,12 +73,12 @@ export default class DetailsBox extends React.Component {
                                                 date: new Date(formatDate(item.time.split(" to ")[0])),
                                             });
                                         
-                                        this.addButtonState(id+":"+index);
+                                        addToSchedule(id + ":" + index, (boolValue)=>{});
                                         let arr = this.state.inScheduleArray;
                                         arr[index] = true;
                                         this.setState({inScheduleArray: arr})
                                     } else {
-                                        this.rmButtonState(id+":"+index);
+                                        rmFromSchedule(id + ":" + index, (boolValue)=>{});
                                         let arr = this.state.inScheduleArray;
                                         arr[index] = false;
                                         this.setState({inScheduleArray: arr})
@@ -107,7 +86,6 @@ export default class DetailsBox extends React.Component {
                                 }}/>
                             })
                         }
-                    <Text style={style.info}>{location}</Text>
                     </View>
                     {
                         (notNull(videoLink) && videoLink != "") ? (<AddButton text={"Trailer"} onPress={()=>{

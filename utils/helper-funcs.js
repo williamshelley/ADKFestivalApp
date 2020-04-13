@@ -29,7 +29,8 @@ export const roundMinutes = (hh, mm, am_pm) => {
 }
 
 export const formatDateElements = (month, day, year, hour, minutes, am_pm) => {
-    return year + "-" + month + "-" + day + "T" + roundMinutes(hour, minutes, am_pm);
+    //return year + "-" + month + "-" + day + "T" + roundMinutes(hour, minutes, am_pm);
+    return year + "-" + month + "-" + day + "T" + hour + ":" + minutes + ":00";
 }
 
 export const formatDate = (timeString) => {
@@ -41,4 +42,75 @@ export const formatDate = (timeString) => {
     const minutes = arr[1].slice(3, 5);
     const am_pm = arr[2];
     return formatDateElements(month, day, year, hour, minutes, am_pm);
+}
+
+export const getNumQuarters = (date) => {
+    return date.getUTCHours() * 4 + date.getUTCMinutes() / 15;
+}
+
+export const getNumQuartersBetween = (startDate, endDate) => {
+    return getNumQuarters(endDate) - getNumQuarters(startDate);
+}
+
+export const getFormattedStartDate = (string) => {
+    return formatDate(string.split(" to ")[0]);
+}
+
+export const parseTime = (timeString) => (timeString.slice(11));
+
+export const arrayifyDate = (data)=>{
+    if (notNull(data) && notNull(data.date)) {
+        const date = data.date;
+        const dateList = date.split(",");
+        return dateList;
+    }
+    return [];
+}
+
+export const formatDateForDetails = (dateStr) => {
+    let startTime = getFormattedStartDate(dateStr);
+    let startDate = new Date(startTime);
+    let weekDay = _formal_week_[startDate.getUTCDay()];
+    let month = _formal_months_[startDate.getUTCMonth()];
+    let hours = startDate.getUTCHours();
+    let am_pm = "am";
+    if (hours > 12){
+        hours-=12;
+        am_pm = "pm";
+    }
+    let minutes = startDate.getUTCMinutes();
+    let timeStr = String(hours) + ":" + String(minutes) + am_pm;
+    return weekDay + ", " + month + " @ " + timeStr;
+}
+
+export const parseDateFromArr = (listOfDates, index) => {
+    return listOfDates[index].split(" to ");
+}
+
+export const getDatePosition = (dateString) => {
+    const dateArr = dateString.split(" to ");
+
+    const start = dateArr[0];
+    const end = dateArr[1];
+    if (notNull(start) && notNull(end)) {
+        const startDate = new Date(formatDate(start));
+        const endDate = new Date(formatDate(end));
+
+        durationInQuarters = getNumQuartersBetween(startDate, endDate);
+        startInQuarters = getNumQuarters(startDate);
+        weekDay = _week_[startDate.getUTCDay()];
+    }
+    return {
+        day: weekDay,
+        durationInQuarters: durationInQuarters,
+        startInQuarters: startInQuarters,
+    }
+}
+
+export const getStartTime = (timeStr) => {
+    return timeStr.split(" to ")[0].slice(11);
+}
+
+export const getEndTime = (timeStr) => {
+    return timeStr.split(" to ")[1].slice(11);
 }

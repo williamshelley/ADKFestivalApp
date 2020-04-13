@@ -1,6 +1,6 @@
 
 import AsyncStorage from '@react-native-community/async-storage';
-import { notNull, isNull, getFormattedStartDate, getDatePosition, arrayifyDate } from './helper-funcs';
+import { notNull, isNull, getFormattedStartDate, getDatePosition, arrayifyDate, getStartTime } from './helper-funcs';
 import PushNotification from './notification-services';
 
 //key for all items added to schedule
@@ -82,50 +82,45 @@ export const multiGetFromAsyncUsingKeys = async (keys, callback) => {
 }
 
 
-/*
-export const sortIDsByDate = async (ids, day, callbackOnSorted) => {
-    try {
-        let values = await AsyncStorage.multiGet(ids);
-        let singleDateValues = [];
-        values.map((store) => {
-            const value = JSON.parse(store[1]);
-            const dateStr = value.date;
-            const dateArr = dateStr.split(",");
 
-            dateArr.map((date,index) => {
-                if (getDatePosition(date).day == day) {
-                    singleDateValues.push({dateIndex: index, store: store});
-                }
-            });
+export const sortIDsByDate = async (ids, callbackOnSorted) => {
+    try {
+        let keys = []
+        let dateIndices = []
+        ids.map((preSplitIds, index)=>{
+            let postSplitIds = preSplitIds.split(":");
+            let key = postSplitIds[0];
+            let dateIndex = postSplitIds[1];
+            keys.push(key);
+            dateIndices.push(dateIndex);
         });
+        let values = await AsyncStorage.multiGet(keys);
+        let singleDateValues = []
+        values.map((store,index)=>{
+            singleDateValues.push({ dateIndex: dateIndices[index], store: store});
+        })
+
         let sortedValues = singleDateValues.sort((a, b) => {
 
-            const fullDateStrA = JSON.parse(a.store[1]).date;
-            const dateIndexA = JSON.parse(a.dateIndex);
-            const dateArrA = fullDateStrA.split(",");
-            const dateStrA = dateArrA[dateIndexA];
-            let dateA = new Date(getFormattedStartDate(dateStrA));
+           const fullTimeStrA = JSON.parse(JSON.parse(a.store[1]).time_and_locations)[a.dateIndex].time
+           let dateA = new Date(getFormattedStartDate(fullTimeStrA));
 
-            const fullDateStrB = JSON.parse(b.store[1]).date;
-            const dateIndexB = JSON.parse(b.dateIndex);
-            const dateArrB = fullDateStrB.split(",");
-            const dateStrB = dateArrB[dateIndexB];
-            let dateB = new Date(getFormattedStartDate(dateStrB));
+            const fullTimeStrB = JSON.parse(JSON.parse(b.store[1]).time_and_locations)[b.dateIndex].time
+            let dateB = new Date(getFormattedStartDate(fullTimeStrB));
             
             return (dateA - dateB)
         });
         let sortedKeys = []
         sortedValues.map(({dateIndex, store}) => {
-            sortedKeys.push({dateIndex: dateIndex, key: store[0]});
+            sortedKeys.push(store[0] + ":" + dateIndex);
         })
 
         callbackOnSorted(sortedKeys);
+
     } catch (error) {
         console.log(error);
     }
 }
-
-*/
 
 
 /**

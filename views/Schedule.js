@@ -43,12 +43,14 @@ export default class Schedule extends React.Component {
     render = () => {
         const navigation = this.props.navigation;
         navigation.setOptions({
+            /*
             headerRight: () => (
             <IconButton 
                 text={this.state.listView ? null : null}
                 source={this.state.listView ? scheduleIcon : listIcon}
                 onPress={() => { this.setState({ listView: !this.state.listView });}} />
             )
+            */
         });
 
         if (notNull(this.state.data) && this.state.data.length > 0) {

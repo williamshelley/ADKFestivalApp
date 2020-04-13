@@ -26,12 +26,9 @@ export default class ListView extends React.Component {
     setDataCallback = (data) => {
         const parsed = JSON.parse(data);
         const useData = notNull(parsed) ? parsed : [];
-        const params = this.props.route.params;
-        //sortIDsByDate(useData, params.tab, (sorted)=>{
-        //    this._isMounted && this.setState({ data: sorted });
-        //});
-        console.log(useData);
-        this.setState({data: useData});
+        sortIDsByDate(useData, (sorted)=>{
+            this._isMounted && this.setState({ data: sorted });
+        });
     }
 
     componentDidMount = () => {
@@ -42,7 +39,6 @@ export default class ListView extends React.Component {
         this.props.navigation.addListener('focus', () => {
             getItem(SCHEDULE_KEY, this.setDataCallback);
         });
-        console.log(this.state.data);
     }
 
     componentWillUnmount = () => {
@@ -62,20 +58,19 @@ export default class ListView extends React.Component {
                             return String(item.key) + String(index) + String(index*Math.random());
                         }}
                         renderItem={({ item, index }) => {
-                            console.log("item: ", item);
-                            return (
-                                <ScheduleListItem key={index + String(item)} tab={params.tab}
-                                    rmOnPress={this.updateSchedule} data={item.split(":")[0]} dateIndex={item.split(":")[1]}
-                                    navigation={this.props.navigation} />
-                            )
+                            return <ScheduleListItem key={index + String(item)} tab={params.tab}
+                            rmOnPress={this.updateSchedule} data={item.split(":")[0]} dateIndex={item.split(":")[1]}
+                            navigation={this.props.navigation} />
                         }}
 />
                 </View>
             );
-        } else return (
+        } else {
+            return (
             <View style={[styles.container, centered, {backgroundColor: theme.loadingColor}]}>
-                <Text style={{ fontSize: 35, color: "white" }}>Empty</Text>
+                <Text style={{ fontSize: 35, color: "white" }}>Nothng scheduled</Text>
             </View>
         );
+    }
     }
 }
