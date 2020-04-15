@@ -70,49 +70,6 @@ const ScheduleStack = ({ navigation }) => (
       }} />
     <Stack.Screen name="Details" component={Details} />
   </Stack.Navigator>
-<<<<<<< HEAD
-);
-
-  render() {
-    return (
-      <SafeAreaView style={styles.menuSidebar}>
-        
-          <ImageBackground source={require("./images/swan.jpg")} style={styles.container}>
-          <FlatList
-            data={this.state.data}
-            contentContainerStyle={{ flex: 0, justifyContent: "flex-start" }}
-            numColumns={1}
-            renderItem={({ item }) => <this.SidebarButton
-              navigation={this.props.navigation}
-              title={item.category}
-              data={item.data} />}
-            keyExtractor={item => item.id}
-          />
-        
-        </ImageBackground>
-      </SafeAreaView>
-      
-    );
-  }
-};
-
-const StackNavigator = createStackNavigator({
-    HomeView,
-    InfoSchedule,
-    Schedule,
-  },{
-    defaultNavigationOptions:
-      navigationOptions = ({navigation}) => {
-        return{
-          headerStyle: styles.headerBar,
-          headerTitle: "",
-          headerBackTitle:"",
-          headerTintColor:"white",
-      };
-    },
-  },
-=======
->>>>>>> experimental
 );
 
 const SponsorStack = ({ navigation }) => {
@@ -147,14 +104,11 @@ const VenueStack = ({ navigation }) => {
   );
 }
 
-<<<<<<< HEAD
-=======
 export default class App extends React.Component {
   componentDidMount = async () => {
     await requestJson();
   }
 
->>>>>>> experimental
   render = () => {
     return (
       <NavigationContainer>
@@ -168,8 +122,4 @@ export default class App extends React.Component {
       </NavigationContainer>
     );
   };
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> experimental
