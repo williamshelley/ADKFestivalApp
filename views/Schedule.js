@@ -1,152 +1,84 @@
-import React, { Component } from 'react';
-import {
-    SafeAreaView, Image,
-    View, Text, FlatList,
-    TouchableOpacity,
-    SectionList,
-    ScrollView
-} from 'react-native';
-import styles from '../styles';
-import MyScheduleButton from '../components/MyScheduleButton';
-import { isThisTypeNode } from 'typescript';
+import React from 'react';
+import { styles, weekDays, theme } from "../styles";
+import { getItem } from '../utils/data-funcs';
+import { notNull } from '../utils/helper-funcs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { LOCATION_STORAGE } from '../utils/data-funcs';
+import ColumnView from './ScheduleColumnView';
+import ListView from './ScheduleListView';
 
-const NUM_SIDEBAR_ITEMS = 20;
-const NUM_HEADER_ITEMS = 6;
+const listIcon = require("../images/listIcon.png");
+const scheduleIcon = require("../images/scheduleIcon.png");
 
-export default class Schedule extends Component {
+const Tab = createMaterialTopTabNavigator();
 
+export default class Schedule extends React.Component {
     constructor(props) {
         super(props);
 
+        this._isMounted = false;
+
         this.state = {
-            data: null,
-            headerData: null,
-            sidebarData: null,
-            stickyHeaderIndices: null,
-            stickySidebarIndices: null,
-            yScrollPos: 0,
-            xScrollPos: 0,
-        };
-    }
-
-    componentDidMount() {
-        this.fetchScheduleData();
-
-    }
-
-    fetchScheduleData = () => {
-        fetch('https://jsonplaceholder.typicode.com/todos/1/posts', {
-            method: 'GET',
-        })
-            .then((response) => response.json())
-            .then((responseJson) => {
-                let DATA = [];
-                let SIDEBAR_DATA = [{
-                    title:"",
-                    id:"-1",
-                }];
-                let numSidebarItems = responseJson.length / NUM_HEADER_ITEMS;
-                for (var i = 0; i < numSidebarItems; i++) {
-                    SIDEBAR_DATA.push({
-                        title: "Place " + String(i),
-                        id: "Place " + String(i),
-                    })
-                }
-                for (var i = 0; i < NUM_HEADER_ITEMS; i++) {
-                    DATA.push({
-                        userId: "Time " + String(i+1),
-                        id: "Time " + String(i+1) + "$$$Schedule$$$2",
-                        title: "Time " + String(i+1),
-                        data: ["Time " + String(i+1), "Time " + String(i+1) + " Body"],
-                    })
-                }
-
-                for (var i = 0; i < responseJson.length; i++) {
-                    DATA.push({
-                        userId: responseJson[i].userId,
-                        id: String(responseJson[i].id) + "$$$Schedule$$$",
-                        title: responseJson[i].title,
-                        data: [responseJson[i].userId, responseJson[i].body],
-                    })
-                }
-                this.setState({
-                    data: DATA,
-                    sidebarData: SIDEBAR_DATA,
-                });
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
-
-    static navigationOptions = ({ navigation }) => {
-        return {
-            headerTitle: "",
-            headerTitleStyle: styles.headerText,
-            headerStyle: styles.headerBar,
-        };
-    };
-
-    SchedItem = ({ title, style }) => {
-        let useStyle = styles.sectionContainer;
-        if (style != null) {
-            useStyle = style;
+            data: [],
+            locations: [],
+            listView: true,
         }
-        if (title != null) {
+    }
+
+    setDataCallback = async (data) => {
+        const parsed = JSON.parse(data);
+        const useData = notNull(parsed) ? parsed : [];
+        this._isMounted && this.setState({ data: useData, week: weekDays });
+    }
+
+    componentDidMount = () => {
+        this._isMounted = true;
+        getItem(LOCATION_STORAGE, this.setDataCallback);
+    }
+
+    componentWillUnmount = () => {
+        this._isMounted = false;
+    }
+
+    render = () => {
+        const navigation = this.props.navigation;
+        navigation.setOptions({
+            /*
+            headerRight: () => (
+            <IconButton 
+                text={this.state.listView ? null : null}
+                source={this.state.listView ? scheduleIcon : listIcon}
+                onPress={() => { this.setState({ listView: !this.state.listView });}} />
+            )
+            */
+        });
+
+        if (notNull(this.state.data) && this.state.data.length > 0) {
             return (
-                <View style={[useStyle, { alignItems: "center", alignSelf: "center", justifyContent: "center" }]}>
-                    <Text style={styles.sectionData}>{title}</Text>
-                </View>
+                <Tab.Navigator
+                    tabBarOptions={{
+                        activeTintColor: theme.mainText,
+                        inactiveTintColor: theme.offText,
+                        indicatorStyle: styles.detailsTabIndicator,
+                        style: styles.scheduleTabBar,
+                        tabStyle: {
+                            borderWidth: 0.25,
+                        },
+                        labelStyle: {
+                            fontSize: 10,
+                        },
+                    }}>
+                    {
+                        this.state.week.map((name) => {
+                            const component = this.state.listView ? ListView : ColumnView;
+                            return (
+                            <Tab.Screen key={name} name={name} component={component}
+                                initialParams={{ tab: name, sections: this.state.data }} />
+                        )})
+                    }
+                </Tab.Navigator>
+
             );
-        }
-        else {
-            return null;
-        }
-    };
-
-    synchScroll = (event) => {
-        this.setState({
-            yScrollPos: event.nativeEvent.contentOffset.y,
-        })
-    }
-
-    render() {
-        return (
-            <SafeAreaView style={[styles.container]}>
-                <Text style={[styles.bigWhiteText, { color: "white" }]}>Schedule</Text>
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                    <FlatList
-                        data={this.state.sidebarData}
-                        contentContainerStyle={{ flex: 0, flexDirection: "column" }}
-                        numColumns={1}
-                        contentOffset={{ x: 0, y: this.state.yScrollPos }}
-                        renderItem={({ item }) =>
-                            <this.SchedItem title={item.title} style={styles.sidebarSectionContainer} 
-                        />}
-                        keyExtractor={item => item.id}
-                    >
-
-                    </FlatList>
-                    <ScrollView
-                        contentContainerStyle={{ flexDirection: "column", flex: 0 }}
-                        horizontal={true}
-                    >
-                        <FlatList
-                            data={this.state.data}
-                            contentContainerStyle={{ flex: 0, flexDirection: "column" }}
-                            numColumns={NUM_HEADER_ITEMS}
-                            renderItem={({ item }) => <this.SchedItem 
-                                title={item.title} 
-                                style={styles.sectionContainer} 
-                            />}
-                            keyExtractor={item => item.id}
-                            stickyHeaderIndices={[0]}
-                            onScroll={event => this.synchScroll(event)}
-                        />
-
-                    </ScrollView>
-                </View>
-            </SafeAreaView>
-        );
+        } else return null;
     }
 }

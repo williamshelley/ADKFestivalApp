@@ -1,3 +1,5 @@
-rootProject.name = 'ADKFestivalApp'
+rootProject.name = 'adkfapp'
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'
+include ':react-native-push-notification'
+project(':react-native-push-notification').projectDir = file('../node_modules/react-native-push-notification/android')
