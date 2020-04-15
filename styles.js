@@ -49,10 +49,10 @@ export const details = {
 }
 
 export const theme = {
-    main: "rgba(248,248,255,1)",
+    main: "rgba(200,200,210,1)",
     accent: "rgba(100,100,110,1)",
     mainText: "black",
-    offText: "black",
+    offText: "white",
     iconTint: "black",
     loadingColor: "rgba(100,100,110,1)",
 
@@ -84,6 +84,7 @@ export const centered = {
 export const styles = {
     container: [centered, {
         flex: 1,
+        backgroundColor: theme.accent,
     }],
     homeContainer: [{
         justifyContent: "flex-start",
@@ -173,9 +174,10 @@ export const styles = {
         width: "100%",
         height: "25%",
         marginBottom: 20,
+        backgroundColor: theme.accent,
     }],
     detailsText: [{
-        color: theme.mainText,
+        color: theme.offText,
         fontSize: 18,
         margin: 10,
         marginBottom: "50%",

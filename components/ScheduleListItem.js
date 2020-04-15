@@ -42,6 +42,10 @@ export default class ScheduleListItem extends React.Component {
         getItem(this.state.id, this.stateCallback);
     }
 
+    componentWillUnmount = () => {
+        this._isMounted = false;
+    }
+
     render = () => {
         const props = this.props;
         let data = this.state.data;

@@ -38,7 +38,8 @@ sponsor_width = sponsor_soup.find(id="full-width").find_all("a")
 sponsor_list = []
 for item in sponsor_width:
 	sponsor = [item.text, item.get("href")]
-	sponsor_list.append(sponsor)
+	if ("https" in sponsor[1] or "http" in sponsor[1]):
+		sponsor_list.append(sponsor)
 
 FIRST_TIME = "3/1/2020 7:00 AM"
 SECOND_TIME = "3/7/2020 7:00 PM"
@@ -138,6 +139,9 @@ def set_event(pg_item, category):
 			event.category = desc_cats[1]
 			event.video_link = desc_cats[2]
 
+
+
+
 			#DATE AND LOCATION
 			#event.location = VENUES_PLACEHOLDER[int(event.id)%len(VENUES_PLACEHOLDER)]
 			location = venues[int(event.id)%len(venues)]
@@ -165,6 +169,9 @@ def set_event(pg_item, category):
 				"location":location2[0],
 			}]
 			event.time_and_locations = json.dumps(time_and_locations)
+
+
+
 			#DATE AND LOCATION
 
 	if event.is_valid_event():

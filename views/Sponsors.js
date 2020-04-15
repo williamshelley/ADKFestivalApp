@@ -22,7 +22,7 @@ export default class Sponsors extends React.Component {
     }
 
     render = () => (
-        <View style={[styles.container, {backgroundColor: theme.sponsorPage}]}>
+        <View style={styles.container}>
             <FlatList 
                 data={this.state.data} keyExtractor={(index) => String(index)}
                 contentContainerStyle={[styles.eventCardContainer,{flexGrow:1}]}

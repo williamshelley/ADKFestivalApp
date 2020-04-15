@@ -62,7 +62,7 @@ const ScheduleStack = ({ navigation }) => (
       headerTintColor: theme.navigationAccent,
       headerStyle: styles.stackHeader,
     }}>
-    <Stack.Screen name="Schedule" component={Schedule}
+    <Stack.Screen name="My Schedule" component={Schedule}
       options={{
         headerLeft: () => (
           <IconButton source={drawerIcon}
@@ -115,7 +115,7 @@ export default class App extends React.Component {
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
           <Drawer.Screen name="Films" component={HomeStack} />
           <Drawer.Screen name="Special Events" component={SpecEventStack} />
-          <Drawer.Screen name="Schedule" component={ScheduleStack} />
+          <Drawer.Screen name="My Schedule" component={ScheduleStack} />
           <Drawer.Screen name="Venues" component={VenueStack} />
           <Drawer.Screen name="Sponsors" component={SponsorStack} />
         </Drawer.Navigator>

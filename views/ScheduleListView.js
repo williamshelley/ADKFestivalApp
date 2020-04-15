@@ -26,7 +26,7 @@ export default class ListView extends React.Component {
     setDataCallback = (data) => {
         const parsed = JSON.parse(data);
         const useData = notNull(parsed) ? parsed : [];
-        sortIDsByDate(useData, (sorted)=>{
+        this._isMounted && sortIDsByDate(useData, (sorted)=>{
             this._isMounted && this.setState({ data: sorted });
         });
     }
@@ -37,7 +37,7 @@ export default class ListView extends React.Component {
         }
         this._isMounted = true;
         this.props.navigation.addListener('focus', () => {
-            getItem(SCHEDULE_KEY, this.setDataCallback);
+            this._isMounted && getItem(SCHEDULE_KEY, this.setDataCallback);
         });
     }
 
