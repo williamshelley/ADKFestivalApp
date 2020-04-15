@@ -7,6 +7,53 @@ import re
 import threading
 import queue
 import time
+import random
+
+
+'''
+POTENTIALLY ONLY SCRAPE THE "ALL" CATEGORY AND ITS PAGES 
+(EACH EVENTS CATEGORIES IS LISTED ON DESCRIPTION PAGE)
+'''
+
+events = set()
+category_set = set()
+location_set = set()
+
+pages = []
+id_set = set()
+data_list = []
+set_test = set()
+lock = threading.Lock()
+start_time = time.time()
+
+base_url = 'https://www.adkfilmfestival.org/'
+
+cat_request = requests.get(base_url + "festival/")
+cat_soup = BeautifulSoup(cat_request.text,"html.parser")
+cat_width_a = cat_soup.find(id="full-width").find_all("a")
+
+sponsor_request = requests.get(base_url + "sponsors/")
+sponsor_soup = BeautifulSoup(sponsor_request.text, "html.parser")
+sponsor_width = sponsor_soup.find(id="full-width").find_all("a")
+sponsor_list = []
+for item in sponsor_width:
+	sponsor = [item.text, item.get("href")]
+	if ("https" in sponsor[1] or "http" in sponsor[1]):
+		sponsor_list.append(sponsor)
+
+FIRST_TIME = "3/1/2020 7:00 AM"
+SECOND_TIME = "3/7/2020 7:00 PM"
+
+venues_request = requests.get(base_url + "about/venues/")
+venues_soup = BeautifulSoup(venues_request.text,"html.parser")
+venues_width = venues_soup.find(id="full-width").find_all("div")[0].find_all("div",{"class":"services-box col"})
+name_image_separator = ":::::"
+venues = []
+style_prefix = "background-image:url("
+for item in venues_width:
+	name = item.find("div",{"class":"sc-wraper"}).getText()
+	image_url = item.find("div",{"class":"services-img"})["style"][len(style_prefix):-1]
+	venues.append([name, image_url])
 
 #need to modify and make this the primary way of passing information
 class Event:
@@ -65,8 +112,46 @@ def set_event(pg_item, category):
 		event.desc_link = pg_item.find("a").get("href")
 		event.source = pg_item.find("img").get("src")
 		if event.desc_link is not None:
-			event.description = prepare_description(event.desc_link)
-	
+			desc_cats = get_description_and_categories(event.desc_link)
+			event.description = desc_cats[0]
+			event.category = desc_cats[1]
+			event.video_link = desc_cats[2]
+
+
+
+
+			#DATE AND LOCATION
+			#event.location = VENUES_PLACEHOLDER[int(event.id)%len(VENUES_PLACEHOLDER)]
+			location = venues[int(event.id)%len(venues)]
+			event.location = location[0]
+			location2 = venues[int(event.id + "10000")%len(venues)]
+
+			location_set.add(event.location + name_image_separator + location[1])
+			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
+			same_day = start[:11] + SECOND_TIME[9:]
+			end = random_date(start, same_day, random.random())
+			event.date = start + " to " + end
+			date1 = start + " to " + end
+
+			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
+			same_day = start[:11] + SECOND_TIME[9:]
+			end = random_date(start, same_day, random.random())
+			#event.date += "," + start + " to " + end
+			date2 = start + " to " + end
+
+			time_and_locations = [{
+				"time":date1,
+				"location":location[0],
+			},{
+				"time":date2,
+				"location":location2[0],
+			}]
+			event.time_and_locations = json.dumps(time_and_locations)
+
+
+
+			#DATE AND LOCATION
+
 	if event.is_valid_event():
 		return event
 

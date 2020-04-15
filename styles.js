@@ -8,22 +8,147 @@ const imageFont = "Times New Roman";
 const infoTitleHeight = 44;
 const tabBarHeight = 25;
 
-const styles = {
-    windowWidth: Math.round(Dimensions.get('window').height),
-    windowHeight: Math.round(Dimensions.get('window').height),
-    infoImgHeight: screenHeight / numInfoSections,
-    infoTitleHeight: infoTitleHeight,
-    tabBarHeight:tabBarHeight,
-    container:{
-        flex:1,
-        justifyContent: "center",
-        alignItems:"center",
-        backgroundColor:"black",
+// CHANGE 'weekDays' TO ALTER THE DAYS SHOWN ON A SINGLE SCHEDULE PAGE
+export const weekDays = ["THU", "FRI", "SAT", "SUN"];
+
+export const createHourList = (startHour, endHour) => {
+    let res = [];
+    let currentHour = startHour;
+    let halfDay = 12;
+    let numModifier = 0;
+    let a_m = ":00 AM", p_m = ":00 PM";
+    let strModifier = a_m;
+    while (currentHour < endHour + 1) {
+        if (currentHour > halfDay) {
+            numModifier = halfDay;
+            strModifier = p_m;
+        } else if (currentHour == halfDay) {
+            strModifier = p_m;
+        } else {
+            numModifier = 0;
+            strModifier = a_m;
+        }
+        res.push(String(currentHour - numModifier) + strModifier);
+        currentHour++;
+    }
+    return res;
+}
+
+export const START_HOUR = 7;
+export const END_HOUR = 20;
+export const hourList = createHourList(START_HOUR, END_HOUR);
+
+export const clear = "rgba(0,0,0,0)";
+
+export const details = {
+    flex: 1,
+}
+
+export const theme = {
+    main: "rgba(200,200,210,1)",
+    accent: "rgba(100,100,110,1)",
+    mainText: "black",
+    offText: "white",
+    iconTint: "black",
+    loadingColor: "rgba(100,100,110,1)",
+
+    navigation: "black",
+    navigationAccent: "black",
+
+    overlay: "rgba(0,0,0,0.5)",
+    lightOverlay: "rgba(255,255,255,0.5)",
+    overlayText: "white",
+
+    scheduleItem: "rgba(100,0,120,0.5)",
+    scheduleHeader: "rgba(100,100,110,1)",
+    scheduleColumn: "rgba(200,200,210,0.8)",
+    scheduleBorders: "black",
+
+    sponsorPage: "black",
+    sponsor: "rgba(0,0,0,0.5)",
+
+    button: "#58B3E8",
+    buttonAccent: "white",
+};
+
+
+export const centered = {
+    justifyContent: "center",
+    alignItems: "center",
+}
+
+export const styles = {
+    container: [centered, {
+        flex: 1,
+        backgroundColor: theme.accent,
+    }],
+    homeContainer: [{
+        justifyContent: "flex-start",
+        alignItems: "center",
+    }],
+    drawerScrollView: [centered, {
+        flexGrow: 1,
+        width: drawerWidth,
+        flexDirection: "column",
+        backgroundColor: clear,
+        alignItems: "stretch",
+    }],
+    drawerItem: [centered, {
+        backgroundColor: theme.overlay,
+        borderColor: theme.navigationAccent,
+        borderWidth: 2,
+        alignItems: "stretch",
+    }],
+    drawerLabel: [centered, {
+        color: theme.overlayText,
+        fontSize: 20,
+        textAlignVertical: "center",
+        textAlign: "center",
+    }],
+    stackHeaderIcon: [centered, {
+        width: stackHeaderIconSize,
+        height: stackHeaderIconSize,
+        margin: 10,
+    }],
+    stackHeader: [{
+        backgroundColor: theme.main,
+    }],
+    detailsTabBar: [{
+        backgroundColor: theme.overlay,
+        borderColor: theme.main,
+    }],
+    detailsTabIndicator: [{
+        backgroundColor: theme.navigationAccent,
+        height: 3,
+        borderRadius: 5,
+    }],
+    eventCard: [centered, {
+        backgroundColor: theme.accent,
+        width: eventCardWidth,
+        height: eventCardHeight,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: "black",
+        justifyContent: "space-between"
+    }],
+    eventCardCorner: [{
+        justifyContent: "flex-start",
+        alignSelf: "flex-end",
+        height: removeIconSize,
+        width: removeIconSize,
+    }],
+    eventCardText: {
+        justifyContent: "flex-end",
+        alignSelf: "flex-start",
+        backgroundColor: theme.overlay,
+        color: theme.overlayText,
+        borderColor: theme.main,
     },
     middleTabBar:{
         backgroundColor: "rgba(45,45,45,1)",
         position:"relative",
     },
+<<<<<<< HEAD
     tabBtn:{
         flex:1,
         alignItems:"center",
@@ -31,6 +156,57 @@ const styles = {
         backgroundColor: "rgba(45,45,45,1)",
         borderColor:"white",
         borderWidth:0.5,
+=======
+    detailsContainer: [{
+        flex: 1,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        backgroundColor: theme.main,
+    }],
+    detailsImage: [centered, details, {
+        width: "100%",
+        resizeMode: "contain",
+    }],
+    detailsTextWrapper: [centered, details, {
+        width: "100%",
+        height: "25%",
+        marginBottom: 20,
+        backgroundColor: theme.accent,
+    }],
+    detailsText: [{
+        color: theme.offText,
+        fontSize: 18,
+        margin: 10,
+        marginBottom: "50%",
+    }],
+    detailsTextScroll: [{
+        flexGrow: 1,
+        margin: 10,
+    }],
+    detailsDateWrapper: [{
+        flex: 1,
+        marginBottom: 20,
+    }],
+    detailsDateText: [{
+        color: theme.mainText,
+        margin: 10,
+        alignSelf: "center",
+    }],
+    addButtonContainer: [centered, {
+        ///alignSelf:"center",
+        //width: "100%",
+        borderBottomWidth: 2,
+        borderColor: "black",
+        backgroundColor: theme.button,
+    }],
+    addButtonText: {
+        textAlign: "center",
+        textAlignVertical: "center",
+        fontSize: 16,
+        color: theme.buttonAccent,
+        margin:16,
+        fontWeight: "900",
+>>>>>>> 2b89995... fixed background color issues, fixed non sponsor items from appearing on sponsor page
     },
     imgTitle:{
         height: infoTitleHeight,

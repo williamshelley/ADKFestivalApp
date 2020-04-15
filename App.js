@@ -40,22 +40,21 @@ class CategorySidebar extends Component {
 
   
 
-  SidebarButton = ({ navigation, title }) => {
-    if (title != null) {
-      return (
-        <TouchableOpacity
-          style={styles.menuSidebarBtn}
-          onPress={() => {
-            navigation.navigate(title);
-          }}>
-          <Text style={[styles.medWhiteText,{}]}>{title}</Text>
-        </TouchableOpacity>
-      );
-    }
-    else {
-      return null;
-    }
-  }
+const ScheduleStack = ({ navigation }) => (
+  <Stack.Navigator
+    screenOptions={{
+      headerTintColor: theme.navigationAccent,
+      headerStyle: styles.stackHeader,
+    }}>
+    <Stack.Screen name="My Schedule" component={Schedule}
+      options={{
+        headerLeft: () => (
+          <IconButton source={drawerIcon}
+            onPress={() => { navigation.toggleDrawer() }} />)
+      }} />
+    <Stack.Screen name="Details" component={Details} />
+  </Stack.Navigator>
+);
 
   render() {
     return (
@@ -107,5 +106,17 @@ const DrawerNavigator = createDrawerNavigator({
 
 const App = createAppContainer(DrawerNavigator);
 
-
-export default App;
+  render = () => {
+    return (
+      <NavigationContainer>
+        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
+          <Drawer.Screen name="Films" component={HomeStack} />
+          <Drawer.Screen name="Special Events" component={SpecEventStack} />
+          <Drawer.Screen name="My Schedule" component={ScheduleStack} />
+          <Drawer.Screen name="Venues" component={VenueStack} />
+          <Drawer.Screen name="Sponsors" component={SponsorStack} />
+        </Drawer.Navigator>
+      </NavigationContainer>
+    );
+  };
+}
