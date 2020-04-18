@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { notNull, parseDate, parseTime, parseDateFromArr, arrayifyDate, getDatePosition, getFormattedStartDate, formatDate, getStartTime, getEndTime } from '../utils/helper-funcs';
+import { notNull, formatDate, getStartTime, getEndTime } from '../utils/helper-funcs';
 import { rmFromSchedule, getItem } from '../utils/data-funcs';
 import { _week_, _venue_name_img_separator_ } from '../utils/architecture';
 import { styles, theme, screenWidth } from '../styles';
@@ -13,6 +13,9 @@ const TARGET = "Details";
 export default class ScheduleListItem extends React.Component {
     constructor(props) {
         super(props)
+
+        this._isMounted = false;
+
         this.state = {
             data: [],
             id: this.props.data,

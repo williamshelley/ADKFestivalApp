@@ -79,7 +79,8 @@ export default class ColumnView extends React.Component {
                             renderItem={({ item }) => (
                                 <View style={styles.scheduleColumn}>{
                                     this.state.data.map((id) => (<ScheduleCard key={id} column={item}
-                                        tab={this.state.tab} data={id} rmOnPress={this.updateSchedule}
+                                        tab={this.state.tab} data={id.split(":")[0]} rmOnPress={this.updateSchedule} 
+                                        dateIndex={id.split(":")[1]}
                                         style={styles.scheduleItem} navigation={this.props.navigation} />))
                                 }</View>
                             )} />

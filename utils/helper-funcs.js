@@ -79,7 +79,11 @@ export const formatDateForDetails = (dateStr) => {
         am_pm = "pm";
     }
     let minutes = startDate.getUTCMinutes();
-    let timeStr = String(hours) + ":" + String(minutes) + am_pm;
+    let strMins = String(minutes);
+    if (minutes < 10){
+        strMins = "0"+strMins;
+    }
+    let timeStr = String(hours) + ":" + strMins + am_pm;
     return weekDay + ", " + month + " @ " + timeStr;
 }
 

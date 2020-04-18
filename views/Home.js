@@ -20,28 +20,36 @@ const filterIcon = require("../images/filterIcon.png");
 export default class Home extends React.Component {
     constructor(props) {
         super(props);
+        
+        this._isMounted = false;
 
         this.state = {
             data: [],
             categories: [],
             filterVisible: false,
             currentPage: INITIAL_PAGE,
+
         }
     }
 
     sortPage = (targetPage) => {
         sort(targetPage, (keys)=>{
-            this.setState({ filterVisible: false, data: keys, currentPage: targetPage })
+            this._isMounted && this.setState({ filterVisible: false, data: keys, currentPage: targetPage })
         });
     }
 
     componentDidMount = () => {
+        this._isMounted = true;
         getItem(CATEGORY_STORAGE, (data) => {
             sort(INITIAL_PAGE, (keys) => {
-                this.setState({ data: keys, categories: JSON.parse(data) });
+                this._isMounted && this.setState({ data: keys, categories: JSON.parse(data) });
             });
         });
     };
+
+    componentWillUnmount(){
+        this._isMounted = false;
+    }
 
     render = () => {
         const navigation = this.props.navigation;
