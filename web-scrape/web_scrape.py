@@ -53,7 +53,8 @@ style_prefix = "background-image:url("
 for item in venues_width:
 	name = item.find("div",{"class":"sc-wraper"}).getText()
 	image_url = item.find("div",{"class":"services-img"})["style"][len(style_prefix):-1]
-	venues.append([name, image_url])
+	venues.append(name + name_image_separator + image_url)
+
 
 class Event:
 	def __init__(self):
@@ -64,8 +65,6 @@ class Event:
 		self.desc_link = None
 		self.video_link = None
 		self.description =  None
-		self.location = None
-		self.date = None
 		self.time_and_locations = None
 
 	def is_valid_event(self):
@@ -75,7 +74,6 @@ class Event:
 			self.source is not None and
 			self.desc_link is not None and
 			self.description is not None and
-			self.location is not None and 
 			self.time_and_locations is not None
 			#self.date is not None
 			):
@@ -144,33 +142,33 @@ def set_event(pg_item, category):
 
 			#DATE AND LOCATION
 			#event.location = VENUES_PLACEHOLDER[int(event.id)%len(VENUES_PLACEHOLDER)]
-			location = venues[int(event.id)%len(venues)]
-			event.location = location[0]
-			location2 = venues[int(event.id + "10000")%len(venues)]
-
-			location_set.add(event.location + name_image_separator + location[1])
-			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
-			same_day = start[:11] + SECOND_TIME[9:]
-			end = random_date(start, same_day, random.random())
-			event.date = start + " to " + end
-			date1 = start + " to " + end
-
-			start = random_date(FIRST_TIME, SECOND_TIME, random.random())
-			same_day = start[:11] + SECOND_TIME[9:]
-			end = random_date(start, same_day, random.random())
-			#event.date += "," + start + " to " + end
-			date2 = start + " to " + end
-
-			time_and_locations = [{
-				"time":date1,
-				"location":location[0],
-			},{
-				"time":date2,
-				"location":location2[0],
-			}]
-			event.time_and_locations = json.dumps(time_and_locations)
 
 
+			screen_times_and_blocks = event.description.split("Screening Time:")[1]
+			screen_times = screen_times_and_blocks.split("Screening In:")
+			times = screen_times[0]
+			block = None
+			#need to have the input be split by something ie time at location, ...
+			if (len(screen_times) > 1):
+				block = screen_times[1]
+			
+			times = times.split("\n")
+			times_dict = []
+
+			for time in times:
+				if len(time) < 1:
+					times.remove(time)
+			for time in times:
+				global venues
+				split_time = time.split(" at ")
+				print(event.title)
+				if len(split_time) > 1:
+					times_dict.append({
+						"time":prepare_time(split_time[0]),
+						"location":split_time[1],
+						"block":block,
+					})
+			event.time_and_locations = json.dumps(times_dict)
 
 			#DATE AND LOCATION
 
@@ -178,6 +176,32 @@ def set_event(pg_item, category):
 		return event
 
 	return None
+
+def prepare_time(time):
+	result = ""
+	split_time_by_space = time.split(" ")
+	date = split_time_by_space[0]
+
+
+	time_1 = split_time_by_space[2]
+	if len(time_1) < 5:
+		time_1 = "0"+time_1
+	first_time = time_1 + " " + split_time_by_space[3].upper()
+
+
+	time_2 = split_time_by_space[5]
+	if len(time_1) < 5:
+		time_2 = "0"+time_2
+	second_time = first_time
+	if len(split_time_by_space) >= 7:
+		second_time = time_2 + " " + split_time_by_space[6].upper()
+	else:
+		print(time)
+
+	first = date + " " + first_time
+	second = date + " " + second_time
+	result = first + " to " + second
+	return result
 
 # strip category of non-alphabetic chars and capitalize (title-0 => Title)
 # if -1, change it to All
@@ -222,11 +246,15 @@ def get_description_and_categories(description_url):
 	if (iframe is not None and len(iframe)>0):
 		video_link = iframe[0].get("src")
 
+	record_times = False
+	times = []
 	for desc in desc_html:
 		part = desc.getText()
+		if record_times:
+			times = desc.getText()
 		
 		if part is not None:
-			result += " " + part
+			result += "\n" + part
 
 	return (result, cats, video_link)
 
@@ -292,8 +320,6 @@ for event in events:
 		"description": event.description,
 		"video_link": event.video_link,
 		"image": event.source,
-		"location": event.location,
-		"date": event.date,
 		"time_and_locations": event.time_and_locations,
 	}})
 	
@@ -303,7 +329,7 @@ data = json.dumps(data_list)
 json_object = json.dumps({ 
 	"data": data, 
 	"category_set": category_list,
-	"location_set": location_list,
+	"location_set": venues,
 	"sponsor_list": sponsor_list,
 	})
 with open("offline.json", "w") as outfile: 

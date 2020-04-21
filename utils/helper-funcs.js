@@ -112,9 +112,27 @@ export const getDatePosition = (dateString) => {
 }
 
 export const getStartTime = (timeStr) => {
-    return timeStr.split(" to ")[0].slice(11);
+    let time = timeStr.split(" to ")[0].slice(9)
+    if (time.length < 8){
+        time = "0"+time
+    }
+    return time;
 }
 
 export const getEndTime = (timeStr) => {
-    return timeStr.split(" to ")[1].slice(11);
+    let time = timeStr.split(" to ")[1].slice(9);
+    if (time.length < 8){
+        time = "0"+time
+    }
+    return time;
+}
+
+export const getStartDate = (timeStr)=>{
+    let time = timeStr.split(" to ")[0].slice(0,9)
+    return time;
+}
+
+export const getEndDate = (timeStr)=>{
+    let time = timeStr.split(" to ")[1].slice(0,9)
+    return time;
 }

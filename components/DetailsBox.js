@@ -67,8 +67,8 @@ export default class DetailsBox extends React.Component {
                                         <AddButton
                                             style={[!inSchedule ? style.inScheduleButton : style.notInScheduleButton, style.scheduleButton]}
                                             text={!inSchedule ?
-                                                "Add " + displayStartTime + " to schedule"
-                                                : "Remove " + displayStartTime + " from schedule"}
+                                                "Add " + displayStartTime + " to My Schedule"
+                                                : "Remove " + displayStartTime + " from My Schedule"}
                                             onPress={() => {
                                                 if (!inSchedule) {
                                                     PushNotification.localNotificationSchedule({

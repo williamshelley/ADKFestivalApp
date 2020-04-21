@@ -5,7 +5,7 @@ import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import ScheduleHeader from '../components/ScheduleHeader';
 import ScheduleCard from '../components/ScheduleCard';
 import { styles } from "../styles";
-import { notNull } from '../utils/helper-funcs';
+import { notNull, isNull } from '../utils/helper-funcs';
 import { _venue_name_img_separator_ } from '../utils/architecture';
 
 /**
@@ -25,7 +25,6 @@ export default class ColumnView extends React.Component {
             sectionNames.push(value[0]);
             sectionImages.push(value[1]);
         })
-        
         this.state = {
             data: [],
             tab: this.props.route.params.tab,
@@ -40,12 +39,12 @@ export default class ColumnView extends React.Component {
 
     setDataCallback = (data) => {
         const parsed = JSON.parse(data);
-        const useData = notNull(parsed) ? parsed : [];
-        this._isMounted && this.setState({ data: useData });
+        let useData = notNull(parsed) ? parsed : [];
+        this._isMounted && this.setState({ data: useData});
     }
 
     componentDidMount = () => {
-        if (this.state.data.length <= 0) {
+        if (this.state.data.length <= 0 && !this.state.useOverride) {
             getItem(SCHEDULE_KEY, this.setDataCallback);
         }
         this._isMounted = true;

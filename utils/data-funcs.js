@@ -12,6 +12,8 @@ export const CATEGORY_STORAGE = "$$$CATEGORY_SET_STORAGE_KEY$$$";
 //key for all unique locations of events
 export const LOCATION_STORAGE = "$$$LOCATION_SET_STORAGE_KEY$$$";
 
+export const MASTER_SCHEDULE_STORAGE = "$$$MASTER_SCHEDULE_STORAGE_KEY$$$";
+
 //key for all sponsors
 export const SPONSOR_STORAGE = "$$$SPONSOR_LIST_STORAGE_KEY$$$";
 
@@ -31,6 +33,8 @@ export const getAllKeys = async (callback) => {
         console.log(error);
     }
 }
+
+
 
 /**
  * Batch storing of key value pairs from async storage
@@ -61,6 +65,31 @@ export const multiGet = async (callback) => {
                 callback(store);
             }
         });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getAllKeysAndDateIndices = async (callback)=>{
+    try {
+        let keys = await AsyncStorage.getAllKeys();
+        let values = await AsyncStorage.multiGet(keys);
+        let keysAndDateIndices = []
+        values.map((store) => {
+            const parsed = JSON.parse(store[1]);
+            if (notNull(parsed) && notNull(parsed.title)){
+                const parsedTL = JSON.parse(parsed.time_and_locations)
+                const t_and_l = notNull(parsedTL) ? parsedTL : null
+                if (notNull(t_and_l)){
+                    for (var i = 0; i < t_and_l.length; i++){
+                        let newKey = store[0]+":"+i
+                        keysAndDateIndices.push(newKey);
+                    }
+                }
+            }
+
+        });
+        callback(keysAndDateIndices)
     } catch (error) {
         console.log(error);
     }

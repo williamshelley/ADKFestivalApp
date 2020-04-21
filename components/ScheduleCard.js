@@ -1,7 +1,7 @@
 import React from 'react';
 import EventCard from '../components/EventCard';
-import { notNull, formatDate } from '../utils/helper-funcs';
-import { styles, quarterHourHeight, theme } from '../styles';
+import { notNull, formatDate, getStartTime, getStartDate,getEndTime, getEndDate } from '../utils/helper-funcs';
+import { styles, quarterHourHeight, theme, hourHeight } from '../styles';
 import { rmFromSchedule, getItem } from '../utils/data-funcs';
 import { _week_ } from '../utils/architecture';
 
@@ -42,8 +42,8 @@ export default class ScheduleCard extends EventCard {
         const parsed = JSON.parse(data)
         const time_and_locs = JSON.parse(parsed.time_and_locations);
         const time_loc_json = time_and_locs[this.props.dateIndex];
-        const startTime = time_loc_json.time.split(" to ")[0];
-        const endTime = time_loc_json.time.split(" to ")[1];
+        const startTime = getStartDate(time_loc_json.time) + getStartTime(time_loc_json.time);
+        const endTime = getEndDate(time_loc_json.time) + getEndTime(time_loc_json.time);
         let correctTab = this.isCorrectTab(startTime);
         let correctCol = this.isCorrectColumn(time_loc_json.location);
         let shouldRender = correctTab && correctCol;
@@ -51,12 +51,12 @@ export default class ScheduleCard extends EventCard {
         let startDate = new Date(formatDate(startTime));
         let endDate = new Date(formatDate(endTime));
         
-        let startY = startDate.getUTCHours()*quarterHourHeight + startDate.getUTCMinutes();
-        let endY = endDate.getUTCHours()*quarterHourHeight + endDate.getUTCMinutes();
+        let startY = startDate.getUTCHours()*hourHeight + startDate.getUTCMinutes();
+        let endY = endDate.getUTCHours()*hourHeight + endDate.getUTCMinutes();
         this._isMounted && this.setState({ 
-            data: parsed, 
+            data: parsed,
             shouldRender: shouldRender,
-            height: endY-startY,
+            height: endY - startY,
             yPos: startY,
          })
     }
