@@ -219,17 +219,17 @@ PODS:
     - React-cxxreact (= 0.61.5)
     - React-jsi (= 0.61.5)
     - ReactCommon/jscallinvoker (= 0.61.5)
-  - RNCAsyncStorage (1.8.1):
+  - RNCAsyncStorage (1.9.0):
     - React
-  - RNCMaskedView (0.1.7):
+  - RNCMaskedView (0.1.9):
     - React
-  - RNCPushNotificationIOS (1.0.7):
+  - RNCPushNotificationIOS (1.1.1):
     - React
-  - RNGestureHandler (1.6.0):
+  - RNGestureHandler (1.6.1):
     - React
-  - RNReanimated (1.7.0):
+  - RNReanimated (1.8.0):
     - React
-  - RNScreens (2.2.0):
+  - RNScreens (2.5.0):
     - React
   - Yoga (1.14.0)
 
@@ -367,12 +367,12 @@ SPEC CHECKSUMS:
   React-RCTText: 9ccc88273e9a3aacff5094d2175a605efa854dbe
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
-  RNCAsyncStorage: e0dd7c8a36543b4ef84969acd9f8aceba3a92dc2
-  RNCMaskedView: 76c40a1d41c3e2535df09246a2b5487f04de0814
-  RNCPushNotificationIOS: eea954fa69537d4a8db898fe1b1a06e2b7e15841
-  RNGestureHandler: dde546180bf24af0b5f737c8ad04b6f3fa51609a
-  RNReanimated: 031fe8d9ea93c2bd689a40f05320ef9d96f74d7f
-  RNScreens: 812b79d384e2bea7eebc4ec981469160d4948fd5
+  RNCAsyncStorage: 453cd7c335ec9ba3b877e27d02238956b76f3268
+  RNCMaskedView: 71fc32d971f03b7f03d6ab6b86b730c4ee64f5b6
+  RNCPushNotificationIOS: a0b6894f4ad9b93d9dac467fdf4d055660ac8a0d
+  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
+  RNReanimated: 955cf4068714003d2f1a6e2bae3fb1118f359aff
+  RNScreens: ac02d0e4529f08ced69f5580d416f968a6ec3a1d
   Yoga: f2a7cd4280bfe2cca5a7aed98ba0eb3d1310f18b
 
 PODFILE CHECKSUM: b761304f085b03c38ca37ec9d83f4550f11156ea
