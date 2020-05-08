@@ -1,5 +1,6 @@
 
 //data format per item being stored in async storage
+//deprecated
 export const _data_ = (item) => ({
     id: item.id,
     title: item.title,
