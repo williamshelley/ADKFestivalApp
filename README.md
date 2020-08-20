@@ -21,20 +21,14 @@
 | :---: | :---: | :---: | :---: | :---: |
 | <img src="https://user-images.githubusercontent.com/38144750/90810671-59371800-e2f1-11ea-8da6-4b0f1acb9bfe.png" width="200"> | <img src="https://user-images.githubusercontent.com/38144750/90810635-49b7cf00-e2f1-11ea-8873-da602d5332cb.png" width="200"> | <img src="https://user-images.githubusercontent.com/38144750/90810654-51777380-e2f1-11ea-81c0-873d1a8ed5a8.png" width="200"> | <img src="https://user-images.githubusercontent.com/38144750/90810667-5805eb00-e2f1-11ea-887a-e8166d51aac0.png" width="200"> | <img src="https://user-images.githubusercontent.com/38144750/90810669-589e8180-e2f1-11ea-94cf-3f4d0463cbaa.png" width="200"> |
 
-### Schedule
+### Schedule and Navigation
 - Events ordered by event start date
-
-| Weekly Schedule |
-| :---: |
-| <img src="https://user-images.githubusercontent.com/38144750/90810635-49b7cf00-e2f1-11ea-8873-da602d5332cb.png" width=200> |
-
-### Navigation
-
 - Top left hamburger icon extends navigation drawer
 
-| Drawer Navigation | 
-| :---: |
-| <img src="https://user-images.githubusercontent.com/38144750/90810668-589e8180-e2f1-11ea-9124-65d34ea0cc51.png" width="200"> | 
+| Weekly Schedule | Drawer Navigation | 
+| :---: | :---: |
+| <img src="https://user-images.githubusercontent.com/38144750/90810635-49b7cf00-e2f1-11ea-8873-da602d5332cb.png" width=200> | <img src="https://user-images.githubusercontent.com/38144750/90810668-589e8180-e2f1-11ea-9124-65d34ea0cc51.png" width="200"> | 
+
 
 ### File Structure
 	Views Directory:
