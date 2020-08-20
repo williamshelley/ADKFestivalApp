@@ -26,7 +26,7 @@ set_test = set()
 lock = threading.Lock()
 start_time = time.time()
 
-base_url = 'https://www.adkfilmfestival.org/'
+base_url = 'hhttps://www.adkfilmfestival.org/'
 
 cat_request = requests.get(base_url + "festival/")
 cat_soup = BeautifulSoup(cat_request.text,"html.parser")
