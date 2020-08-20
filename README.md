@@ -1,4 +1,6 @@
-Running Instructions:
+## Scheduling Application for Adirondack Film Festival Events
+
+### Running Instructions Dev Environment:
 
 	iOS:
 		react-native run-ios
@@ -7,7 +9,7 @@ Running Instructions:
 		react-native run-android
 
 
-Organization:
+### Organization:
 	Views Directory:
 		Holds the main views for each page of the application that are accessed through the main drawer navigator (in App.js)
 		- Details: the page that is opened when an event item is clicked
